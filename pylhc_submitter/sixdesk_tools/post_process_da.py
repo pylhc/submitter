@@ -9,6 +9,7 @@ as well as plotting of DA polar plots.
 import sqlite3 as sql
 from pathlib import Path
 from typing import Any, Tuple, Iterable, Union
+import logging
 
 import numpy as np
 import pandas as pd
@@ -16,8 +17,7 @@ from generic_parser import DotDict
 from matplotlib import pyplot as plt
 from matplotlib import rcParams, lines as mlines
 from omc3.plotting.utils import style as pstyle
-from omc3.utils import logging_tools
-from pylhc.constants.autosix import (
+from pylhc_submitter.constants.autosix import (
     get_database_path,
     get_tfs_da_path,
     get_tfs_da_seed_stats_path,
@@ -40,9 +40,9 @@ from pylhc.constants.autosix import (
 from scipy.interpolate import interp1d
 from tfs import TfsDataFrame, write_tfs
 
-from pylhc.sixdesk_tools.utils import StageSkip
+from pylhc_submitter.sixdesk_tools.utils import StageSkip
 
-LOG = logging_tools.get_logger(__name__)
+LOG = logging.getLogger(__name__)
 
 DA_COLUMNS = (ALOST1, ALOST2)
 INFO = (

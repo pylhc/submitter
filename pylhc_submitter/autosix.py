@@ -106,8 +106,8 @@ have autosix continue its work.
     This will not reset automatically and one will have to remove the switch
     again to continue.
     As this is a bit of a workaround, it might be easier to define a new
-    variable in the **pylhc.sixdesk_tools.mask_sixdeskenv** file and put its
-    current default into **pylhc.constants.autosix.SIXENV_DEFAULT**.
+    variable in the **pylhc_submitter.sixdesk_tools.mask_sixdeskenv** file and put its
+    current default into **pylhc_submitter.constants.autosix.SIXENV_DEFAULT**.
     One can then use the ``replace_dict`` to change its value.
     This is left open as a task for the inspired user to implement, as only he
     knows which variable he or she needs to change.
@@ -144,7 +144,7 @@ is provided and the Sixtrack outputfiles created.
 
 .. note::
     For the creation of polar plots, the function
-    :func:`pylhc.sixdesk_tools.post_process_da.plot_polar` is available,
+    :func:`pylhc_submitter.sixdesk_tools.post_process_da.plot_polar` is available,
     which is used for the basic polar plotting in the ``post_process`` stage,
     but provides more customization features if called manually.
 
@@ -263,7 +263,6 @@ import tfs
 from generic_parser import EntryPointParameters, entrypoint
 from generic_parser.entry_datatypes import DictAsString
 
-# TODO
 from omc3.utils import logging_tools
 from omc3.utils.iotools import PathOrStr, save_config
 

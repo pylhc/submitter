@@ -96,8 +96,8 @@ from generic_parser.entry_datatypes import DictAsString
 from generic_parser.tools import print_dict_tree
 
 # TODO
-from omc3.utils import logging_tools
 from omc3.utils.iotools import PathOrStr, save_config
+import logging
 
 import pylhc_submitter.htc.utils as htcutils
 from pylhc_submitter.htc.mask import (
@@ -125,7 +125,8 @@ SCRIPT_EXTENSIONS = {
     "python2": ".py",
 }
 
-LOG = logging_tools.get_logger(__name__)
+LOG = logging.getLogger(__name__)
+
 
 try:
     import htcondor
