@@ -16,7 +16,6 @@ import pandas as pd
 from generic_parser import DotDict
 from matplotlib import pyplot as plt
 from matplotlib import rcParams, lines as mlines
-from omc3.plotting.utils import style as pstyle
 from pylhc_submitter.constants.autosix import (
     get_database_path,
     get_tfs_da_path,
@@ -171,10 +170,7 @@ def create_polar_plots(jobname: str, basedir: Path, df_da: TfsDataFrame, df_angl
     for da_col in DA_COLUMNS:
         fig = plot_polar(df_angles, da_col, jobname, df_da)
         fig.tight_layout(), fig.tight_layout()
-        try:  # TODO  remove
-            fig.savefig(outdir_path / fig.canvas.get_default_filename())
-        except OSError:
-            fig.savefig(outdir_path / fig.canvas.get_default_filename().replace("-by-", "-"))
+        fig.savefig(outdir_path / fig.canvas.get_default_filename())
 
     # plt.show()
 
@@ -199,12 +195,10 @@ def plot_polar(
                               the individual DA results per seed. (optional)
 
     Keyword Arguments:
-        plot_styles (Iterable[str]): Iterable over plots styles to be applied, default: 'standard'
         interpolated (bool): If true, uses interpolation to plot the lines curved
         fill (bool): If true, fills the area between min and max with light blue
         angle_ticks (Iterable[numeric]): Positions in degree of the angle ticks (and lines)
         amplitude ticks (Iterable[numeric]): Positions of the amplitude ticks.
-        remaining args: any rcParams to be set.
 
     Returns:
         Figure of the polar plot.
@@ -213,11 +207,9 @@ def plot_polar(
     fill: bool = kwargs.pop("fill", df_da is None)
     angle_ticks: Iterable[np.numeric] = kwargs.pop("angle_ticks", None)
     amplitude_ticks: Iterable[np.numeric] = kwargs.pop("amplitude_ticks", None)
-    plot_styles: Iterable[Union[Path, str]] = kwargs.pop("plot_styles", "standard")
 
     if "lines.marker" not in kwargs:
         kwargs["lines.marker"] = "None"
-    pstyle.set_style(plot_styles, kwargs)
     fig, ax = plt.subplots(nrows=1, ncols=1, subplot_kw={"projection": "polar"})
     fig.canvas.set_window_title(f"{jobname} polar plot for {da_col}")
 
