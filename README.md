@@ -37,6 +37,11 @@ After installing, scripts can be run with either `python -m pylhc_submitter.SCRI
 
 This package provides scripts to allow the creation, submission, and execution of multi-job studies.
 
+## Functionality
+
+- `HTCondor Job Submitter` - Allows to generate jobs based on a templates and submit them to HTCondor. ([**job_submitter.py**](pylhc_submitter/job_submitter.py))
+- `AutoSix` - Allows to generate and submit parametric SixDesk studies easily. ([**autosix.py**](pylhc_submitter/autosix.py))
+
 ## Quality checks
 
 - Unit and accuracy tests are run automatically through CI [Github Actions](https://github.com/pylhc/submitter/actions). See our workflows in this [readme](.github/workflows/README.md).
