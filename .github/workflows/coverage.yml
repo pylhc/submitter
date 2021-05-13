@@ -74,7 +74,7 @@ jobs:
           ./cc-test-reporter before-build
 
       - name: Run tests
-        run: python -m pytest -m "not cern_network" --mpl --cov-report xml --cov=pylhc
+        run: python -m pytest -m "not cern_network" --cov-report xml --cov=pylhc_submitter
 
       - name: Push Coverage to CodeClimate
         if: ${{ success() }}  # only if tests were successful
