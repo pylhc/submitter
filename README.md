@@ -1,4 +1,4 @@
-# <img src="https://twiki.cern.ch/twiki/pub/BEABP/Logos/OMC_logo.png" height="28"> PyLHC Tools
+# <img src="https://twiki.cern.ch/twiki/pub/BEABP/Logos/OMC_logo.png" height="28"> PyLHC Submitter
 
 [![Cron Testing](https://github.com/pylhc/submitter/workflows/Cron%20Testing/badge.svg)](https://github.com/pylhc/submitter/actions?query=workflow%3A%22Cron+Testing%22)
 [![Code Climate coverage](https://img.shields.io/codeclimate/coverage/pylhc/submitter.svg?style=popout)](https://codeclimate.com/github/pylhc/submitter)
