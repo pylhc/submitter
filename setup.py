@@ -30,11 +30,10 @@ with README.open("r") as docs:
 # Dependencies for the module itself
 DEPENDENCIES = [
     "numpy>=1.19",
-    "pandas>=1.0,<1.2",  # limit because of https://github.com/pandas-dev/pandas/issues/39872
+    "pandas>=1.0",
     "htcondor>=8.9.2 ; sys_platform=='linux'",  # no bindings for macOS or windows on PyPI
     "tfs-pandas>=2.0",
     "generic-parser>=1.0.8",
-    "matplotlib>3.0.0",
     "scipy>=1.4.0",
     "matplotlib>=3.2.0",
 ]
