@@ -80,6 +80,7 @@ and job directory for further post processing.
 :author: mihofer, jdilly, fesoubel
 """
 import itertools
+import logging
 import multiprocessing
 import subprocess
 import sys
@@ -95,10 +96,6 @@ from generic_parser import EntryPointParameters, entrypoint
 from generic_parser.entry_datatypes import DictAsString
 from generic_parser.tools import print_dict_tree
 
-# TODO
-from omc3.utils.iotools import PathOrStr, save_config
-import logging
-
 import pylhc_submitter.htc.utils as htcutils
 from pylhc_submitter.htc.mask import (
     create_jobs_from_mask,
@@ -113,6 +110,8 @@ from pylhc_submitter.htc.utils import (
     HTCONDOR_JOBLIMIT,
     JOBFLAVOURS,
 )
+from pylhc_submitter.utils.iotools import PathOrStr, save_config
+from pylhc_submitter.utils.logging_tools import log_setup
 
 JOBSUMMARY_FILE = "Jobs.tfs"
 JOBDIRECTORY_PREFIX = "Job"
@@ -429,7 +428,7 @@ def _setup_folders(job_df, working_directory):
 
 def _job_was_successful(job_row, output_dir, files):
     output_dir = Path(job_row[COLUMN_JOB_DIRECTORY], output_dir)
-    success = output_dir.is_dir()
+    success = output_dir.is_dir() and any(output_dir.iterdir())
     if success and files is not None and len(files):
         for f in files:
             success &= len(list(output_dir.glob(f))) > 0
@@ -535,4 +534,5 @@ def keys_to_path(dict_, *keys):
 
 
 if __name__ == "__main__":
+    log_setup()
     main()

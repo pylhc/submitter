@@ -255,6 +255,7 @@ Arguments:
 
 """
 import itertools
+import logging
 from pathlib import Path
 from typing import Union
 
@@ -262,9 +263,6 @@ import numpy as np
 import tfs
 from generic_parser import EntryPointParameters, entrypoint
 from generic_parser.entry_datatypes import DictAsString
-
-from omc3.utils import logging_tools
-from omc3.utils.iotools import PathOrStr, save_config
 
 from pylhc_submitter.constants.autosix import (
     Stage,
@@ -297,8 +295,9 @@ from pylhc_submitter.sixdesk_tools.submit import (
     sixdb_load,
 )
 from pylhc_submitter.sixdesk_tools.utils import is_locked, check_mask, check_stage, StageSkip
+from pylhc_submitter.utils.iotools import PathOrStr, save_config
 
-LOG = logging_tools.get_logger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 def get_params():
@@ -640,4 +639,5 @@ def _generate_jobs(basedir, jobid_mask, **kwargs) -> tfs.TfsDataFrame:
 
 
 if __name__ == "__main__":
+    log_setup()
     main()
