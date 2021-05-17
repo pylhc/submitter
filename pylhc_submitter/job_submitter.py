@@ -280,9 +280,7 @@ def main(opt):
         job_df, opt.resume_jobs or opt.append_jobs, opt.job_output_dir, opt.check_files
     )
 
-    if opt.dryrun:
-        _print_stats(job_df.index, dropped_jobs)
-    elif opt.run_local:
+    if opt.run_local and not opt.dryrun:
         _run_local(job_df, opt.num_processes)
     else:
         _run_htc(
@@ -291,8 +289,11 @@ def main(opt):
             opt.job_output_dir,
             opt.jobflavour,
             opt.ssh,
+            opt.dryrun,
             opt.htc_arguments,
         )
+    if opt.dryrun:
+        _print_stats(job_df.index, dropped_jobs)
 
 
 # Main Functions ---------------------------------------------------------------
@@ -384,14 +385,15 @@ def _run_local(job_df, num_processes):
     pool.map(_execute_shell, job_df.iterrows())
 
 
-def _run_htc(job_df, cwd, output_dir, flavour, ssh, additional_htc_arguments):
+def _run_htc(job_df, cwd, output_dir, flavour, ssh, dryrun, additional_htc_arguments):
     LOG.info(f"Submitting {len(job_df.index)} jobs on htcondor, flavour '{flavour}'.")
     # create submission file
     subfile = htcutils.make_subfile(
         cwd, job_df, output_dir=output_dir, duration=flavour, **additional_htc_arguments
     )
-    # submit to htcondor
-    htcutils.submit_jobfile(subfile, ssh)
+    if not dryrun:
+        # submit to htcondor
+        htcutils.submit_jobfile(subfile, ssh)
 
 
 def _get_script_extension(script_extension, executable, mask):
