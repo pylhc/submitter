@@ -123,7 +123,7 @@ def _test_output(args, setup, post_run=True):
         subfile = args.cwd / SUBFILE
         assert subfile.exists()
         with open(subfile, 'r') as sfile:
-            filecontents = dict(x.rstrip().split(" = ") for x in sfile if ' = ' in x)
+            filecontents = dict(line.rstrip().split(" = ") for line in sfile if ' = ' in line)
             assert filecontents["MY.JobFlavour"].strip('"') == setup['jobflavour'] # flavour is saved with "" in .sub, and read in with them
             assert filecontents["transfer_output_files"] == setup['job_output_dir']
 
