@@ -367,7 +367,7 @@ def _create_jobs(
 
     # creating all shell scripts
     job_df = htcutils.write_bash(
-        job_df, output_dir, executable=executable, cmdline_arguments=script_args, mask_path_or_string
+        job_df, output_dir, executable=executable, cmdline_arguments=script_args, mask=mask_path_or_string
     )
 
     job_df[COLUMN_JOB_DIRECTORY] = job_df[COLUMN_JOB_DIRECTORY].apply(str)

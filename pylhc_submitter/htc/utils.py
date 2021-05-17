@@ -161,7 +161,7 @@ def write_bash(
     output_dir: Path = None,
     executable: str = "madx",
     cmdline_arguments: dict = None,
-    mask_path_or_string: Union[str, Path]
+    mask: Union[str, Path] = None,
 ) -> DataFrame:
     """Write the bash-files to be called by ``HTCondor``."""
     if len(job_df.index) > HTCONDOR_JOBLIMIT:
@@ -187,7 +187,11 @@ def write_bash(
                 f.write(f"{SHEBANG}\n") 
             if output_dir is not None:
                 f.write(f"mkdir {str(output_dir)}\n")
-            f.write(f"{exec_path}{str(job_dir / job[COLUMN_JOB_FILE])}{cmds}\n")
+            f.write(f"{exec_path}{str(job_dir / job[COLUMN_JOB_FILE])}{cmds}")
+            if mask is str:
+                replace_columns = [column for column in job.index.tolist if column not in [COLUMN_SHELL_SCRIPT, COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE]]
+                f.write(mask % dict(zip( replace_columns, job[replace_columns])))
+            f.write("\n")
         shell_scripts[idx] = bash_file_name
     job_df[COLUMN_SHELL_SCRIPT] = shell_scripts
     return job_df
