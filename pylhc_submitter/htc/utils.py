@@ -182,7 +182,8 @@ def write_bash(
         jobfile = job_dir / bash_file_name
         LOG.debug(f"Writing bash-file {idx:d} '{jobfile}'.")
         with open(jobfile, "w") as f:
-            f.write(f"{SHEBANG}\n")
+            if not on_windows():
+                f.write(f"{SHEBANG}\n") 
             if output_dir is not None:
                 f.write(f"mkdir {str(output_dir)}\n")
             f.write(f"{exec_path}{str(job_dir / job[COLUMN_JOB_FILE])}{cmds}\n")
