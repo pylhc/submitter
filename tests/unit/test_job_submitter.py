@@ -132,7 +132,9 @@ def _make_executable_string(args, mask_content):
         mask_string=f'echo {mask_content}> "{args.out_file}"\n'
     else:
         mask_string=f'echo "{mask_content}" > "{args.out_file}"\n'
-    return f"{'-c ' if not args.mask_file else ''}{mask_string}"
+    if not args.mask_file:
+        mask_string = ' '.join(['-c "', mask_string, '"'])
+    return mask_string
 
 
 def _test_subfile_content(setup):
