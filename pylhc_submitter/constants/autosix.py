@@ -10,7 +10,7 @@ Collections of constants and paths used in autosix.
 """
 from pathlib import Path
 
-from pylhc.constants.external_paths import SIXDESK_UTILS, MADX_BIN
+from pylhc_submitter.constants.external_paths import SIXDESK_UTILS, MADX_BIN
 from enum import IntEnum
 
 # Program Paths ----------------------------------------------------------------

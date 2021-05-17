@@ -8,9 +8,8 @@ import shutil
 from pathlib import Path
 
 import numpy as np
-from omc3.utils import logging_tools
-
-from pylhc.constants.autosix import (
+import logging
+from pylhc_submitter.constants.autosix import (
     SETENV_SH,
     SIXENV_DEFAULT,
     SIXENV_REQUIRED,
@@ -25,12 +24,12 @@ from pylhc.constants.autosix import (
     get_sysenv_path,
     get_sixdeskenv_path,
 )
-from pylhc.sixdesk_tools.utils import start_subprocess
+from pylhc_submitter.sixdesk_tools.utils import start_subprocess
 
 SYSENV_MASK = Path(__file__).parent / "mask_sysenv"
 SIXDESKENV_MASK = Path(__file__).parent / "mask_sixdeskenv"
 
-LOG = logging_tools.get_logger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 # Main -------------------------------------------------------------------------

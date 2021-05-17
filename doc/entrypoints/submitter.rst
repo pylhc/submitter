@@ -1,5 +1,5 @@
-HTCondor Job Submitter
-**************************
+Job Submitter (for HTCondor)
+****************************
 
 .. automodule:: pylhc.job_submitter
     :members:
