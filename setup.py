@@ -43,7 +43,6 @@ EXTRA_DEPENDENCIES = {
         "pytest>=5.2",
         "pytest-cov>=2.7",
         "pytest-regressions>=2.0.0",
-        "pytest-mpl>=0.11",
         "hypothesis>=5.0.0",
         "attrs>=19.2.0",
     ],

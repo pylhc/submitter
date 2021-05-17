@@ -5,17 +5,19 @@ import pytest
 from generic_parser import DotDict
 
 from pylhc_submitter.job_submitter import main as job_submit
+from pylhc_submitter.utils.environment_tools import on_linux, on_windows
 
-skip_not_linux = pytest.mark.skipif(
-    sys.platform != "linux", reason="htcondor python bindings from PyPI are only on linux"
+SUBFILE = "queuehtc.sub"
+
+run_only_on_linux = pytest.mark.skipif(
+    not on_linux(), reason="htcondor python bindings from PyPI are only on linux"
 )
 
-skip_on_linux = pytest.mark.skipif(
-    sys.platform == "linux", reason="htcondor python bindings are present"
+run_if_not_linux = pytest.mark.skipif(
+    on_linux(), reason="htcondor python bindings are present"
 )
 
 
-@skip_not_linux
 def test_job_creation_and_localrun(tmp_path):
     args, setup = _create_setup(tmp_path)
     setup.update(run_local=True)
@@ -23,8 +25,17 @@ def test_job_creation_and_localrun(tmp_path):
     _test_output(args)
 
 
-@skip_not_linux
-def test_find_errornous_percentage_signs(tmp_path):
+@run_only_on_linux
+def test_job_creation_and_dryrun(tmp_path):
+    args, setup = _create_setup(tmp_path)
+    setup.update(dryrun=True)
+    job_submit(**setup)
+    _test_subfile_content(setup)
+    _test_output(args, post_run=False)
+
+
+@run_only_on_linux
+def test_find_errorneous_percentage_signs(tmp_path):
     mask = "%(PARAM1)s.%(PARAM2)d\nsome stuff # should be 5%\nsome % more % stuff."
     args, setup = _create_setup(tmp_path, mask_content=mask)
     with pytest.raises(KeyError) as e:
@@ -32,7 +43,7 @@ def test_find_errornous_percentage_signs(tmp_path):
     assert "problematic '%'" in e.value.args[0]
 
 
-@skip_not_linux
+@run_only_on_linux
 def test_missing_keys(tmp_path):
     mask = "%(PARAM1)s.%(PARAM2)s.%(PARAM3)s"
     args, setup = _create_setup(tmp_path, mask_content=mask)
@@ -41,7 +52,7 @@ def test_missing_keys(tmp_path):
     assert "PARAM3" in e.value.args[0]
 
 
-@skip_on_linux
+@run_if_not_linux
 def test_not_on_linux(tmp_path):
     args, setup = _create_setup(tmp_path)
     with pytest.raises(EnvironmentError) as e:
@@ -49,7 +60,7 @@ def test_not_on_linux(tmp_path):
     assert "htcondor bindings" in e.value.args[0]
 
 
-@skip_not_linux
+@run_only_on_linux
 @pytest.mark.cern_network
 def test_htc_submit():
     """ This test is here for local testing only. You need to adapt the path
@@ -60,6 +71,7 @@ def test_htc_submit():
     args, setup = _create_setup(path)
 
     job_submit(**setup)
+    _test_subfile_content(setup)
     _test_output(args, post_run=False)
     # _test_output(args, post_run=True)  # you can use this if you like after htcondor is done
 
@@ -78,7 +90,7 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         out_dir=out_dir,
         id="%(PARAM1)s.%(PARAM2)d",
         mask_name="test_script.mask",
-        ext=".sh",
+        ext=".bat" if on_windows() else ".sh",
         out_file=Path(out_dir, out_name),
         p1_list=["a", "b"],
         p2_list=[1, 2, 3],
@@ -89,10 +101,13 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         mask_content = args.id
 
     with mask_path.open("w") as f:
-        f.write(f'echo "{mask_content}" > "{args.out_file}"\n')
+        if on_windows():
+            f.write(f'echo {mask_content}> "{args.out_file}"\n')
+        else:
+            f.write(f'echo "{mask_content}" > "{args.out_file}"\n')
 
     setup = dict(
-        executable="/bin/bash",
+        executable=None if on_windows() else "/bin/bash",
         script_extension=args.ext,
         job_output_dir=out_dir,
         mask=str(mask_path),
@@ -103,8 +118,22 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         check_files=[args.out_name],
         working_directory=str(args.cwd),
         dryrun=False,
+        run_local=False,
+        htc_arguments={'max_retries': '4',
+                       'some_other_argument': "some_other_parameter" }
     )
     return args, setup
+
+
+def _test_subfile_content(setup):
+    subfile = Path(setup['working_directory']) / SUBFILE
+    assert subfile.exists()
+    with open(subfile, 'r') as sfile:
+        filecontents = dict(line.rstrip().split(" = ") for line in sfile if ' = ' in line)
+        assert filecontents["MY.JobFlavour"].strip('"') == setup['jobflavour'] # flavour is saved with "" in .sub, and read in with them
+        assert filecontents["transfer_output_files"] == setup['job_output_dir']
+        for key in setup['htc_arguments'].keys():
+            assert filecontents[key] == setup['htc_arguments'][key]
 
 
 def _test_output(args, post_run=True):

@@ -28,7 +28,7 @@ pip install /path/to/submitter
 
 Or simply from the online master branch, which is stable:
 ```bash
-pip install git+https://github.com/pylhc/submitter.git#egg=pylhc
+pip install git+https://github.com/pylhc/submitter.git#egg=pylhc_submitter
 ```
 
 After installing, scripts can be run with either `python -m pylhc_submitter.SCRIPT --FLAG ARGUMENT` or by calling the `.py` files directly.

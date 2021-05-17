@@ -38,7 +38,7 @@ and job directory for further post processing.
   'job_output_dir' after a successful job (for appending/resuming). Uses the 'glob'
   function, so unix-wildcards (*) are allowed. If not given, only the presence of the folder itself is checked.
 - **dryrun**: Flag to only prepare folders and scripts,
-  but does not start madx/submit jobs.
+  but does not start/submit jobs.
   Together with `resume_jobs` this can be use to check which jobs succeeded and which failed.
 
   Action: ``store_true``
@@ -110,6 +110,7 @@ from pylhc_submitter.htc.utils import (
     HTCONDOR_JOBLIMIT,
     JOBFLAVOURS,
 )
+from pylhc_submitter.utils.environment_tools import on_windows
 from pylhc_submitter.utils.iotools import PathOrStr, save_config
 from pylhc_submitter.utils.logging_tools import log_setup
 
@@ -132,7 +133,9 @@ try:
     HAS_HTCONDOR = True
 except ImportError:
     platform = "macOS" if sys.platform == "darwin" else "windows"
-    LOG.error(f"htcondor python bindings are linux-only, this module is not callable on {platform}")
+    LOG.warning(f"htcondor python bindings are linux-only."
+                f" You can still use job_submitter on {platform},"
+                f" but only for local runs.")
     HAS_HTCONDOR = False
 
 
@@ -154,8 +157,10 @@ def get_params():
         name="executable",
         default="madx",
         type=PathOrStr,
-        help=("Path to executable or job-type "
-              f"(of {str(list(EXECUTEABLEPATH.keys()))}) to use."),
+        help=(
+            "Path to executable or job-type "
+            f"(of {str(list(EXECUTEABLEPATH.keys()))}) to use."
+        ),
     )
     params.add_parameter(
         name="jobflavour",
@@ -183,9 +188,11 @@ def get_params():
     params.add_parameter(
         name="dryrun",
         action="store_true",
-        help="Flag to only prepare folders and scripts, but does not start madx/submit jobs. "
-        "Together with `resume_jobs` this can be use to check which jobs "
-        "succeeded and which failed.",
+        help=(
+            "Flag to only prepare folders and scripts, but does not start/submit jobs. "
+            "Together with `resume_jobs` this can be use to check which jobs "
+            "succeeded and which failed."
+        ),
     )
     params.add_parameter(
         name="replace_dict",
@@ -198,15 +205,19 @@ def get_params():
     )
     params.add_parameter(
         name="script_arguments",
-        help="Additional arguments to pass to the script, as dict in key-value pairs "
-        "('--' need to be included in the keys).",
+        help=(
+            "Additional arguments to pass to the script, as dict in key-value pairs "
+            "('--' need to be included in the keys)."
+        ),
         type=DictAsString,
         default={},
     )
     params.add_parameter(
         name="script_extension",
-        help="New extension for the scripts created from the masks. This is inferred "
-        f"automatically for {str(list(SCRIPT_EXTENSIONS.keys()))}. Otherwise not changed.",
+        help=(
+            "New extension for the scripts created from the masks. This is inferred "
+            f"automatically for {str(list(SCRIPT_EXTENSIONS.keys()))}. Otherwise not changed."
+        ),
         type=str,
     )
     params.add_parameter(
@@ -238,10 +249,12 @@ def get_params():
     )
     params.add_parameter(
         name="htc_arguments",
-        help="Additional arguments for htcondor, as Dict-String. "
-        "For AccountingGroup please use 'accounting_group'. "
-        "'max_retries' and 'notification' have defaults (if not given). "
-        "Others are just passed on. ",
+        help=(
+            "Additional arguments for htcondor, as Dict-String. "
+            "For AccountingGroup please use 'accounting_group'. "
+            "'max_retries' and 'notification' have defaults (if not given). "
+            "Others are just passed on. "
+        ),
         type=DictAsString,
         default={},
     )
@@ -280,9 +293,7 @@ def main(opt):
         job_df, opt.resume_jobs or opt.append_jobs, opt.job_output_dir, opt.check_files
     )
 
-    if opt.dryrun:
-        _print_stats(job_df.index, dropped_jobs)
-    elif opt.run_local:
+    if opt.run_local and not opt.dryrun:
         _run_local(job_df, opt.num_processes)
     else:
         _run_htc(
@@ -291,8 +302,11 @@ def main(opt):
             opt.job_output_dir,
             opt.jobflavour,
             opt.ssh,
+            opt.dryrun,
             opt.htc_arguments,
         )
+    if opt.dryrun:
+        _print_stats(job_df.index, dropped_jobs)
 
 
 # Main Functions ---------------------------------------------------------------
@@ -356,7 +370,6 @@ def _create_jobs(
     )
 
     job_df[COLUMN_JOB_DIRECTORY] = job_df[COLUMN_JOB_DIRECTORY].apply(str)
-    job_df = _set_auto_tfs_column_types(job_df)
     tfs.write(str(cwd / JOBSUMMARY_FILE), job_df, save_index=COLUMN_JOBID)
     return job_df
 
@@ -381,17 +394,20 @@ def _drop_already_run_jobs(job_df, drop_jobs, output_dir, check_files):
 def _run_local(job_df, num_processes):
     LOG.info(f"Running {len(job_df.index)} jobs locally in {num_processes:d} processes.")
     pool = multiprocessing.Pool(processes=num_processes)
-    pool.map(_execute_shell, job_df.iterrows())
+    res = pool.map(_execute_shell, job_df.iterrows())
+    if any(res):
+        raise RuntimeError("At least one job has failed. Check output logs!")
 
 
-def _run_htc(job_df, cwd, output_dir, flavour, ssh, additional_htc_arguments):
+def _run_htc(job_df, cwd, output_dir, flavour, ssh, dryrun, additional_htc_arguments):
     LOG.info(f"Submitting {len(job_df.index)} jobs on htcondor, flavour '{flavour}'.")
     # create submission file
     subfile = htcutils.make_subfile(
         cwd, job_df, output_dir=output_dir, duration=flavour, **additional_htc_arguments
     )
-    # submit to htcondor
-    htcutils.submit_jobfile(subfile, ssh)
+    if not dryrun:
+        # submit to htcondor
+        htcutils.submit_jobfile(subfile, ssh)
 
 
 def _get_script_extension(script_extension, executable, mask):
@@ -437,17 +453,17 @@ def _job_was_successful(job_row, output_dir, files):
 
 def _execute_shell(df_row):
     idx, column = df_row
+    cmd = [] if on_windows() else ['sh']
+
     with Path(column[COLUMN_JOB_DIRECTORY], "log.tmp").open("w") as logfile:
         process = subprocess.Popen(
-            ["sh", column[COLUMN_SHELL_SCRIPT]],
-            shell=False,
+            cmd + [column[COLUMN_SHELL_SCRIPT]],
+            shell=on_windows(),
             stdout=logfile,
             stderr=subprocess.STDOUT,
             cwd=column[COLUMN_JOB_DIRECTORY],
         )
-
-    status = process.wait()
-    return status
+    return process.wait()
 
 
 def _check_opts(opt):
@@ -508,10 +524,6 @@ def _print_stats(new_jobs, finished_jobs):
         LOG.info(job_name)
 
 
-def _set_auto_tfs_column_types(df):
-    return df.apply(partial(pd.to_numeric, errors="ignore"))
-
-
 # Other ------------------------------------------------------------------------
 
 
@@ -524,9 +536,10 @@ def check_replace_dict(replace_dict: dict) -> OrderedDict:
 
 
 def keys_to_path(dict_, *keys):
-    """ Convert all keys to Path """
+    """ Convert all keys to Path, if they are not None. """
     for key in keys:
-        dict_[key] = Path(dict_[key])
+        value = dict_[key]
+        dict_[key] = None if value is None else Path(value)
     return dict_
 
 

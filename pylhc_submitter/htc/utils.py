@@ -15,8 +15,11 @@ job can be specified, standard is 8h.
 import logging
 import subprocess
 from pathlib import Path
+import  sys
 
 from pandas import DataFrame
+
+from pylhc_submitter.utils.environment_tools import on_windows
 
 try:
     import htcondor
@@ -165,20 +168,25 @@ def write_bash(
 
     cmds = ""
     if cmdline_arguments is not None:
-        cmds = " ".join([f"{param} {val}" for param, val in cmdline_arguments.items()])
+        cmds = f" {' '.join([f'{param} {val}' for param, val in cmdline_arguments.items()])}"
 
-    exec_path = EXECUTEABLEPATH.get(executable, executable)
+    if executable is None:
+        exec_path = ''
+    else:
+        exec_path = f"{str(EXECUTEABLEPATH.get(executable, executable))} "
+
     shell_scripts = [None] * len(job_df.index)
     for idx, (jobid, job) in enumerate(job_df.iterrows()):
         job_dir = Path(job[COLUMN_JOB_DIRECTORY])
-        bash_file_name = f"{BASH_FILENAME}.{jobid}.sh"
+        bash_file_name = f"{BASH_FILENAME}.{jobid}.{'bat' if on_windows() else 'sh'}"
         jobfile = job_dir / bash_file_name
         LOG.debug(f"Writing bash-file {idx:d} '{jobfile}'.")
         with open(jobfile, "w") as f:
-            f.write(f"{SHEBANG}\n")
+            if not on_windows():
+                f.write(f"{SHEBANG}\n") 
             if output_dir is not None:
                 f.write(f"mkdir {str(output_dir)}\n")
-            f.write(f"{str(exec_path)} {str(job_dir / job[COLUMN_JOB_FILE])} {cmds}\n")
+            f.write(f"{exec_path}{str(job_dir / job[COLUMN_JOB_FILE])}{cmds}\n")
         shell_scripts[idx] = bash_file_name
     job_df[COLUMN_SHELL_SCRIPT] = shell_scripts
     return job_df
