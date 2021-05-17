@@ -358,8 +358,8 @@ def _create_jobs(
 
     job_df = _setup_folders(job_df, cwd)
 
-    # creating all jobs
-    if mask_path_or_string is Path:
+    # creating job file from mask if mask file
+    if mask_path_or_string is not str:
         script_extension = _get_script_extension(script_extension, executable, mask_path_or_string)
         job_df = create_jobs_from_mask(
         job_df, mask_path_or_string, replace_dict.keys(), script_extension
