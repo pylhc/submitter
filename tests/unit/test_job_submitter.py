@@ -82,7 +82,7 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
     """ Create a quick setup for Parameters PARAM1 and PARAM2. """
     out_name = "out.txt"
     out_dir = "Outputdir"
-    on_windows = sys.platform == "windows"
+    on_windows = sys.platform.startswith('win')
 
     args = DotDict(
         cwd=cwd_path,

@@ -163,7 +163,7 @@ def write_bash(
     """Write the bash-files to be called by ``HTCondor``."""
     if len(job_df.index) > HTCONDOR_JOBLIMIT:
         raise AttributeError("Submitting too many jobs for HTCONDOR")
-    is_windows = sys.platform == "windows"
+    is_windows = sys.platform.startswith('win')
 
     cmds = ""
     if cmdline_arguments is not None:

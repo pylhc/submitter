@@ -442,7 +442,7 @@ def _job_was_successful(job_row, output_dir, files):
 
 def _execute_shell(df_row):
     idx, column = df_row
-    cmd = [] if sys.platform == "windows" else ['sh']
+    cmd = [] if sys.platform.startswith('win') else ['sh']
 
     with Path(column[COLUMN_JOB_DIRECTORY], "log.tmp").open("w") as logfile:
         process = subprocess.Popen(
@@ -452,9 +452,7 @@ def _execute_shell(df_row):
             stderr=subprocess.STDOUT,
             cwd=column[COLUMN_JOB_DIRECTORY],
         )
-
-    status = process.wait()
-    return status
+    return process.wait()
 
 
 def _check_opts(opt):
