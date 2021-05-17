@@ -77,7 +77,7 @@ def test_htc_submit():
 
 def _create_setup(cwd_path: Path, mask_content: str = None):
     """ Create a quick setup for Parameters PARAM1 and PARAM2. """
-    out_name = "out.txt"
+    out_name = "out.bat"
     out_dir = "Outputdir"
 
     args = DotDict(
@@ -100,7 +100,7 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         f.write(f'echo "{mask_content}" > "{args.out_file}"\n')
 
     setup = dict(
-        executable="/bin/bash" if sys.platform != "windows" else "cmd <",
+        executable="/bin/bash" if sys.platform != "windows" else "cmd.exe /c",
         script_extension=args.ext,
         job_output_dir=out_dir,
         mask=str(mask_path),
