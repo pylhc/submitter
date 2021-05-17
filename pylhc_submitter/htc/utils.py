@@ -15,7 +15,7 @@ job can be specified, standard is 8h.
 import logging
 import subprocess
 from pathlib import Path
-import  sys
+from typing import Union
 
 from pandas import DataFrame
 
@@ -161,6 +161,7 @@ def write_bash(
     output_dir: Path = None,
     executable: str = "madx",
     cmdline_arguments: dict = None,
+    mask_path_or_string: Union[str, Path]
 ) -> DataFrame:
     """Write the bash-files to be called by ``HTCondor``."""
     if len(job_df.index) > HTCONDOR_JOBLIMIT:

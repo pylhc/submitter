@@ -314,7 +314,7 @@ def main(opt):
 
 def _create_jobs(
     cwd,
-    maskfile,
+    mask_path_or_string,
     jobid_mask,
     replace_dict,
     output_dir,
@@ -358,15 +358,16 @@ def _create_jobs(
 
     job_df = _setup_folders(job_df, cwd)
 
-    # creating all madx jobs
-    script_extension = _get_script_extension(script_extension, executable, maskfile)
-    job_df = create_jobs_from_mask(
-        job_df, maskfile, replace_dict.keys(), script_extension
-    )
+    # creating all jobs
+    if mask_path_or_string is Path:
+        script_extension = _get_script_extension(script_extension, executable, mask_path_or_string)
+        job_df = create_jobs_from_mask(
+        job_df, mask_path_or_string, replace_dict.keys(), script_extension
+        )
 
     # creating all shell scripts
     job_df = htcutils.write_bash(
-        job_df, output_dir, executable=executable, cmdline_arguments=script_args
+        job_df, output_dir, executable=executable, cmdline_arguments=script_args, mask_path_or_string
     )
 
     job_df[COLUMN_JOB_DIRECTORY] = job_df[COLUMN_JOB_DIRECTORY].apply(str)
@@ -472,13 +473,17 @@ def _check_opts(opt):
         raise ValueError("Select either Resume jobs or Append jobs")
 
     # Paths ---
-    opt = keys_to_path(opt, 'mask', 'working_directory', 'executable')
+    opt = keys_to_path(opt, 'working_directory', 'executable')
 
     if str(opt.executable) in EXECUTEABLEPATH.keys():
         opt.executable = str(opt.executable)
 
-    with open(opt.mask, "r") as inputmask:  # checks that mask and dir are there
-        mask = inputmask.read()
+    if Path(opt.mask).is_file():
+        with open(opt.mask, "r") as inputmask:  # checks that mask and dir are there
+            mask = inputmask.read()
+        opt['mask'] = Path(opt['mask'])
+    else:
+        mask = opt.mask
 
     # Replace dict ---
     dict_keys = set(opt.replace_dict.keys())
