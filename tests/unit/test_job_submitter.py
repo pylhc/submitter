@@ -17,7 +17,6 @@ run_if_not_linux = pytest.mark.skipif(
 )
 
 
-
 def test_job_creation_and_localrun(tmp_path):
     args, setup = _create_setup(tmp_path)
     setup.update(run_local=True)
@@ -101,7 +100,7 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         f.write(f'echo "{mask_content}" > "{args.out_file}"\n')
 
     setup = dict(
-        executable="/bin/bash",
+        executable="/bin/bash" if sys.platform != "windows" else "cmd.exe",
         script_extension=args.ext,
         job_output_dir=out_dir,
         mask=str(mask_path),
