@@ -1,8 +1,7 @@
 Welcome to PyLHC's documentation!
 =================================
 
-``PyLHC`` is a collection of useful scripts and tools for the OMC Team at CERN. `CERN <https://home.cern/>`_.
-
+``pylhc-submitter`` contains scripts to simplify the creation and submission of jobs to HTCondor at CERN. `CERN <https://home.cern/>`_.
 
 Package Reference
 =================
