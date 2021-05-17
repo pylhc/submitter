@@ -21,14 +21,16 @@ def test_job_creation_and_localrun(tmp_path):
     args, setup = _create_setup(tmp_path)
     setup.update(run_local=True)
     job_submit(**setup)
-    _test_output(args, setup)
+    _test_output(args)
+
 
 @run_only_on_linux
 def test_job_creation_and_dryrun(tmp_path):
     args, setup = _create_setup(tmp_path)
     setup.update(dryrun=True)
     job_submit(**setup)
-    _test_output(args, setup, post_run=False)
+    _test_subfile_content(setup)
+    _test_output(args, post_run=False)
 
 
 @run_only_on_linux
@@ -68,7 +70,8 @@ def test_htc_submit():
     args, setup = _create_setup(path)
 
     job_submit(**setup)
-    _test_output(args, setup, post_run=False)
+    _test_subfile_content(setup)
+    _test_output(args, post_run=False)
     # _test_output(args, post_run=True)  # you can use this if you like after htcondor is done
 
 
@@ -79,14 +82,15 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
     """ Create a quick setup for Parameters PARAM1 and PARAM2. """
     out_name = "out.txt"
     out_dir = "Outputdir"
+    on_windows = sys.platform == "windows"
 
     args = DotDict(
         cwd=cwd_path,
         out_name=out_name,
         out_dir=out_dir,
         id="%(PARAM1)s.%(PARAM2)d",
-        mask_name="test_script.bat",
-        ext=".sh",
+        mask_name="test_script.mask",
+        ext=".bat" if on_windows else ".sh",
         out_file=Path(out_dir, out_name),
         p1_list=["a", "b"],
         p2_list=[1, 2, 3],
@@ -100,7 +104,7 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         f.write(f'echo "{mask_content}" > "{args.out_file}"\n')
 
     setup = dict(
-        executable="/bin/bash" if sys.platform != "windows" else "C:\WINDOWS\system32\cmd.exe /c",
+        executable="cmd.exe /c" if on_windows else "/bin/bash",
         script_extension=args.ext,
         job_output_dir=out_dir,
         mask=str(mask_path),
@@ -118,18 +122,18 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
     return args, setup
 
 
-def _test_output(args, setup, post_run=True):
+def _test_subfile_content(setup):
+    subfile = Path(setup['working_directory']) / SUBFILE
+    assert subfile.exists()
+    with open(subfile, 'r') as sfile:
+        filecontents = dict(line.rstrip().split(" = ") for line in sfile if ' = ' in line)
+        assert filecontents["MY.JobFlavour"].strip('"') == setup['jobflavour'] # flavour is saved with "" in .sub, and read in with them
+        assert filecontents["transfer_output_files"] == setup['job_output_dir']
+        for key in setup['htc_arguments'].keys():
+            assert filecontents[key] == setup['htc_arguments'][key]
 
-    if not setup["run_local"]:
-        subfile = args.cwd / SUBFILE
-        assert subfile.exists()
-        with open(subfile, 'r') as sfile:
-            filecontents = dict(line.rstrip().split(" = ") for line in sfile if ' = ' in line)
-            assert filecontents["MY.JobFlavour"].strip('"') == setup['jobflavour'] # flavour is saved with "" in .sub, and read in with them
-            assert filecontents["transfer_output_files"] == setup['job_output_dir']
-            for key in setup['htc_arguments'].keys():
-                assert filecontents[key] == setup['htc_arguments'][key]
 
+def _test_output(args, post_run=True):
     for p1 in args.p1_list:
         for p2 in args.p2_list:
             current_id = args.id % dict(PARAM1=p1, PARAM2=p2)
