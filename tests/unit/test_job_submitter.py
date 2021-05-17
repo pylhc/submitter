@@ -6,6 +6,8 @@ from generic_parser import DotDict
 
 from pylhc_submitter.job_submitter import main as job_submit
 
+SUBFILE = "queuehtc.sub"
+
 run_only_on_linux = pytest.mark.skipif(
     sys.platform != "linux", reason="htcondor python bindings from PyPI are only on linux"
 )
@@ -20,11 +22,18 @@ def test_job_creation_and_localrun(tmp_path):
     args, setup = _create_setup(tmp_path)
     setup.update(run_local=True)
     job_submit(**setup)
-    _test_output(args)
+    _test_output(args, setup)
+
+@run_only_on_linux
+def test_job_creation_and_dryrun(tmp_path):
+    args, setup = _create_setup(tmp_path)
+    setup.update(dryrun=True)
+    job_submit(**setup)
+    _test_output(args, setup, post_run=False)
 
 
 @run_only_on_linux
-def test_find_errornous_percentage_signs(tmp_path):
+def test_find_errorneous_percentage_signs(tmp_path):
     mask = "%(PARAM1)s.%(PARAM2)d\nsome stuff # should be 5%\nsome % more % stuff."
     args, setup = _create_setup(tmp_path, mask_content=mask)
     with pytest.raises(KeyError) as e:
@@ -60,7 +69,7 @@ def test_htc_submit():
     args, setup = _create_setup(path)
 
     job_submit(**setup)
-    _test_output(args, post_run=False)
+    _test_output(args, setup, post_run=False)
     # _test_output(args, post_run=True)  # you can use this if you like after htcondor is done
 
 
@@ -103,11 +112,21 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         check_files=[args.out_name],
         working_directory=str(args.cwd),
         dryrun=False,
+        run_local=False,
     )
     return args, setup
 
 
-def _test_output(args, post_run=True):
+def _test_output(args, setup, post_run=True):
+
+    if not setup["run_local"]:
+        subfile = args.cwd / SUBFILE
+        assert subfile.exists()
+        with open(subfile, 'r') as sfile:
+            filecontents = dict(x.rstrip().split(" = ") for x in sfile if ' = ' in x)
+            assert filecontents["MY.JobFlavour"].strip('"') == setup['jobflavour'] # flavour is saved with "" in .sub, and read in with them
+            assert filecontents["transfer_output_files"] == setup['job_output_dir']
+
     for p1 in args.p1_list:
         for p2 in args.p2_list:
             current_id = args.id % dict(PARAM1=p1, PARAM2=p2)
