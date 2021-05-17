@@ -132,7 +132,9 @@ try:
     HAS_HTCONDOR = True
 except ImportError:
     platform = "macOS" if sys.platform == "darwin" else "windows"
-    LOG.warning(f"htcondor python bindings are linux-only. You can still use job_submitter on {platform}, but only for local runs.")
+    LOG.warning(f"htcondor python bindings are linux-only."
+                f" You can still use job_submitter on {platform},"
+                f" but only for local runs.")
     HAS_HTCONDOR = False
 
 
@@ -381,7 +383,9 @@ def _drop_already_run_jobs(job_df, drop_jobs, output_dir, check_files):
 def _run_local(job_df, num_processes):
     LOG.info(f"Running {len(job_df.index)} jobs locally in {num_processes:d} processes.")
     pool = multiprocessing.Pool(processes=num_processes)
-    pool.map(_execute_shell, job_df.iterrows())
+    res = pool.map(_execute_shell, job_df.iterrows())
+    if any(res):
+        raise RuntimeError("At least one job has failed. Check output logs!")
 
 
 def _run_htc(job_df, cwd, output_dir, flavour, ssh, dryrun, additional_htc_arguments):
@@ -438,9 +442,11 @@ def _job_was_successful(job_row, output_dir, files):
 
 def _execute_shell(df_row):
     idx, column = df_row
+    cmd = [] if sys.platform == "windows" else ['sh']
+
     with Path(column[COLUMN_JOB_DIRECTORY], "log.tmp").open("w") as logfile:
         process = subprocess.Popen(
-            ["sh", column[COLUMN_SHELL_SCRIPT]],
+            cmd + [column[COLUMN_SHELL_SCRIPT]],
             shell=False,
             stdout=logfile,
             stderr=subprocess.STDOUT,
