@@ -38,7 +38,7 @@ and job directory for further post processing.
   'job_output_dir' after a successful job (for appending/resuming). Uses the 'glob'
   function, so unix-wildcards (*) are allowed. If not given, only the presence of the folder itself is checked.
 - **dryrun**: Flag to only prepare folders and scripts,
-  but does not start madx/submit jobs.
+  but does not start/submit jobs.
   Together with `resume_jobs` this can be use to check which jobs succeeded and which failed.
 
   Action: ``store_true``
@@ -189,7 +189,7 @@ def get_params():
         name="dryrun",
         action="store_true",
         help=(
-            "Flag to only prepare folders and scripts, but does not start madx/submit jobs. "
+            "Flag to only prepare folders and scripts, but does not start/submit jobs. "
             "Together with `resume_jobs` this can be use to check which jobs "
             "succeeded and which failed."
         ),
