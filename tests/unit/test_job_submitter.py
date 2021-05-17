@@ -99,22 +99,18 @@ def _create_setup(cwd_path: Path, mask_content: str = None, mask_file: bool = Tr
         p2_list=[1, 2, 3],
         mask_file=mask_file
     )
+    mask_path = args.cwd / args.mask_name
 
-    mask_path = cwd_path / args.mask_name
-    if mask_content is None:
-        mask_content = args.id
-
-    with mask_path.open("w") as f:
-        if on_windows():
-            f.write(f'echo {mask_content}> "{args.out_file}"\n')
-        else:
-            f.write(f'echo "{mask_content}" > "{args.out_file}"\n')
+    mask_string = _make_executable_string(args, mask_content)
+    if args.mask_file:
+        with mask_path.open("w") as f:
+            f.write(mask_string)
 
     setup = dict(
         executable=None if on_windows() else "/bin/bash",
         script_extension=args.ext,
         job_output_dir=out_dir,
-        mask=str(mask_path) if mask_file else mask_content,
+        mask=str(mask_path) if args.mask_file else mask_string,
         replace_dict=dict(PARAM1=args.p1_list, PARAM2=args.p2_list,),
         jobid_mask=args.id,
         jobflavour="workday",
@@ -127,6 +123,16 @@ def _create_setup(cwd_path: Path, mask_content: str = None, mask_file: bool = Tr
                        'some_other_argument': "some_other_parameter" }
     )
     return args, setup
+
+def _make_executable_string(args, mask_content):
+    if mask_content is None:
+        mask_content = args.id
+
+    if on_windows():
+        mask_string=f'echo {mask_content}> "{args.out_file}"\n'
+    else:
+        mask_string=f'echo "{mask_content}" > "{args.out_file}"\n'
+    return f"{'-c ' if not args.mask_file else ''}{mask_string}"
 
 
 def _test_subfile_content(setup):
