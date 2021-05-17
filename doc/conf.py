@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# pyLHC documentation build configuration file, created by
+# pylhc_submitter documentation build configuration file, created by
 # sphinx-quickstart on Tue Feb  6 12:10:18 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
 TOPLEVEL_DIR = pathlib.Path(__file__).parent.parent.absolute()
-ABOUT_FILE = TOPLEVEL_DIR / "pylhc" / "__init__.py"
+ABOUT_FILE = TOPLEVEL_DIR / "pylhc_submitter" / "__init__.py"
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -159,7 +159,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "pylhcdoc"
+htmlhelp_basename = "pylhc_submitterdoc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -183,7 +183,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "pylhc.tex", u"pyLHC Documentation", u"OMC-TEAM", "manual"),
+    (master_doc, "pylhc.tex", u"pylhc_submitter Documentation", u"OMC-TEAM", "manual"),
 ]
 
 
@@ -191,7 +191,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "pylhc", u"pyLHC Documentation", [author], 1)]
+man_pages = [(master_doc, "pylhc_submitter", u"pylhc_submitter Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -202,8 +202,8 @@ man_pages = [(master_doc, "pylhc", u"pyLHC Documentation", [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        "pylhc",
-        u"pyLHC Documentation",
+        "pylhc_submitter",
+        u"pylhc_submitter Documentation",
         author,
         "OMC-TEAM",
         "One line description of project.",
