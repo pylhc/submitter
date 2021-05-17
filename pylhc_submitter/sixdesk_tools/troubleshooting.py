@@ -4,16 +4,15 @@ SixDesk Troubleshooting tools
 
 Some useful functions to troubleshoot the SixDesk output.
 """
+import logging
 from pathlib import Path
 
-from omc3.utils import logging_tools
+from pylhc_submitter.autosix import get_jobs_and_values
+from pylhc_submitter.constants.autosix import (get_stagefile_path, Stage, get_track_path,
+                                               get_workspace_path, SIXTRACK_INPUT_CHECK_FILES,
+                                               SIXTRACK_OUTPUT_FILES, get_database_path)
 
-from pylhc.autosix import get_jobs_and_values
-from pylhc.constants.autosix import (get_stagefile_path, Stage, get_track_path,
-                                     get_workspace_path, SIXTRACK_INPUT_CHECK_FILES,
-                                     SIXTRACK_OUTPUT_FILES, get_database_path)
-
-LOG = logging_tools.get_logger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 # Stages -----------------------------------------------------------------------

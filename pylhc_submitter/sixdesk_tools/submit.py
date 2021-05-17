@@ -4,21 +4,20 @@ SixDesk Submission Utils
 
 Individual functions to call SixDesk functionality.
 """
+import logging
 from pathlib import Path
 from typing import Union
 
-from omc3.utils import logging_tools
-
-from pylhc.sixdesk_tools.utils import start_subprocess, StageSkip
-from pylhc.constants.autosix import (
+from pylhc_submitter.constants.autosix import (
     MAD_TO_SIXTRACK_SH,
     RUNSIX_SH,
     RUNSTATUS_SH,
     SIXDB,
     get_sixjobs_path,
 )
+from pylhc_submitter.sixdesk_tools.utils import start_subprocess, StageSkip
 
-LOG = logging_tools.get_logger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 def submit_mask(jobname: str, basedir: Path, ssh: str = None):

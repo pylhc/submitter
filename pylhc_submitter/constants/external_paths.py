@@ -2,7 +2,7 @@
 Constants: External Paths
 -------------------------
 
-Specific constants relating to external paths to be used in ``PyLHC``,
+Specific constants relating to external paths to be used,
 to help with consistency.
 """
 from pathlib import Path
@@ -17,7 +17,3 @@ PYTHON2_BIN = LINTRACK / "miniconda2" / "bin" / "python"
 SIXDESK_UTILS = (
         AFS_CERN / "project" / "sixtrack" / "SixDesk_utilities" / "pro" / "utilities" / "bash"
 )
-
-
-# Repositories -----------------------------------------------------------------
-SIXDESK_GITHUB = "https://github.com/SixTrack/SixDesk.git"

@@ -2,4 +2,4 @@
 
 ## Version 0.0.1
 
-Initial version extracted from the pylhc/PyLHC reopsitory.
+Initial version extracted from the pylhc/PyLHC repository.

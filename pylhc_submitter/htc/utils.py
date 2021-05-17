@@ -23,7 +23,7 @@ try:
 except ImportError:  # will be handled by job_submitter
     pass
 
-from pylhc.constants.external_paths import MADX_BIN, PYTHON2_BIN, PYTHON3_BIN
+from pylhc_submitter.constants.external_paths import MADX_BIN, PYTHON2_BIN, PYTHON3_BIN
 
 LOG = logging.getLogger(__name__)
 

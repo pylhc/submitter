@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from pylhc.htc.utils import COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE
+from pylhc_submitter.htc.utils import COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE
 
 LOG = logging.getLogger(__name__)
 

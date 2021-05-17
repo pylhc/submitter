@@ -4,22 +4,21 @@ SixDesk Utilities
 
 Helper Utilities for Autosix.
 """
+import logging
 import subprocess
 from contextlib import contextmanager
 from pathlib import Path
 
-from omc3.utils import logging_tools
-
-from pylhc.constants.autosix import (
+from pylhc_submitter.constants.autosix import (
     SIXDESKLOCKFILE,
     Stage,
     get_workspace_path,
     get_stagefile_path,
 )
-from pylhc.constants.external_paths import SIXDESK_UTILS
-from pylhc.htc.mask import find_named_variables_in_mask
+from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
+from pylhc_submitter.htc.mask import find_named_variables_in_mask
 
-LOG = logging_tools.get_logger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 # Checks  ----------------------------------------------------------------------
