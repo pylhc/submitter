@@ -5,15 +5,16 @@ import pytest
 from generic_parser import DotDict
 
 from pylhc_submitter.job_submitter import main as job_submit
+from pylhc_submitter.utils.environment_tools import on_linux, on_windows
 
 SUBFILE = "queuehtc.sub"
 
 run_only_on_linux = pytest.mark.skipif(
-    sys.platform != "linux", reason="htcondor python bindings from PyPI are only on linux"
+    not on_linux(), reason="htcondor python bindings from PyPI are only on linux"
 )
 
 run_if_not_linux = pytest.mark.skipif(
-    sys.platform == "linux", reason="htcondor python bindings are present"
+    on_linux(), reason="htcondor python bindings are present"
 )
 
 
@@ -82,7 +83,6 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
     """ Create a quick setup for Parameters PARAM1 and PARAM2. """
     out_name = "out.txt"
     out_dir = "Outputdir"
-    on_windows = sys.platform.startswith('win')
 
     args = DotDict(
         cwd=cwd_path,
@@ -90,7 +90,7 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         out_dir=out_dir,
         id="%(PARAM1)s.%(PARAM2)d",
         mask_name="test_script.mask",
-        ext=".bat" if on_windows else ".sh",
+        ext=".bat" if on_windows() else ".sh",
         out_file=Path(out_dir, out_name),
         p1_list=["a", "b"],
         p2_list=[1, 2, 3],
@@ -101,10 +101,13 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         mask_content = args.id
 
     with mask_path.open("w") as f:
-        f.write(f'echo "{mask_content}" > "{args.out_file}"\n')
+        if on_windows():
+            f.write(f'echo {mask_content}> "{args.out_file}"\n')
+        else:
+            f.write(f'echo "{mask_content}" > "{args.out_file}"\n')
 
     setup = dict(
-        executable=None if on_windows else "/bin/bash",
+        executable=None if on_windows() else "/bin/bash",
         script_extension=args.ext,
         job_output_dir=out_dir,
         mask=str(mask_path),

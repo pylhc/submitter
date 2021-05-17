@@ -19,6 +19,8 @@ import  sys
 
 from pandas import DataFrame
 
+from pylhc_submitter.utils.environment_tools import on_windows
+
 try:
     import htcondor
 except ImportError:  # will be handled by job_submitter
@@ -163,7 +165,6 @@ def write_bash(
     """Write the bash-files to be called by ``HTCondor``."""
     if len(job_df.index) > HTCONDOR_JOBLIMIT:
         raise AttributeError("Submitting too many jobs for HTCONDOR")
-    is_windows = sys.platform.startswith('win')
 
     cmds = ""
     if cmdline_arguments is not None:
@@ -177,7 +178,7 @@ def write_bash(
     shell_scripts = [None] * len(job_df.index)
     for idx, (jobid, job) in enumerate(job_df.iterrows()):
         job_dir = Path(job[COLUMN_JOB_DIRECTORY])
-        bash_file_name = f"{BASH_FILENAME}.{jobid}.{'bat' if is_windows else 'sh'}"
+        bash_file_name = f"{BASH_FILENAME}.{jobid}.{'bat' if on_windows() else 'sh'}"
         jobfile = job_dir / bash_file_name
         LOG.debug(f"Writing bash-file {idx:d} '{jobfile}'.")
         with open(jobfile, "w") as f:

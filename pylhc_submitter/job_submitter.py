@@ -110,6 +110,7 @@ from pylhc_submitter.htc.utils import (
     HTCONDOR_JOBLIMIT,
     JOBFLAVOURS,
 )
+from pylhc_submitter.utils.environment_tools import on_windows
 from pylhc_submitter.utils.iotools import PathOrStr, save_config
 from pylhc_submitter.utils.logging_tools import log_setup
 
@@ -452,12 +453,12 @@ def _job_was_successful(job_row, output_dir, files):
 
 def _execute_shell(df_row):
     idx, column = df_row
-    cmd = [] if sys.platform.startswith('win') else ['sh']
+    cmd = [] if on_windows() else ['sh']
 
     with Path(column[COLUMN_JOB_DIRECTORY], "log.tmp").open("w") as logfile:
         process = subprocess.Popen(
             cmd + [column[COLUMN_SHELL_SCRIPT]],
-            shell=False,
+            shell=on_windows(),
             stdout=logfile,
             stderr=subprocess.STDOUT,
             cwd=column[COLUMN_JOB_DIRECTORY],
