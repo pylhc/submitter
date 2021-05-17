@@ -6,16 +6,16 @@ from generic_parser import DotDict
 
 from pylhc_submitter.job_submitter import main as job_submit
 
-skip_not_linux = pytest.mark.skipif(
+skip_if_not_linux = pytest.mark.skipif(
     sys.platform != "linux", reason="htcondor python bindings from PyPI are only on linux"
 )
 
-skip_on_linux = pytest.mark.skipif(
+run_on_linux = pytest.mark.skipif(
     sys.platform == "linux", reason="htcondor python bindings are present"
 )
 
 
-@skip_not_linux
+@skip_if_not_linux
 def test_job_creation_and_localrun(tmp_path):
     args, setup = _create_setup(tmp_path)
     setup.update(run_local=True)
@@ -23,7 +23,7 @@ def test_job_creation_and_localrun(tmp_path):
     _test_output(args)
 
 
-@skip_not_linux
+@skip_if_not_linux
 def test_find_errornous_percentage_signs(tmp_path):
     mask = "%(PARAM1)s.%(PARAM2)d\nsome stuff # should be 5%\nsome % more % stuff."
     args, setup = _create_setup(tmp_path, mask_content=mask)
@@ -32,7 +32,7 @@ def test_find_errornous_percentage_signs(tmp_path):
     assert "problematic '%'" in e.value.args[0]
 
 
-@skip_not_linux
+@skip_if_not_linux
 def test_missing_keys(tmp_path):
     mask = "%(PARAM1)s.%(PARAM2)s.%(PARAM3)s"
     args, setup = _create_setup(tmp_path, mask_content=mask)
@@ -41,7 +41,7 @@ def test_missing_keys(tmp_path):
     assert "PARAM3" in e.value.args[0]
 
 
-@skip_on_linux
+@run_on_linux
 def test_not_on_linux(tmp_path):
     args, setup = _create_setup(tmp_path)
     with pytest.raises(EnvironmentError) as e:
@@ -49,7 +49,7 @@ def test_not_on_linux(tmp_path):
     assert "htcondor bindings" in e.value.args[0]
 
 
-@skip_not_linux
+@skip_if_not_linux
 @pytest.mark.cern_network
 def test_htc_submit():
     """ This test is here for local testing only. You need to adapt the path
