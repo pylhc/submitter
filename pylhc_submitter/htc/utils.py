@@ -197,8 +197,6 @@ def write_bash(
                 replace_columns = [column for column in job.index.tolist() if column not in [COLUMN_SHELL_SCRIPT, COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE]]
                 f.write(mask % dict(zip( replace_columns, job[replace_columns])))
             f.write("\n")
-        with open(jobfile, "r") as f:
-            print(f.read())
         shell_scripts[idx] = bash_file_name
     job_df[COLUMN_SHELL_SCRIPT] = shell_scripts
     return job_df
