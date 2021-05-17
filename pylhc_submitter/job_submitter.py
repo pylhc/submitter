@@ -535,9 +535,10 @@ def check_replace_dict(replace_dict: dict) -> OrderedDict:
 
 
 def keys_to_path(dict_, *keys):
-    """ Convert all keys to Path """
+    """ Convert all keys to Path, if they are not None. """
     for key in keys:
-        dict_[key] = Path(dict_[key])
+        if key is not None:
+            dict_[key] = Path(dict_[key])
     return dict_
 
 
