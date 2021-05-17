@@ -17,7 +17,7 @@ run_if_not_linux = pytest.mark.skipif(
 )
 
 
-@run_only_on_linux
+
 def test_job_creation_and_localrun(tmp_path):
     args, setup = _create_setup(tmp_path)
     setup.update(run_local=True)
