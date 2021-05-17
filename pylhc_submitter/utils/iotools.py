@@ -55,6 +55,9 @@ def convert_paths_in_dict_to_strings(dict_: dict) -> dict:
 class PathOrStr(metaclass=get_instance_faker_meta(Path, str)):
     """A class that behaves like a Path when possible, otherwise like a string."""
     def __new__(cls, value):
+        if value is None:
+            return None
+
         if isinstance(value, str):
             value = value.strip("\'\"")  # behavior like dict-parser, IMPORTANT FOR EVERY STRING-FAKER
         return Path(value)
