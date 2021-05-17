@@ -113,6 +113,8 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         working_directory=str(args.cwd),
         dryrun=False,
         run_local=False,
+        htc_arguments={'max_retries': '4',
+                       'some_other_argument': "some_other_parameter" }
     )
     return args, setup
 
@@ -126,6 +128,8 @@ def _test_output(args, setup, post_run=True):
             filecontents = dict(line.rstrip().split(" = ") for line in sfile if ' = ' in line)
             assert filecontents["MY.JobFlavour"].strip('"') == setup['jobflavour'] # flavour is saved with "" in .sub, and read in with them
             assert filecontents["transfer_output_files"] == setup['job_output_dir']
+            for key in setup['htc_arguments'].keys():
+                assert filecontents[key] == setup['htc_arguments'][key]
 
     for p1 in args.p1_list:
         for p2 in args.p2_list:
