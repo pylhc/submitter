@@ -357,7 +357,6 @@ def _create_jobs(
     )
 
     job_df[COLUMN_JOB_DIRECTORY] = job_df[COLUMN_JOB_DIRECTORY].apply(str)
-    job_df = _set_auto_tfs_column_types(job_df)
     tfs.write(str(cwd / JOBSUMMARY_FILE), job_df, save_index=COLUMN_JOBID)
     return job_df
 
@@ -508,10 +507,6 @@ def _print_stats(new_jobs, finished_jobs):
     LOG.info("--------- JOBS FINISHED NAMES ------------")
     for job_name in finished_jobs:
         LOG.info(job_name)
-
-
-def _set_auto_tfs_column_types(df):
-    return df.apply(partial(pd.to_numeric, errors="ignore"))
 
 
 # Other ------------------------------------------------------------------------
