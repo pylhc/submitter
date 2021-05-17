@@ -201,7 +201,7 @@ def plot_polar(
     if "lines.marker" not in kwargs:
         kwargs["lines.marker"] = "None"
     fig, ax = plt.subplots(nrows=1, ncols=1, subplot_kw={"projection": "polar"})
-    fig.canvas.set_window_title(f"{jobname} polar plot for {da_col}")
+    fig.canvas.manager.set_window_title(f"{jobname} polar plot for {da_col}")
 
     angles = np.deg2rad(df_angles.index)
     da_min, da_mean, da_max, da_std = (

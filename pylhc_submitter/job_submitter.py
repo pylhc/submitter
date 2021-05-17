@@ -156,8 +156,10 @@ def get_params():
         name="executable",
         default="madx",
         type=PathOrStr,
-        help=("Path to executable or job-type "
-              f"(of {str(list(EXECUTEABLEPATH.keys()))}) to use."),
+        help=(
+            "Path to executable or job-type "
+            f"(of {str(list(EXECUTEABLEPATH.keys()))}) to use."
+        ),
     )
     params.add_parameter(
         name="jobflavour",
@@ -185,9 +187,11 @@ def get_params():
     params.add_parameter(
         name="dryrun",
         action="store_true",
-        help="Flag to only prepare folders and scripts, but does not start madx/submit jobs. "
-        "Together with `resume_jobs` this can be use to check which jobs "
-        "succeeded and which failed.",
+        help=(
+            "Flag to only prepare folders and scripts, but does not start madx/submit jobs. "
+            "Together with `resume_jobs` this can be use to check which jobs "
+            "succeeded and which failed."
+        ),
     )
     params.add_parameter(
         name="replace_dict",
@@ -200,15 +204,19 @@ def get_params():
     )
     params.add_parameter(
         name="script_arguments",
-        help="Additional arguments to pass to the script, as dict in key-value pairs "
-        "('--' need to be included in the keys).",
+        help=(
+            "Additional arguments to pass to the script, as dict in key-value pairs "
+            "('--' need to be included in the keys)."
+        ),
         type=DictAsString,
         default={},
     )
     params.add_parameter(
         name="script_extension",
-        help="New extension for the scripts created from the masks. This is inferred "
-        f"automatically for {str(list(SCRIPT_EXTENSIONS.keys()))}. Otherwise not changed.",
+        help=(
+            "New extension for the scripts created from the masks. This is inferred "
+            f"automatically for {str(list(SCRIPT_EXTENSIONS.keys()))}. Otherwise not changed."
+        ),
         type=str,
     )
     params.add_parameter(
@@ -240,10 +248,12 @@ def get_params():
     )
     params.add_parameter(
         name="htc_arguments",
-        help="Additional arguments for htcondor, as Dict-String. "
-        "For AccountingGroup please use 'accounting_group'. "
-        "'max_retries' and 'notification' have defaults (if not given). "
-        "Others are just passed on. ",
+        help=(
+            "Additional arguments for htcondor, as Dict-String. "
+            "For AccountingGroup please use 'accounting_group'. "
+            "'max_retries' and 'notification' have defaults (if not given). "
+            "Others are just passed on. "
+        ),
         type=DictAsString,
         default={},
     )

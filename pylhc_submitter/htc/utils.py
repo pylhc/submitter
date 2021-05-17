@@ -167,9 +167,13 @@ def write_bash(
 
     cmds = ""
     if cmdline_arguments is not None:
-        cmds = " ".join([f"{param} {val}" for param, val in cmdline_arguments.items()])
+        cmds = f" {' '.join([f'{param} {val}' for param, val in cmdline_arguments.items()])}"
 
-    exec_path = EXECUTEABLEPATH.get(executable, executable)
+    if executable is None:
+        exec_path = ''
+    else:
+        exec_path = f"{str(EXECUTEABLEPATH.get(executable, executable))} "
+
     shell_scripts = [None] * len(job_df.index)
     for idx, (jobid, job) in enumerate(job_df.iterrows()):
         job_dir = Path(job[COLUMN_JOB_DIRECTORY])
@@ -180,7 +184,7 @@ def write_bash(
             f.write(f"{SHEBANG}\n")
             if output_dir is not None:
                 f.write(f"mkdir {str(output_dir)}\n")
-            f.write(f"{str(exec_path)} {str(job_dir / job[COLUMN_JOB_FILE])} {cmds}\n")
+            f.write(f"{exec_path}{str(job_dir / job[COLUMN_JOB_FILE])}{cmds}\n")
         shell_scripts[idx] = bash_file_name
     job_df[COLUMN_SHELL_SCRIPT] = shell_scripts
     return job_df
