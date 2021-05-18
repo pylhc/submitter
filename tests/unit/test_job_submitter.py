@@ -99,10 +99,10 @@ def _create_setup(cwd_path: Path, mask_content: str = None, mask_file: bool = Tr
         p2_list=[1, 2, 3],
         mask_file=mask_file
     )
-    mask_path = args.cwd / args.mask_name
 
     mask_string = _make_executable_string(args, mask_content)
     if args.mask_file:
+        mask_path = args.cwd / args.mask_name
         with mask_path.open("w") as f:
             f.write(mask_string)
 
@@ -132,8 +132,8 @@ def _make_executable_string(args, mask_content):
         mask_string=f'echo {mask_content}> "{args.out_file}"\n'
     else:
         mask_string=f'echo "{mask_content}" > "{args.out_file}"\n'
-    if not args.mask_file:
-        mask_string = ' '.join(['-c "', mask_string, '"'])
+        if not args.mask_file:
+            mask_string = ' '.join(['-c "', mask_string, '"'])
     return mask_string
 
 

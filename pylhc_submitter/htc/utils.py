@@ -187,15 +187,15 @@ def write_bash(
                 f.write(f"{SHEBANG}\n") 
             if output_dir is not None:
                 f.write(f"mkdir {str(output_dir)}\n")
-            f.write(f"{exec_path}{cmds}")
+            f.write(f"{exec_path}")
 
             if not isinstance(mask, str):
                 f.write(f"{str(job_dir / job[COLUMN_JOB_FILE])}")
-            f.write(f"{cmds}")
-
-            if isinstance(mask, str):
+            elif isinstance(mask, str):
                 replace_columns = [column for column in job.index.tolist() if column not in [COLUMN_SHELL_SCRIPT, COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE]]
                 f.write(mask % dict(zip( replace_columns, job[replace_columns])))
+                
+            f.write(f"{cmds}")
             f.write("\n")
         shell_scripts[idx] = bash_file_name
     job_df[COLUMN_SHELL_SCRIPT] = shell_scripts
