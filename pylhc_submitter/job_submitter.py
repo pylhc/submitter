@@ -478,7 +478,12 @@ def _check_opts(opt):
     if str(opt.executable) in EXECUTEABLEPATH.keys():
         opt.executable = str(opt.executable)
 
-    if Path(opt.mask).is_file():
+    is_file=False
+    try:
+        is_file = Path(opt.mask).is_file()
+    except OSError:
+        pass
+    if is_file:
         with open(opt.mask, "r") as inputmask:  # checks that mask and dir are there
             mask = inputmask.read()
         opt['mask'] = Path(opt['mask'])
