@@ -359,7 +359,7 @@ def _create_jobs(
     job_df = _setup_folders(job_df, cwd)
 
     # creating job file from mask if mask file
-    if not isinstance(mask_path_or_string, str):
+    if htcutils.is_mask_file(mask_path_or_string):
         script_extension = _get_script_extension(script_extension, executable, mask_path_or_string)
         job_df = create_jobs_from_mask(
         job_df, mask_path_or_string, replace_dict.keys(), script_extension
@@ -478,12 +478,7 @@ def _check_opts(opt):
     if str(opt.executable) in EXECUTEABLEPATH.keys():
         opt.executable = str(opt.executable)
 
-    is_file=False
-    try:
-        is_file = Path(opt.mask).is_file()
-    except OSError:
-        pass
-    if is_file:
+    if htcutils.is_mask_file(opt.mask):
         with open(opt.mask, "r") as inputmask:  # checks that mask and dir are there
             mask = inputmask.read()
         opt['mask'] = Path(opt['mask'])
