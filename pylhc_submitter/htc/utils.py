@@ -255,7 +255,7 @@ def is_mask_file(mask):
     return is_file
 
 def is_mask_string(mask):
-    return (not is_mask_file(mask)) and isinstance(mask, str)
+    return not is_mask_file(mask)
 
 # Script Mode ##################################################################
 
