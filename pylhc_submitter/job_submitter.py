@@ -405,6 +405,7 @@ def _run_local(job_df: tfs.TfsDataFrame, num_processes: int) -> None:
     pool = multiprocessing.Pool(processes=num_processes)
     res = pool.map(_execute_shell, job_df.iterrows())
     if any(res):
+        LOG.error("At least one job has failed.")
         raise RuntimeError("At least one job has failed. Check output logs!")
 
 
