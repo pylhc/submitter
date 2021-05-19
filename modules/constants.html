@@ -95,13 +95,33 @@
             
               <p class="caption"><span class="caption-text">Entrypoints</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../entrypoints/submitter.html">Job Submitter (for HTCondor)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../entrypoints/submitter.html">Job Submitter (for HTCondor)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../entrypoints/submitter.html#job-submitter">Job Submitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../entrypoints/submitter.html#autosix">AutoSix</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Modules</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Constants Definitions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="htc.html">HTCondor Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sixdesk_tools.html">Sixdesk Tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Constants Definitions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#constants-general">Constants: General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#constants-external-paths">Constants: External Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#constants-autosix">Constants: Autosix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="htc.html">HTCondor Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="htc.html#htcondor-utilities">HTCondor Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="htc.html#mask-resolver">Mask Resolver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sixdesk_tools.html">Sixdesk Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#io-tools">IO-Tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#logging-tools">Logging Tools</a></li>
@@ -174,8 +194,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="constants-definitions">
-<h1>Constants Definitions<a class="headerlink" href="#constants-definitions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pylhc_submitter.constants.general">
+<span id="constants-definitions"></span><h1>Constants Definitions<a class="headerlink" href="#module-pylhc_submitter.constants.general" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="constants-general">
+<h2>Constants: General<a class="headerlink" href="#constants-general" title="Permalink to this headline">¶</a></h2>
+<p>General constants to help with consistency.</p>
+</div>
+<span class="target" id="module-pylhc_submitter.constants.external_paths"></span><div class="section" id="constants-external-paths">
+<h2>Constants: External Paths<a class="headerlink" href="#constants-external-paths" title="Permalink to this headline">¶</a></h2>
+<p>Specific constants relating to external paths to be used,
+to help with consistency.</p>
+</div>
+<span class="target" id="module-pylhc_submitter.constants.autosix"></span><div class="section" id="constants-autosix">
+<h2>Constants: Autosix<a class="headerlink" href="#constants-autosix" title="Permalink to this headline">¶</a></h2>
+<p>Collections of constants and paths used in autosix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">module</dt>
+<dd class="field-odd"><p>constants.autosix</p>
+</dd>
+<dt class="field-even">author</dt>
+<dd class="field-even"><p>jdilly</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylhc_submitter.constants.autosix.Stage">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pylhc_submitter.constants.autosix.</span></span><span class="sig-name descname"><span class="pre">Stage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylhc_submitter.constants.autosix.Stage" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enumeration.</p>
+</dd></dl>
+
+</div>
 </div>
 
 

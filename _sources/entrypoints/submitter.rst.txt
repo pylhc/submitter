@@ -1,9 +1,9 @@
 Job Submitter (for HTCondor)
 ****************************
 
-.. automodule:: pylhc.job_submitter
+.. automodule:: pylhc_submitter.job_submitter
     :members:
 
 
-.. automodule:: pylhc.autosix
+.. automodule:: pylhc_submitter.autosix
     :members:
