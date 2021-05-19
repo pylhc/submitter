@@ -1,17 +1,17 @@
 Sixdesk Tools
 **************************
 
-.. automodule:: pylhc.sixdesk_tools.create_workspace
+.. automodule:: pylhc_submitter.sixdesk_tools.create_workspace
     :members:
 
-.. automodule:: pylhc.sixdesk_tools.submit
+.. automodule:: pylhc_submitter.sixdesk_tools.submit
     :members:
 
-.. automodule:: pylhc.sixdesk_tools.post_process_da
+.. automodule:: pylhc_submitter.sixdesk_tools.post_process_da
     :members:
 
-.. automodule:: pylhc.sixdesk_tools.utils
+.. automodule:: pylhc_submitter.sixdesk_tools.utils
     :members:
 
-.. automodule:: pylhc.sixdesk_tools.troubleshooting
+.. automodule:: pylhc_submitter.sixdesk_tools.troubleshooting
     :members:

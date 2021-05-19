@@ -2,14 +2,14 @@ Constants Definitions
 **************************
 
 
-.. automodule:: pylhc.constants.general
+.. automodule:: pylhc_submitter.constants.general
     :members:
 
 
-.. automodule:: pylhc.constants.external_paths
+.. automodule:: pylhc_submitter.constants.external_paths
     :members:
 
 
-.. automodule:: pylhc.constants.autosix
+.. automodule:: pylhc_submitter.constants.autosix
     :members:
 

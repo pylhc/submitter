@@ -17,17 +17,27 @@ run_if_not_linux = pytest.mark.skipif(
     on_linux(), reason="htcondor python bindings are present"
 )
 
-
-def test_job_creation_and_localrun(tmp_path):
-    args, setup = _create_setup(tmp_path)
+@pytest.mark.parametrize("maskfile", [True, False])
+def test_job_creation_and_localrun(tmp_path, maskfile):
+    args, setup = _create_setup(tmp_path, mask_file=maskfile)
     setup.update(run_local=True)
     job_submit(**setup)
     _test_output(args)
 
 
 @run_only_on_linux
-def test_job_creation_and_dryrun(tmp_path):
-    args, setup = _create_setup(tmp_path)
+def test_job_creation_and_localrun_with_multiline_maskstring(tmp_path):
+    mask = "123\"\" \nsleep 0.1 \n/bin/bash -c  \"echo \"%(PARAM1)s.%(PARAM2)s"
+    args, setup = _create_setup(tmp_path, mask_content=mask, mask_file=False)
+    setup.update(run_local=True)
+    job_submit(**setup)
+    _test_output(args)
+
+
+@run_only_on_linux
+@pytest.mark.parametrize("maskfile", [True, False])
+def test_job_creation_and_dryrun(tmp_path, maskfile):
+    args, setup = _create_setup(tmp_path, mask_file=maskfile)
     setup.update(dryrun=True)
     job_submit(**setup)
     _test_subfile_content(setup)
@@ -35,18 +45,20 @@ def test_job_creation_and_dryrun(tmp_path):
 
 
 @run_only_on_linux
-def test_find_errorneous_percentage_signs(tmp_path):
+@pytest.mark.parametrize("maskfile", [True, False])
+def test_find_errorneous_percentage_signs(tmp_path, maskfile):
     mask = "%(PARAM1)s.%(PARAM2)d\nsome stuff # should be 5%\nsome % more % stuff."
-    args, setup = _create_setup(tmp_path, mask_content=mask)
+    args, setup = _create_setup(tmp_path, mask_content=mask, mask_file=maskfile)
     with pytest.raises(KeyError) as e:
         job_submit(**setup)
     assert "problematic '%'" in e.value.args[0]
 
 
 @run_only_on_linux
-def test_missing_keys(tmp_path):
+@pytest.mark.parametrize("maskfile", [True, False])
+def test_missing_keys(tmp_path, maskfile):
     mask = "%(PARAM1)s.%(PARAM2)s.%(PARAM3)s"
-    args, setup = _create_setup(tmp_path, mask_content=mask)
+    args, setup = _create_setup(tmp_path, mask_content=mask, mask_file=maskfile)
     with pytest.raises(KeyError) as e:
         job_submit(**setup)
     assert "PARAM3" in e.value.args[0]
@@ -79,7 +91,7 @@ def test_htc_submit():
 # Helper -----------------------------------------------------------------------
 
 
-def _create_setup(cwd_path: Path, mask_content: str = None):
+def _create_setup(cwd_path: Path, mask_content: str = None, mask_file: bool = True):
     """ Create a quick setup for Parameters PARAM1 and PARAM2. """
     out_name = "out.txt"
     out_dir = "Outputdir"
@@ -94,23 +106,20 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
         out_file=Path(out_dir, out_name),
         p1_list=["a", "b"],
         p2_list=[1, 2, 3],
+        mask_file=mask_file
     )
 
-    mask_path = cwd_path / args.mask_name
-    if mask_content is None:
-        mask_content = args.id
-
-    with mask_path.open("w") as f:
-        if on_windows():
-            f.write(f'echo {mask_content}> "{args.out_file}"\n')
-        else:
-            f.write(f'echo "{mask_content}" > "{args.out_file}"\n')
+    mask_string = _make_executable_string(args, mask_content)
+    if args.mask_file:
+        mask_path = args.cwd / args.mask_name
+        with mask_path.open("w") as f:
+            f.write(mask_string)
 
     setup = dict(
         executable=None if on_windows() else "/bin/bash",
         script_extension=args.ext,
         job_output_dir=out_dir,
-        mask=str(mask_path),
+        mask=str(mask_path) if args.mask_file else mask_string,
         replace_dict=dict(PARAM1=args.p1_list, PARAM2=args.p2_list,),
         jobid_mask=args.id,
         jobflavour="workday",
@@ -123,6 +132,18 @@ def _create_setup(cwd_path: Path, mask_content: str = None):
                        'some_other_argument': "some_other_parameter" }
     )
     return args, setup
+
+def _make_executable_string(args, mask_content):
+    if mask_content is None:
+        mask_content = args.id
+
+    if on_windows():
+        mask_string=f'echo {mask_content}> "{args.out_file}"'
+    else:
+        mask_string=f'echo "{mask_content}" > "{args.out_file}"'
+        if not args.mask_file:
+            mask_string = ' '.join(['-c "', mask_string, '"'])
+    return f'{mask_string}\n'
 
 
 def _test_subfile_content(setup):
@@ -147,7 +168,8 @@ def _test_output(args, post_run=True):
 
             assert job_dir_path.exists()
             assert job_dir_path.is_dir()
-            assert (job_dir_path / args.mask_name).with_suffix(args.ext).exists()
+            if args.mask_file:
+                assert (job_dir_path / args.mask_name).with_suffix(args.ext).exists()
             # assert out_dir_path.exists()  # does not seem to be pre-created anymore (jdilly 2021-05-04)
             if post_run:
                 assert out_dir_path.is_dir()

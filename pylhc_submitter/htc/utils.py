@@ -15,7 +15,7 @@ job can be specified, standard is 8h.
 import logging
 import subprocess
 from pathlib import Path
-import  sys
+from typing import Union
 
 from pandas import DataFrame
 
@@ -161,6 +161,7 @@ def write_bash(
     output_dir: Path = None,
     executable: str = "madx",
     cmdline_arguments: dict = None,
+    mask: Union[str, Path] = None,
 ) -> DataFrame:
     """Write the bash-files to be called by ``HTCondor``."""
     if len(job_df.index) > HTCONDOR_JOBLIMIT:
@@ -186,7 +187,15 @@ def write_bash(
                 f.write(f"{SHEBANG}\n") 
             if output_dir is not None:
                 f.write(f"mkdir {str(output_dir)}\n")
-            f.write(f"{exec_path}{str(job_dir / job[COLUMN_JOB_FILE])}{cmds}\n")
+            f.write(exec_path)
+
+            if is_mask_file(mask):
+                f.write(str(job_dir / job[COLUMN_JOB_FILE]))
+            else:
+                replace_columns = [column for column in job.index.tolist() if column not in [COLUMN_SHELL_SCRIPT, COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE]]
+                f.write(mask % dict(zip(replace_columns, job[replace_columns])))
+            f.write(cmds)
+            f.write("\n")
         shell_scripts[idx] = bash_file_name
     job_df[COLUMN_SHELL_SCRIPT] = shell_scripts
     return job_df
@@ -235,6 +244,15 @@ def _maybe_put_in_quotes(key, value):
         return f'"{value}"'
     return value
 
+
+def is_mask_file(mask):
+    try:
+        return Path(mask).is_file()
+    except OSError:
+        return False
+
+def is_mask_string(mask):
+    return not is_mask_file(mask)
 
 # Script Mode ##################################################################
 

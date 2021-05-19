@@ -1,9 +1,9 @@
 HTCondor Tools
 **************************
 
-.. automodule:: pylhc.htc.utils
+.. automodule:: pylhc_submitter.htc.utils
     :members:
 
 
-.. automodule:: pylhc.htc.mask
+.. automodule:: pylhc_submitter.htc.mask
     :members:
