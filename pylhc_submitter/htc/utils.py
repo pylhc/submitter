@@ -191,7 +191,7 @@ def write_bash(
 
             if is_mask_file(mask):
                 f.write(f"{str(job_dir / job[COLUMN_JOB_FILE])}")
-            elif is_mask_string(mask):
+            else:
                 replace_columns = [column for column in job.index.tolist() if column not in [COLUMN_SHELL_SCRIPT, COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE]]
                 f.write(mask % dict(zip( replace_columns, job[replace_columns])))
 
@@ -247,12 +247,10 @@ def _maybe_put_in_quotes(key, value):
 
 
 def is_mask_file(mask):
-    is_file=False
     try:
-        is_file = Path(mask).is_file()
+        return Path(mask).is_file()
     except OSError:
-        pass
-    return is_file
+        return False
 
 def is_mask_string(mask):
     return not is_mask_file(mask)
