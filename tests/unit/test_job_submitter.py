@@ -26,6 +26,15 @@ def test_job_creation_and_localrun(tmp_path, maskfile):
 
 
 @run_only_on_linux
+def test_job_creation_and_localrun_with_multiline_maskstring(tmp_path):
+    mask = "123\"\" \nsleep 0.1 \n/bin/bash -c  \"echo \"%(PARAM1)s.%(PARAM2)s"
+    args, setup = _create_setup(tmp_path, mask_content=mask, mask_file=False)
+    setup.update(run_local=True)
+    job_submit(**setup)
+    _test_output(args)
+
+
+@run_only_on_linux
 @pytest.mark.parametrize("maskfile", [True, False])
 def test_job_creation_and_dryrun(tmp_path, maskfile):
     args, setup = _create_setup(tmp_path, mask_file=maskfile)
@@ -129,12 +138,12 @@ def _make_executable_string(args, mask_content):
         mask_content = args.id
 
     if on_windows():
-        mask_string=f'echo {mask_content}> "{args.out_file}"\n'
+        mask_string=f'echo {mask_content}> "{args.out_file}"'
     else:
-        mask_string=f'echo "{mask_content}" > "{args.out_file}"\n'
+        mask_string=f'echo "{mask_content}" > "{args.out_file}"'
         if not args.mask_file:
             mask_string = ' '.join(['-c "', mask_string, '"'])
-    return mask_string
+    return f'{mask_string}\n'
 
 
 def _test_subfile_content(setup):
