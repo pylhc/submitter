@@ -350,10 +350,14 @@ def _create_jobs(
 
     if njobs == 0:
         raise ValueError(f"No (new) jobs found!")
-    if (njobs > HTCONDOR_JOBLIMIT) and not local_or_dry_run:
-        raise ValueError(f"Too many jobs! Allowed {HTCONDOR_JOBLIMIT}, given {njobs}.")
     if njobs > HTCONDOR_JOBLIMIT:
-        LOG.warning(f"You are running {njobs} jobs. Submission to HTCondor will not be possible as it exceeds the {HTCONDOR_JOBLIMIT} jobs limit. ")    
+        if local_or_dry_run:
+            LOG.warning(
+                f"You are running {njobs} jobs. Submission to HTCondor will not be possible as it exceeds "
+                f"the {HTCONDOR_JOBLIMIT} jobs limit."
+            )
+        else:
+            raise ValueError(f"Too many jobs! Allowed {HTCONDOR_JOBLIMIT}, given {njobs}.")
 
     LOG.debug(f"Initial number of jobs: {njobs:d}")
     data_df = pd.DataFrame(
