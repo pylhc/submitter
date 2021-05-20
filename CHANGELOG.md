@@ -5,12 +5,14 @@
 First stable version.
 
 - Added:
-    - Return `.sub` file during a `dryrun`.
-    - Allow to use a mask string instead of a mask file.
-  
-- Changed:
-    - License to MIT.
+    - The `job_submitter` now creates the HTCondor `.sub` file when given the `dryrun` flag.
+    - The `job_submitter` now accepts the use of a mask string instead of a mask file.
+
+Removed:
     - Remove dependency on `omc3`.
+
+- Changed:
+    - License changed from GPLv3 to MIT.
 
 ## Version 0.0.1
 
