@@ -293,6 +293,7 @@ def main(opt):
         opt.executable,
         opt.script_arguments,
         opt.script_extension,
+        (opt.run_local or opt.dryrun)
     )
     job_df, dropped_jobs = _drop_already_run_jobs(
         job_df, opt.resume_jobs or opt.append_jobs, opt.job_output_dir, opt.check_files
@@ -327,6 +328,7 @@ def _create_jobs(
     executable,
     script_args,
     script_extension,
+    local_or_dry_run
 ) -> tfs.TfsDataFrame:
     LOG.debug("Creating Jobs.")
     values_grid = np.array(list(itertools.product(*replace_dict.values())), dtype=object)
@@ -348,8 +350,10 @@ def _create_jobs(
 
     if njobs == 0:
         raise ValueError(f"No (new) jobs found!")
-    if njobs > HTCONDOR_JOBLIMIT:
+    if (njobs > HTCONDOR_JOBLIMIT) and not local_or_dry_run:
         raise ValueError(f"Too many jobs! Allowed {HTCONDOR_JOBLIMIT}, given {njobs}.")
+    if njobs > HTCONDOR_JOBLIMIT:
+        LOG.warning(f"You are running {njobs} jobs. Submission to HTCondor will not be possible as it exceeds the {HTCONDOR_JOBLIMIT} jobs limit. ")    
 
     LOG.debug(f"Initial number of jobs: {njobs:d}")
     data_df = pd.DataFrame(
