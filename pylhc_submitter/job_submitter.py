@@ -18,7 +18,7 @@ For additional information and guides, see the `Job Submitter page
 
 *--Required--*
 
-- **mask** *(str)*: Script Mask to use
+- **mask** *(str)*: Program mask to use
 
 - **replace_dict** *(DictAsString)*: Dict containing the str to replace as
   keys and values a list of parameters to replace
