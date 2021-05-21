@@ -17,6 +17,7 @@ run_if_not_linux = pytest.mark.skipif(
     on_linux(), reason="htcondor python bindings are present"
 )
 
+
 @pytest.mark.parametrize("maskfile", [True, False])
 def test_job_creation_and_localrun(tmp_path, maskfile):
     args, setup = _create_setup(tmp_path, mask_file=maskfile)
@@ -120,7 +121,7 @@ def _create_setup(cwd_path: Path, mask_content: str = None, mask_file: bool = Tr
         script_extension=args.ext,
         job_output_dir=out_dir,
         mask=str(mask_path) if args.mask_file else mask_string,
-        replace_dict=dict(PARAM1=args.p1_list, PARAM2=args.p2_list,),
+        replace_dict=dict(PARAM1=args.p1_list, PARAM2=args.p2_list),
         jobid_mask=args.id,
         jobflavour="workday",
         resume_jobs=True,
@@ -128,33 +129,33 @@ def _create_setup(cwd_path: Path, mask_content: str = None, mask_file: bool = Tr
         working_directory=str(args.cwd),
         dryrun=False,
         run_local=False,
-        htc_arguments={'max_retries': '4',
-                       'some_other_argument': "some_other_parameter" }
+        htc_arguments={"max_retries": "4", "some_other_argument": "some_other_parameter"},
     )
     return args, setup
+
 
 def _make_executable_string(args, mask_content):
     if mask_content is None:
         mask_content = args.id
 
     if on_windows():
-        mask_string=f'echo {mask_content}> "{args.out_file}"'
+        mask_string = f'echo {mask_content}> "{args.out_file}"'
     else:
-        mask_string=f'echo "{mask_content}" > "{args.out_file}"'
+        mask_string = f'echo "{mask_content}" > "{args.out_file}"'
         if not args.mask_file:
-            mask_string = ' '.join(['-c "', mask_string, '"'])
-    return f'{mask_string}\n'
+            mask_string = " ".join(['-c "', mask_string, '"'])
+    return f"{mask_string}\n"
 
 
 def _test_subfile_content(setup):
     subfile = Path(setup['working_directory']) / SUBFILE
     assert subfile.exists()
-    with open(subfile, 'r') as sfile:
-        filecontents = dict(line.rstrip().split(" = ") for line in sfile if ' = ' in line)
-        assert filecontents["MY.JobFlavour"].strip('"') == setup['jobflavour'] # flavour is saved with "" in .sub, and read in with them
-        assert filecontents["transfer_output_files"] == setup['job_output_dir']
-        for key in setup['htc_arguments'].keys():
-            assert filecontents[key] == setup['htc_arguments'][key]
+    with subfile.open("r") as sfile:
+        filecontents = dict(line.rstrip().split(" = ") for line in sfile if " = " in line)
+        assert filecontents["MY.JobFlavour"].strip('"') == setup["jobflavour"]  # flavour is saved with "" in .sub, and read in with them
+        assert filecontents["transfer_output_files"] == setup["job_output_dir"]
+        for key in setup["htc_arguments"].keys():
+            assert filecontents[key] == setup["htc_arguments"][key]
 
 
 def _test_output(args, post_run=True):
