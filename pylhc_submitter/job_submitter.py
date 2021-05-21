@@ -132,9 +132,8 @@ try:
 except ImportError:
     platform = "macOS" if sys.platform == "darwin" else "windows"
     LOG.warning(
-        f"htcondor python bindings are linux-only."
-        f" You can still use job_submitter on {platform},"
-        f" but only for local runs."
+        f"htcondor python bindings are linux-only. You can still use job_submitter on {platform}, "
+        "but only for local runs."
     )
     HAS_HTCONDOR = False
 
@@ -291,9 +290,8 @@ def main(opt):
         opt.executable,
         opt.script_arguments,
         opt.script_extension,
-        (opt.run_local or opt.dryrun)
     )
-    job_df, dropped_jobs = _drop_already_run_jobs(
+    job_df, dropped_jobs = _drop_already_ran_jobs(
         job_df, opt.resume_jobs or opt.append_jobs, opt.job_output_dir, opt.check_files
     )
 
@@ -326,7 +324,6 @@ def _create_jobs(
     executable,
     script_args,
     script_extension,
-    local_or_dry_run
 ) -> tfs.TfsDataFrame:
     LOG.debug("Creating Jobs.")
     values_grid = np.array(list(itertools.product(*replace_dict.values())), dtype=object)
@@ -349,13 +346,10 @@ def _create_jobs(
     if njobs == 0:
         raise ValueError(f"No (new) jobs found!")
     if njobs > HTCONDOR_JOBLIMIT:
-        if local_or_dry_run:
-            LOG.warning(
-                f"You are running {njobs} jobs. Submission to HTCondor will not be possible as it exceeds "
-                f"the {HTCONDOR_JOBLIMIT} jobs limit."
-            )
-        else:
-            raise ValueError(f"Too many jobs! Allowed {HTCONDOR_JOBLIMIT}, given {njobs}.")
+        LOG.warning(
+            f"You are attempting to submit an important number of jobs ({njobs})."
+            "This can be a high stress on your system, make sure you know what you are doing."
+        )
 
     LOG.debug(f"Initial number of jobs: {njobs:d}")
     data_df = pd.DataFrame(
@@ -387,7 +381,7 @@ def _create_jobs(
     return job_df
 
 
-def _drop_already_run_jobs(
+def _drop_already_ran_jobs(
     job_df: tfs.TfsDataFrame, drop_jobs: bool, output_dir: str, check_files: str
 ):
     LOG.debug("Dropping already finished jobs, if necessary.")
