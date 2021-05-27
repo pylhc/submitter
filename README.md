@@ -5,6 +5,7 @@
 [![Code Climate maintainability (percentage)](https://img.shields.io/codeclimate/maintainability-percentage/pylhc/submitter.svg?style=popout)](https://codeclimate.com/github/pylhc/submitter)
 [![GitHub last commit](https://img.shields.io/github/last-commit/pylhc/submitter.svg?style=popout)](https://github.com/pylhc/submitter/)
 [![GitHub release](https://img.shields.io/github/release/pylhc/submitter.svg?style=popout)](https://github.com/pylhc/submitter/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4818455.svg)](https://doi.org/10.5281/zenodo.4818455)
 
 pylhc-submitter contains scripts to simplify the creation and submission of jobs to HTCondor at CERN.
 
