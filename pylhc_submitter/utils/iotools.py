@@ -1,6 +1,6 @@
 """
 IO-Tools
--------------
+--------
 
 Tools for input and output.
 """
@@ -16,11 +16,12 @@ from pylhc_submitter.constants.general import TIME
 def save_config(output_dir: Path, opt: dict, script: str):
     """
     Quick wrapper for ``save_options_to_config``.
+
     Args:
         output_dir (Path): Path to the output directory (does not need to exist).
         opt (dict): opt-structure to be saved.
-        script (str): path/name of the invoking script (becomes name of the .ini) usually
-            ``__file__``.
+        script (str): path/name of the invoking script (becomes name of the .ini)
+                      usually ``__file__``.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
     opt = convert_paths_in_dict_to_strings(opt)

@@ -2,25 +2,23 @@
 Job Submitter
 -------------
 
-Allows to execute a parametric study using a script-mask and a `dictionary` with parameters to
-replace, from the command line. The parameters to be replaced must be present in the given mask as
-``%(PARAMETER)s`` (other types apart from string also allowed).
 
-The type of script and executable is freely choosable, but defaults to ``madx`` - for which this
-submitter was originally written.
+The ``job_submitter`` allows to execute a parametric study using a script mask and a `dictionary` of parameters to replace in this mask, from the command line.
+These parameters must be present in the given mask in the ``%(PARAMETER)s`` format (other types apart from string are also allowed).
 
-When submitting to ``HTCondor``, data to be transferred back to the working directory must be
-written in a sub-folder defined by ``job_output_directory`` which defaults to **Outputdata**.
+The type of script and executable is freely choosable, but defaults to ``madx``, for which this submitter was originally written.
+When submitting to ``HTCondor``, data to be transferred back to the working directory must be written in a sub-folder defined by ``job_output_directory`` which defaults to **Outputdata**.
 
-This script also allows to check if all ``HTCondor`` jobs finished successfully, for resubmissions
-with a different parameter grid, and for local execution.
-
+This script also allows to check if all ``HTCondor`` jobs finished successfully, for resubmissions with a different parameter grid, and for local execution.
 A **Jobs.tfs** file is created in the working directory containing the Job Id, parameter per job
 and job directory for further post processing.
 
+For additional information and guides, see the `Job Submitter page
+<https://pylhc.github.io/packages/pylhcsubmitter/job_submitter/>`_ in the ``OMC`` documentation site.
+
 *--Required--*
 
-- **mask** *(str)*: Script Mask to use
+- **mask** *(str)*: Program mask to use
 
 - **replace_dict** *(DictAsString)*: Dict containing the str to replace as
   keys and values a list of parameters to replace
@@ -134,9 +132,8 @@ try:
 except ImportError:
     platform = "macOS" if sys.platform == "darwin" else "windows"
     LOG.warning(
-        f"htcondor python bindings are linux-only."
-        f" You can still use job_submitter on {platform},"
-        f" but only for local runs."
+        f"htcondor python bindings are linux-only. You can still use job_submitter on {platform}, "
+        "but only for local runs."
     )
     HAS_HTCONDOR = False
 
@@ -294,7 +291,7 @@ def main(opt):
         opt.script_arguments,
         opt.script_extension,
     )
-    job_df, dropped_jobs = _drop_already_run_jobs(
+    job_df, dropped_jobs = _drop_already_ran_jobs(
         job_df, opt.resume_jobs or opt.append_jobs, opt.job_output_dir, opt.check_files
     )
 
@@ -349,7 +346,10 @@ def _create_jobs(
     if njobs == 0:
         raise ValueError(f"No (new) jobs found!")
     if njobs > HTCONDOR_JOBLIMIT:
-        raise ValueError(f"Too many jobs! Allowed {HTCONDOR_JOBLIMIT}, given {njobs}.")
+        LOG.warning(
+            f"You are attempting to submit an important number of jobs ({njobs})."
+            "This can be a high stress on your system, make sure you know what you are doing."
+        )
 
     LOG.debug(f"Initial number of jobs: {njobs:d}")
     data_df = pd.DataFrame(
@@ -381,7 +381,7 @@ def _create_jobs(
     return job_df
 
 
-def _drop_already_run_jobs(
+def _drop_already_ran_jobs(
     job_df: tfs.TfsDataFrame, drop_jobs: bool, output_dir: str, check_files: str
 ):
     LOG.debug("Dropping already finished jobs, if necessary.")
