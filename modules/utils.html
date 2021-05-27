@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Utilities &mdash; pylhc_submitter 0.0.1 documentation</title>
+  <title>Utilities &mdash; pylhc_submitter 1.0.0 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.0
+                1.0
               </div>
             
           
@@ -92,13 +92,10 @@
               
             
             
-              <p class="caption"><span class="caption-text">Entrypoints</span></p>
+              <p class="caption"><span class="caption-text">Submitter</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../entrypoints/submitter.html">Job Submitter (for HTCondor)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../entrypoints/submitter.html#job-submitter">Job Submitter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../entrypoints/submitter.html#autosix">AutoSix</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../entrypoints/autosix.html">AutoSix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../entrypoints/job_submitter.html">Job Submitter</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Modules</span></p>
 <ul class="current">
@@ -213,16 +210,16 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pylhc_submitter.utils.iotools.save_config">
 <span class="sig-prename descclassname"><span class="pre">pylhc_submitter.utils.iotools.</span></span><span class="sig-name descname"><span class="pre">save_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opt</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/utils/iotools.html#save_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.utils.iotools.save_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Quick wrapper for <code class="docutils literal notranslate"><span class="pre">save_options_to_config</span></code>.
-:param output_dir: Path to the output directory (does not need to exist).
-:type output_dir: Path
-:param opt: opt-structure to be saved.
-:type opt: dict
-:param script: path/name of the invoking script (becomes name of the .ini) usually</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">__file__</span></code>.</p>
-</div></blockquote>
+<dd><p>Quick wrapper for <code class="docutils literal notranslate"><span class="pre">save_options_to_config</span></code>.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>Path</em>) -- Path to the output directory (does not need to exist).</p></li>
+<li><p><strong>opt</strong> (<em>dict</em>) -- opt-structure to be saved.</p></li>
+<li><p><strong>script</strong> (<em>str</em>) -- path/name of the invoking script (becomes name of the .ini)
+usually <code class="docutils literal notranslate"><span class="pre">__file__</span></code>.</p></li>
+</ul>
+</dd>
 </dl>
 </dd></dl>
 

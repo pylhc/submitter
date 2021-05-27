@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pylhc_submitter.utils.iotools &mdash; pylhc_submitter 0.0.1 documentation</title>
+  <title>pylhc_submitter.utils.iotools &mdash; pylhc_submitter 1.0.0 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.0
+                1.0
               </div>
             
           
@@ -91,13 +91,10 @@
               
             
             
-              <p class="caption"><span class="caption-text">Entrypoints</span></p>
+              <p class="caption"><span class="caption-text">Submitter</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/submitter.html">Job Submitter (for HTCondor)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../entrypoints/submitter.html#job-submitter">Job Submitter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../entrypoints/submitter.html#autosix">AutoSix</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/autosix.html">AutoSix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/job_submitter.html">Job Submitter</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Modules</span></p>
 <ul>
@@ -193,7 +190,7 @@
   <h1>Source code for pylhc_submitter.utils.iotools</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">IO-Tools</span>
-<span class="sd">-------------</span>
+<span class="sd">--------</span>
 
 <span class="sd">Tools for input and output.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -209,11 +206,12 @@
 <div class="viewcode-block" id="save_config"><a class="viewcode-back" href="../../../modules/utils.html#pylhc_submitter.utils.iotools.save_config">[docs]</a><span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="n">output_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Quick wrapper for ``save_options_to_config``.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        output_dir (Path): Path to the output directory (does not need to exist).</span>
 <span class="sd">        opt (dict): opt-structure to be saved.</span>
-<span class="sd">        script (str): path/name of the invoking script (becomes name of the .ini) usually</span>
-<span class="sd">            ``__file__``.</span>
+<span class="sd">        script (str): path/name of the invoking script (becomes name of the .ini)</span>
+<span class="sd">                      usually ``__file__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">opt</span> <span class="o">=</span> <span class="n">convert_paths_in_dict_to_strings</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>

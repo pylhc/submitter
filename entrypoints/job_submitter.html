@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Job Submitter &mdash; pylhc_submitter 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Constants Definitions" href="../modules/constants.html" />
+    <link rel="prev" title="AutoSix" href="autosix.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/omc_logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Submitter</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="autosix.html">AutoSix</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Job Submitter</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/constants.html">Constants Definitions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#constants-general">Constants: General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#constants-external-paths">Constants: External Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#constants-autosix">Constants: Autosix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/htc.html">HTCondor Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#htcondor-utilities">HTCondor Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#mask-resolver">Mask Resolver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/utils.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#io-tools">IO-Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#logging-tools">Logging Tools</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylhc_submitter</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Job Submitter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/entrypoints/job_submitter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-pylhc_submitter.job_submitter"></span><div class="section" id="job-submitter">
+<h1>Job Submitter<a class="headerlink" href="#job-submitter" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">job_submitter</span></code> allows to execute a parametric study using a script mask and a <cite>dictionary</cite> of parameters to replace in this mask, from the command line.
+These parameters must be present in the given mask in the <code class="docutils literal notranslate"><span class="pre">%(PARAMETER)s</span></code> format (other types apart from string are also allowed).</p>
+<p>The type of script and executable is freely choosable, but defaults to <code class="docutils literal notranslate"><span class="pre">madx</span></code>, for which this submitter was originally written.
+When submitting to <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code>, data to be transferred back to the working directory must be written in a sub-folder defined by <code class="docutils literal notranslate"><span class="pre">job_output_directory</span></code> which defaults to <strong>Outputdata</strong>.</p>
+<p>This script also allows to check if all <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code> jobs finished successfully, for resubmissions with a different parameter grid, and for local execution.
+A <strong>Jobs.tfs</strong> file is created in the working directory containing the Job Id, parameter per job
+and job directory for further post processing.</p>
+<p>For additional information and guides, see the <a class="reference external" href="https://pylhc.github.io/packages/pylhcsubmitter/job_submitter/">Job Submitter page</a> in the <code class="docutils literal notranslate"><span class="pre">OMC</span></code> documentation site.</p>
+<p><em>--Required--</em></p>
+<ul class="simple">
+<li><p><strong>mask</strong> <em>(str)</em>: Program mask to use</p></li>
+<li><p><strong>replace_dict</strong> <em>(DictAsString)</em>: Dict containing the str to replace as
+keys and values a list of parameters to replace</p></li>
+<li><p><strong>working_directory</strong> <em>(str)</em>: Directory where data should be put</p></li>
+</ul>
+<p><em>--Optional--</em></p>
+<ul>
+<li><p><strong>append_jobs</strong>: Flag to rerun job with finer/wider grid,
+already existing points will not be reexecuted.</p>
+<p>Action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+</li>
+<li><p><strong>check_files</strong> <em>(str)</em>: List of files/file-name-masks expected to be in the
+‘job_output_dir’ after a successful job (for appending/resuming). Uses the ‘glob’
+function, so unix-wildcards (*) are allowed. If not given, only the presence of the folder itself is checked.</p></li>
+<li><p><strong>dryrun</strong>: Flag to only prepare folders and scripts,
+but does not start/submit jobs.
+Together with <cite>resume_jobs</cite> this can be use to check which jobs succeeded and which failed.</p>
+<p>Action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+</li>
+<li><p><strong>executable</strong> <em>(str)</em>: Path to executable or job-type (of [‘madx’, ‘python3’, ‘python2’]) to use.</p></li>
+<li><p><strong>htc_arguments</strong> <em>(DictAsString)</em>: Additional arguments for htcondor, as Dict-String.
+For AccountingGroup please use ‘accounting_group’. ‘max_retries’ and ‘notification’ have defaults (if not given).
+Others are just passed on.</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+</li>
+<li><p><strong>job_output_dir</strong> <em>(str)</em>: The name of the output dir of the job. (Make sure your script puts its data there!)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">Outputdata</span></code></p>
+</li>
+<li><p><strong>jobflavour</strong> <em>(str)</em>: Jobflavour to give rough estimate of runtime of one job</p>
+<p>Choices: <code class="docutils literal notranslate"><span class="pre">('espresso',</span> <span class="pre">'microcentury',</span> <span class="pre">'longlunch',</span> <span class="pre">'workday',</span> <span class="pre">'tomorrow',</span> <span class="pre">'testmatch',</span> <span class="pre">'nextweek')</span></code>
+Default: <code class="docutils literal notranslate"><span class="pre">workday</span></code></p>
+</li>
+<li><p><strong>jobid_mask</strong> <em>(str)</em>: Mask to name jobs from replace_dict</p></li>
+<li><p><strong>num_processes</strong> <em>(int)</em>: Number of processes to be used if run locally</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+</li>
+<li><p><strong>resume_jobs</strong>: Only do jobs that did not work.</p>
+<p>Action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+</li>
+<li><p><strong>run_local</strong>: Flag to run the jobs on the local machine. Not suggested.</p>
+<p>Action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+</li>
+<li><p><strong>script_arguments</strong> <em>(DictAsString)</em>: Additional arguments to pass to the script,
+as dict in key-value pairs (‘--‘ need to be included in the keys).</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+</li>
+<li><p><strong>script_extension</strong> <em>(str)</em>: New extension for the scripts created from the masks.
+This is inferred automatically for [‘madx’, ‘python3’, ‘python2’]. Otherwise not changed.</p></li>
+<li><p><strong>ssh</strong> <em>(str)</em>: Run htcondor from this machine via ssh (needs access to the <cite>working_directory</cite>)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>mihofer, jdilly, fesoubel</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="pylhc_submitter.job_submitter.check_replace_dict">
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.job_submitter.</span></span><span class="sig-name descname"><span class="pre">check_replace_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replace_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">collections.OrderedDict</span><a class="reference internal" href="../_modules/pylhc_submitter/job_submitter.html#check_replace_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.job_submitter.check_replace_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes all entries in replace-dict iterable.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylhc_submitter.job_submitter.keys_to_path">
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.job_submitter.</span></span><span class="sig-name descname"><span class="pre">keys_to_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/job_submitter.html#keys_to_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.job_submitter.keys_to_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert all keys to Path, if they are not None.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../modules/constants.html" class="btn btn-neutral float-right" title="Constants Definitions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="autosix.html" class="btn btn-neutral float-left" title="AutoSix" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2020, pyLHC/OMC-TEAM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
