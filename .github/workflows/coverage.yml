@@ -61,7 +61,7 @@ jobs:
         env:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          echo "GIT_BRANCH=$GITHUB_HEAD_REF" >> $GITHUB_ENV
+          echo "GIT_BRANCH=$GITHUB_REF" >> $GITHUB_ENV
           echo "GIT_COMMIT_SHA=$PR_HEAD_SHA" >> $GITHUB_ENV
         if: github.event_name == 'pull_request'
 
