@@ -49,11 +49,8 @@ jobs:
         run: pip install '.[test]'
 
       - name: Set up env for CodeClimate (push)
-        env:
-          MYNAME: ${{ github.ref }}
-          REPLNAMETwo: ${{ github.ref }}/bug\/13/
         run: |
-          echo "GIT_BRANCH=${GITHUB_HEAD_REF/bug\/13/}" >> $GITHUB_ENV
+          echo "GIT_BRANCH=${GITHUB_REF/refs\/heads/}" >> $GITHUB_ENV
           echo "GIT_COMMIT_SHA=$GITHUB_SHA" >> $GITHUB_ENV
         if: github.event_name == 'push'
 
