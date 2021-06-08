@@ -278,7 +278,7 @@ def main(opt):
         LOG.info("Starting Job-submitter.")
 
     opt = _check_opts(opt)
-    save_config(opt.working_directory, opt, __file__)
+    save_config(opt.working_directory, opt, "job_submitter")
 
     job_df = _create_jobs(
         opt.working_directory,

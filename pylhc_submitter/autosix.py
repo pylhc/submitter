@@ -275,7 +275,7 @@ def main(opt):
     with open(opt.mask, "r") as mask_f:
         mask = mask_f.read()
     opt = _check_opts(mask, opt)
-    save_config(opt.working_directory, opt, __file__)
+    save_config(opt.working_directory, opt, "autosix")
 
     jobdf = _generate_jobs(opt.working_directory, opt.jobid_mask, **opt.replace_dict)
     for job_args in jobdf.iterrows():
