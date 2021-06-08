@@ -25,10 +25,22 @@ def save_config(output_dir: Path, opt: dict, script: str):
     """
     output_dir.mkdir(parents=True, exist_ok=True)
     opt = convert_paths_in_dict_to_strings(opt)
+    opt = escape_percentage_signs(opt)
     time = datetime.utcnow().strftime(TIME)
     save_options_to_config(output_dir / f"{script:s}_{time:s}.ini",
                            dict(sorted(opt.items()))
                            )
+
+
+def escape_percentage_signs(dict_: dict) -> dict:
+    """Escape all percentage signs.
+    They are used for interpolation in the config-parser."""
+    for key, value in dict_.items():
+        if isinstance(value, dict):
+            dict_[key] = escape_percentage_signs(value)
+        elif isinstance(value, str):
+            dict_[key] = value.replace("%(", "%%(")
+    return dict_
 
 
 def convert_paths_in_dict_to_strings(dict_: dict) -> dict:

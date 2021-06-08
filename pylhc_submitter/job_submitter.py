@@ -82,9 +82,7 @@ import logging
 import multiprocessing
 import subprocess
 import sys
-from collections import OrderedDict
 from collections.abc import Iterable
-from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -547,12 +545,12 @@ def _print_stats(new_jobs, finished_jobs):
 # Other ------------------------------------------------------------------------
 
 
-def check_replace_dict(replace_dict: dict) -> OrderedDict:
+def check_replace_dict(replace_dict: dict) -> dict:
     """ Makes all entries in replace-dict iterable. """
     for key, value in replace_dict.items():
         if isinstance(value, str) or not isinstance(value, Iterable):
             replace_dict[key] = [value]
-    return OrderedDict(replace_dict)  # for python 3.6
+    return replace_dict
 
 
 def keys_to_path(dict_, *keys):
