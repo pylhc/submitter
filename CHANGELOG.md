@@ -2,8 +2,13 @@
 
 ## Version 1.0.1
 
+Version `1.0.1` is a patch release.
+
 - Fixed:
-    - The `config.ini` was not saved in the specified `working_directory`.
+    - Fixed an issue where the `config.ini` file created during submission would be saved in the `site-packages` instead of the specified `working_directory` if the submitter was installed and called as a module (`python -m pylhc_submitter.job_submitter ...`) (https://github.com/pylhc/submitter/pull/16).
+    - Fixed an issue where `%` characters in a config file used for submission would cause the parameter parsing to crash (https://github.com/pylhc/submitter/pull/16).
+    - Stopped the use of `OrderedDict` which would be written down to the `config.ini` file and prevent further use of said file (https://github.com/pylhc/submitter/pull/16).
+
 ## Version 1.0.0
 
 First stable version of `pylhc_submitter`.
