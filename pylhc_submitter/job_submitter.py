@@ -82,9 +82,6 @@ import logging
 import multiprocessing
 import subprocess
 import sys
-from collections import OrderedDict
-from collections.abc import Iterable
-from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -109,7 +106,7 @@ from pylhc_submitter.htc.utils import (
     JOBFLAVOURS,
 )
 from pylhc_submitter.utils.environment_tools import on_windows
-from pylhc_submitter.utils.iotools import PathOrStr, save_config
+from pylhc_submitter.utils.iotools import PathOrStr, save_config, make_replace_entries_iterable, keys_to_path
 from pylhc_submitter.utils.logging_tools import log_setup
 
 JOBSUMMARY_FILE = "Jobs.tfs"
@@ -278,7 +275,7 @@ def main(opt):
         LOG.info("Starting Job-submitter.")
 
     opt = _check_opts(opt)
-    save_config(opt.working_directory, opt, __file__)
+    save_config(opt.working_directory, opt, "job_submitter")
 
     job_df = _create_jobs(
         opt.working_directory,
@@ -526,7 +523,7 @@ def _check_opts(opt):
     check_percentage_signs_in_mask(mask)
 
     print_dict_tree(opt, name="Input parameter", print_fun=LOG.debug)
-    opt.replace_dict = check_replace_dict(opt.replace_dict)
+    opt.replace_dict = make_replace_entries_iterable(opt.replace_dict)
     return opt
 
 
@@ -542,25 +539,6 @@ def _print_stats(new_jobs, finished_jobs):
     LOG.info("--------- JOBS FINISHED: NAMES ------------")
     for job_name in finished_jobs:
         LOG.info(job_name)
-
-
-# Other ------------------------------------------------------------------------
-
-
-def check_replace_dict(replace_dict: dict) -> OrderedDict:
-    """ Makes all entries in replace-dict iterable. """
-    for key, value in replace_dict.items():
-        if isinstance(value, str) or not isinstance(value, Iterable):
-            replace_dict[key] = [value]
-    return OrderedDict(replace_dict)  # for python 3.6
-
-
-def keys_to_path(dict_, *keys):
-    """ Convert all keys to Path, if they are not None. """
-    for key in keys:
-        value = dict_[key]
-        dict_[key] = None if value is None else Path(value)
-    return dict_
 
 
 # Script Mode ------------------------------------------------------------------
