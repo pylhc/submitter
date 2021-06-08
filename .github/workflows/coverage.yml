@@ -50,10 +50,8 @@ jobs:
 
       - name: Set up env for CodeClimate (push)
         run: |
-          echo "GIT_BRANCH=${GITHUB_HEAD_REF/refs\/heads/}" >> $GITHUB_ENV
+          echo "GIT_BRANCH=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
           echo "GIT_COMMIT_SHA=$GITHUB_SHA" >> $GITHUB_ENV
-          echo "${GITHUB_HEAD_REF/refs\/heads/}"
-          echo "${GITHUB_HEAD_REF}"
         if: github.event_name == 'push'
 
       - name: Set up env for CodeClimate (pull_request)
