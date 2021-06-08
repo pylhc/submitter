@@ -6,11 +6,15 @@ Tools for input and output.
 """
 from pathlib import Path
 from datetime import datetime
+from typing import Iterable
 
 from generic_parser.entry_datatypes import get_instance_faker_meta
 from generic_parser.entrypoint_parser import save_options_to_config
 
 from pylhc_submitter.constants.general import TIME
+
+
+# Output -----------------------------------------------------------------------
 
 
 def save_config(output_dir: Path, opt: dict, script: str):
@@ -65,6 +69,9 @@ def convert_paths_in_dict_to_strings(dict_: dict) -> dict:
     return dict_
 
 
+# Input ------------------------------------------------------------------------
+
+
 class PathOrStr(metaclass=get_instance_faker_meta(Path, str)):
     """A class that behaves like a Path when possible, otherwise like a string."""
     def __new__(cls, value):
@@ -74,3 +81,19 @@ class PathOrStr(metaclass=get_instance_faker_meta(Path, str)):
         if isinstance(value, str):
             value = value.strip("\'\"")  # behavior like dict-parser, IMPORTANT FOR EVERY STRING-FAKER
         return Path(value)
+
+
+def make_replace_entries_iterable(replace_dict: dict) -> dict:
+    """ Makes all entries in replace-dict iterable. """
+    for key, value in replace_dict.items():
+        if isinstance(value, str) or not isinstance(value, Iterable):
+            replace_dict[key] = [value]
+    return replace_dict
+
+
+def keys_to_path(dict_, *keys):
+    """ Convert all keys to Path, if they are not None. """
+    for key in keys:
+        value = dict_[key]
+        dict_[key] = None if value is None else Path(value)
+    return dict_

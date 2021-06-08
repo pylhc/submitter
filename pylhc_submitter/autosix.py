@@ -143,8 +143,6 @@ from pylhc_submitter.htc.mask import generate_jobdf_index
 from pylhc_submitter.job_submitter import (
     JOBSUMMARY_FILE,
     COLUMN_JOBID,
-    check_replace_dict,
-    keys_to_path,
 )
 from pylhc_submitter.sixdesk_tools.create_workspace import (
     create_job,
@@ -162,7 +160,7 @@ from pylhc_submitter.sixdesk_tools.submit import (
     sixdb_load,
 )
 from pylhc_submitter.sixdesk_tools.utils import is_locked, check_mask, check_stage, StageSkip
-from pylhc_submitter.utils.iotools import PathOrStr, save_config
+from pylhc_submitter.utils.iotools import PathOrStr, save_config, make_replace_entries_iterable, keys_to_path
 
 LOG = logging.getLogger(__name__)
 
@@ -481,7 +479,7 @@ def setup_and_run(jobname: str, basedir: Path, **kwargs):
 def _check_opts(mask_text, opt):
     opt = keys_to_path(opt, "mask", "working_directory", "executable")
     check_mask(mask_text, opt.replace_dict)
-    opt.replace_dict = check_replace_dict(opt.replace_dict)
+    opt.replace_dict = make_replace_entries_iterable(opt.replace_dict)
     return opt
 
 
