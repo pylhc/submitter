@@ -51,7 +51,6 @@ jobs:
       - name: Set up env for CodeClimate (push)
         env:
           MYNAME: ${{ github.ref }}
-          REPLNAMEOne: ${{ github.ref }/bug\/13/}
           REPLNAMETwo: ${{ github.ref }}/bug\/13/
         run: |
           echo "GIT_BRANCH=${GITHUB_HEAD_REF/bug\/13/}" >> $GITHUB_ENV
