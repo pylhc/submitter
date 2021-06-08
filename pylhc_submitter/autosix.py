@@ -159,8 +159,18 @@ from pylhc_submitter.sixdesk_tools.submit import (
     sixdb_cmd,
     sixdb_load,
 )
-from pylhc_submitter.sixdesk_tools.utils import is_locked, check_mask, check_stage, StageSkip
-from pylhc_submitter.utils.iotools import PathOrStr, save_config, make_replace_entries_iterable, keys_to_path
+from pylhc_submitter.sixdesk_tools.utils import (
+    is_locked,
+    check_mask,
+    check_stage,
+    StageSkip
+)
+from pylhc_submitter.utils.iotools import (
+    PathOrStr,
+    save_config,
+    make_replace_entries_iterable,
+    keys_to_path
+)
 
 LOG = logging.getLogger(__name__)
 
