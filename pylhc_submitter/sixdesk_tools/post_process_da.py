@@ -136,15 +136,22 @@ def _create_stats_df(df: TfsDataFrame, parameter: str, global_index: Any = None)
                 df_stats.loc[idx, f"{name}{AMP}"] = operation(df.loc[mask, f"{name}{AMP}"])
 
         if global_index is not None:
-            df_stats.loc[global_index, f"{N}{col_da}"] = sum(df_stats.loc[index, f"{N}{col_da}"])
-            for name, operation in operation_map.items():
+            # could be done over df_stats for MEAN, MIN and MAX, but not STD
+            mask = df[col_da] != 0
+            df_stats.loc[global_index, f"{N}{col_da}"] = sum(mask)
+
+            # Global MEAN, MIN, MAX Dynamic Aperture
+            for name, operation in operation_map.get_subdict([MEAN, MIN, MAX, STD]).items():
                 df_stats.loc[global_index, f"{name}{col_da}"] = operation(
-                    df_stats.loc[index, f"{name}{col_da}"]
+                    df.loc[mask, f"{name}{col_da}"]
                 )
+
+            # Global MIN, MAX Amplitudes
             for name, operation in operation_map.get_subdict([MIN, MAX]).items():
                 df_stats.loc[global_index, f"{name}{AMP}"] = operation(
-                    df_stats.loc[index, f"{name}{AMP}"]
+                    df.loc[mask, f"{name}{AMP}"]
                 )
+
             df_stats.headers[HEADER_HINT] = HINT.format(param=parameter, val=global_index)
 
     return df_stats
