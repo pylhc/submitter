@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Tuple, Iterable, Union
 import logging
 
+import mpl_toolkits.axisartist
 import numpy as np
 import pandas as pd
 from generic_parser import DotDict
@@ -109,8 +110,18 @@ def extract_da_data_from_db(jobname: str, basedir: Path) -> TfsDataFrame:
     return TfsDataFrame(df_da)
 
 
-def _create_stats_df(df: TfsDataFrame, parameter: str, global_index: Any = None):
-    """ Calculates the stats over a given parameter """
+def _create_stats_df(df: pd.DataFrame, parameter: str, global_index: Any = None) -> TfsDataFrame:
+    """ Calculates the stats over a given parameter.
+    Note: Could be refactored to use `group_by`.
+
+    Args:
+        df (DataFrame): DataFrame containing the DA information over all seeds.
+        parameter (str): The parameter over which we want to average, i.e.
+                         SEED or ANGLE.
+        global_index (Any): identifier to use as a global index, i.e. the statistics
+                            over all entries are stored here. (e.g. '0' for SEEDs)
+
+    """
     operation_map = DotDict({MEAN: np.mean, STD: np.std, MIN: np.min, MAX: np.max})
 
     pre_index = [] if global_index is None else [global_index]
@@ -136,20 +147,20 @@ def _create_stats_df(df: TfsDataFrame, parameter: str, global_index: Any = None)
                 df_stats.loc[idx, f"{name}{AMP}"] = operation(df.loc[mask, f"{name}{AMP}"])
 
         if global_index is not None:
-            # could be done over df_stats for MEAN, MIN and MAX, but not STD
+            # Note: could be done over df_stats for MEAN, MIN and MAX, but not STD
             mask = df[col_da] != 0
             df_stats.loc[global_index, f"{N}{col_da}"] = sum(mask)
 
             # Global MEAN, MIN, MAX Dynamic Aperture
             for name, operation in operation_map.get_subdict([MEAN, MIN, MAX, STD]).items():
                 df_stats.loc[global_index, f"{name}{col_da}"] = operation(
-                    df.loc[mask, f"{name}{col_da}"]
+                    df.loc[mask, col_da]
                 )
 
             # Global MIN, MAX Amplitudes
             for name, operation in operation_map.get_subdict([MIN, MAX]).items():
                 df_stats.loc[global_index, f"{name}{AMP}"] = operation(
-                    df.loc[mask, f"{name}{AMP}"]
+                    df.loc[mask, AMP]
                 )
 
             df_stats.headers[HEADER_HINT] = HINT.format(param=parameter, val=global_index)
@@ -247,8 +258,18 @@ def plot_polar(
     return fig
 
 
-def _plot_seeds(ax, df_da, da_col, interpolated):
-    """Add the Seed lines to the polar plots, if df_da is given."""
+def _plot_seeds(ax, df_da: TfsDataFrame, da_col: str, interpolated: bool) -> Tuple[list, list]:
+    """Add the Seed lines to the polar plots, if df_da is given.
+
+    Args:
+        ax: Axes to plot in
+        df_da: DataFrame with DA information
+        da_col: Dynamic Aperture column (ALOST1 or ALOST2)
+        interpolated: If true, the lines will be curved.
+
+    Returns:
+        Tuple of list of one line handle and a list of a single label
+    """
     if df_da is not None:
         seed_h = None
         for seed in sorted(set(df_da[SEED])):
