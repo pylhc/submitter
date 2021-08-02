@@ -160,7 +160,7 @@ def _create_stats_df(df: pd.DataFrame, parameter: str, global_index: Any = None)
             # Global MIN, MAX Amplitudes
             for name, operation in operation_map.get_subdict([MIN, MAX]).items():
                 df_stats.loc[global_index, f"{name}{AMP}"] = operation(
-                    df.loc[mask, AMP]
+                    df.loc[mask, f"{name}{AMP}"]  # min(MINA) and max(MAXA)
                 )
 
             df_stats.headers[HEADER_HINT] = HINT.format(param=parameter, val=global_index)
