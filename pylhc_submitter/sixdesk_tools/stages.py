@@ -214,8 +214,11 @@ class Stage(ABC, metaclass=StageMeta):
 
 
 # Actual Stages ----------------------------------------------------------------
-# Warning: In the order that they need to be running!!
-# This is not perfect, but the most flexible solution I could find
+# These Stages should actually have the function they call implemented directly
+# and should be defined in the modules directly. But I like that you can read
+# them one after another here and also see the command one would have to run if
+# one would do this manually (which can be very helpful for fixing broken jobs).
+# - jdilly 2020-08-04
 
 class CreateJob(Stage):
     """
