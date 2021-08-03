@@ -91,12 +91,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Submitter</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Submitter</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/autosix.html">AutoSix</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/job_submitter.html">Job Submitter</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Modules</span></p>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/constants.html">Constants Definitions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#constants-general">Constants: General</a></li>
@@ -196,16 +196,19 @@
 <span class="sd">da. Includes functions for extracting data from database</span>
 <span class="sd">as well as plotting of DA polar plots.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">sqlite3</span> <span class="k">as</span> <span class="nn">sql</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">generic_parser</span> <span class="kn">import</span> <span class="n">DotDict</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rcParams</span><span class="p">,</span> <span class="n">lines</span> <span class="k">as</span> <span class="n">mlines</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">from</span> <span class="nn">tfs</span> <span class="kn">import</span> <span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">write_tfs</span>
+
 <span class="kn">from</span> <span class="nn">pylhc_submitter.constants.autosix</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">get_database_path</span><span class="p">,</span>
     <span class="n">get_tfs_da_path</span><span class="p">,</span>
@@ -226,9 +229,6 @@
     <span class="n">ALOST2</span><span class="p">,</span>
     <span class="n">AMP</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span> <span class="nn">tfs</span> <span class="kn">import</span> <span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">write_tfs</span>
-
 <span class="kn">from</span> <span class="nn">pylhc_submitter.sixdesk_tools.utils</span> <span class="kn">import</span> <span class="n">StageSkip</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -299,8 +299,18 @@
     <span class="k">return</span> <span class="n">TfsDataFrame</span><span class="p">(</span><span class="n">df_da</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_create_stats_df</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">parameter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">global_index</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Calculates the stats over a given parameter &quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">_create_stats_df</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">parameter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">global_index</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TfsDataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Calculates the stats over a given parameter.</span>
+<span class="sd">    Note: Could be refactored to use `group_by`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (DataFrame): DataFrame containing the DA information over all seeds.</span>
+<span class="sd">        parameter (str): The parameter over which we want to average, i.e.</span>
+<span class="sd">                         SEED or ANGLE.</span>
+<span class="sd">        global_index (Any): identifier to use as a global index, i.e. the statistics</span>
+<span class="sd">                            over all entries are stored here. (e.g. &#39;0&#39; for SEEDs)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">operation_map</span> <span class="o">=</span> <span class="n">DotDict</span><span class="p">({</span><span class="n">MEAN</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">STD</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">,</span> <span class="n">MIN</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="n">MAX</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">})</span>
 
     <span class="n">pre_index</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">global_index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">global_index</span><span class="p">]</span>
@@ -326,15 +336,22 @@
                 <span class="n">df_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">AMP</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">AMP</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">global_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">df_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">global_index</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">N</span><span class="si">}{</span><span class="n">col_da</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">df_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">N</span><span class="si">}{</span><span class="n">col_da</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">operation</span> <span class="ow">in</span> <span class="n">operation_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Note: could be done over df_stats for MEAN, MIN and MAX, but not STD</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col_da</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span>
+            <span class="n">df_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">global_index</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">N</span><span class="si">}{</span><span class="n">col_da</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+
+            <span class="c1"># Global MEAN, MIN, MAX Dynamic Aperture</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">operation</span> <span class="ow">in</span> <span class="n">operation_map</span><span class="o">.</span><span class="n">get_subdict</span><span class="p">([</span><span class="n">MEAN</span><span class="p">,</span> <span class="n">MIN</span><span class="p">,</span> <span class="n">MAX</span><span class="p">,</span> <span class="n">STD</span><span class="p">])</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">df_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">global_index</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">col_da</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span>
-                    <span class="n">df_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">col_da</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">col_da</span><span class="p">]</span>
                 <span class="p">)</span>
+
+            <span class="c1"># Global MIN, MAX Amplitudes</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">operation</span> <span class="ow">in</span> <span class="n">operation_map</span><span class="o">.</span><span class="n">get_subdict</span><span class="p">([</span><span class="n">MIN</span><span class="p">,</span> <span class="n">MAX</span><span class="p">])</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">df_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">global_index</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">AMP</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span>
-                    <span class="n">df_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">AMP</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">AMP</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>  <span class="c1"># min(MINA) and max(MAXA)</span>
                 <span class="p">)</span>
+
             <span class="n">df_stats</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="n">HEADER_HINT</span><span class="p">]</span> <span class="o">=</span> <span class="n">HINT</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">parameter</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">global_index</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">df_stats</span>
@@ -430,8 +447,18 @@
     <span class="k">return</span> <span class="n">fig</span></div>
 
 
-<span class="k">def</span> <span class="nf">_plot_seeds</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">df_da</span><span class="p">,</span> <span class="n">da_col</span><span class="p">,</span> <span class="n">interpolated</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Add the Seed lines to the polar plots, if df_da is given.&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">_plot_seeds</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">df_da</span><span class="p">:</span> <span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">da_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interpolated</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Add the Seed lines to the polar plots, if df_da is given.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ax: Axes to plot in</span>
+<span class="sd">        df_da: DataFrame with DA information</span>
+<span class="sd">        da_col: Dynamic Aperture column (ALOST1 or ALOST2)</span>
+<span class="sd">        interpolated: If true, the lines will be curved.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of list of one line handle and a list of a single label</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">df_da</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">seed_h</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df_da</span><span class="p">[</span><span class="n">SEED</span><span class="p">])):</span>
