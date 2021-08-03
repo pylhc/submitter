@@ -125,7 +125,7 @@ def set_max_materialize(sixdesk: Path, max_materialize: int):
     try:
         sub_path.write_text(sub_content)
     except IOError as e:
-        raise IOError(f"Could not write to {sub_path!s}. `max_materialization` could not be set."
+        raise IOError(f"Could not write to {sub_path!s}. `max_materialization` could not be set.\n"
                       f"Remove option or use a SixDesk with writing rights.") from e
 
 

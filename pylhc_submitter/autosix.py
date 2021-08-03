@@ -134,9 +134,7 @@ Arguments:
 """
 import itertools
 import logging
-from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Union
 
 import numpy as np
 import tfs
@@ -145,35 +143,22 @@ from generic_parser.entry_datatypes import DictAsString
 
 from pylhc_submitter.constants.autosix import (
     HEADER_BASEDIR,
-    get_stagefile_path,
     DEFAULTS,
     SIXENV_REQUIRED,
     SIXENV_DEFAULT,
 )
-from pylhc_submitter.sixdesk_tools.stages import Stage, StageSkip, check_stage, STAGE_ORDER, create_stages_for_job
 from pylhc_submitter.htc.mask import generate_jobdf_index
 from pylhc_submitter.job_submitter import (
     JOBSUMMARY_FILE,
     COLUMN_JOBID,
 )
 from pylhc_submitter.sixdesk_tools.create_workspace import (
-    create_job,
-    remove_twiss_fail_check,
-    init_workspace,
-    fix_pythonfile_call, set_max_materialize
+    set_max_materialize
 )
-from pylhc_submitter.sixdesk_tools.post_process_da import post_process_da
-from pylhc_submitter.sixdesk_tools.submit import (
-    submit_mask,
-    submit_sixtrack,
-    check_sixtrack_input,
-    check_sixtrack_output,
-    sixdb_cmd,
-    sixdb_load,
-)
+from pylhc_submitter.sixdesk_tools.stages import Stage, STAGE_ORDER
 from pylhc_submitter.sixdesk_tools.utils import (
     is_locked,
-    check_mask, BaseData
+    check_mask,
 )
 from pylhc_submitter.utils.iotools import (
     PathOrStr,
@@ -301,9 +286,7 @@ def get_params():
 def main(opt):
     """ Loop to create jobs from replace dict product matrix. """
     LOG.info("Starting autosix.")
-    with open(opt.mask, "r") as mask_f:
-        mask = mask_f.read()
-    opt = _check_opts(mask, opt)
+    opt = _check_opts(opt)
     save_config(opt.working_directory, opt, "autosix")
 
     if opt.max_materialize:
@@ -338,9 +321,10 @@ def run_job(jobname: str, jobargs: dict, env: DotDict):
 # Helper  ----------------------------------------------------------------------
 
 
-def _check_opts(mask_text, opt):
+def _check_opts(opt):
     opt = keys_to_path(opt, "mask", "working_directory", "executable")
-    check_mask(mask_text, opt.replace_dict)
+    opt.mask_text = opt.mask.read_text()
+    check_mask(opt.mask_text, opt.replace_dict)
     opt.replace_dict = make_replace_entries_iterable(opt.replace_dict)
     if opt.max_stage is not None and not isinstance(opt.max_stage, Stage):
         opt.max_stage = {name: stage for stage, name in STAGE_ORDER}[opt.max_stage]

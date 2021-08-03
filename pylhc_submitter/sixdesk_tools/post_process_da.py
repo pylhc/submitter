@@ -39,7 +39,6 @@ from pylhc_submitter.constants.autosix import (
     ALOST2,
     AMP,
 )
-from pylhc_submitter.sixdesk_tools.stages import StageSkip
 
 LOG = logging.getLogger(__name__)
 
@@ -64,12 +63,8 @@ ALPHA_FILL_STD = 0.2
 def post_process_da(jobname: str, basedir: Path):
     """ Post process the DA results into dataframes and DA plots. """
     LOG.info("Post-Processing Sixdesk Results.")
-    try:
-        df_da, df_angle, df_seed = create_da_tfs(jobname, basedir)
-        create_polar_plots(jobname, basedir, df_da, df_angle)
-    except Exception as e:
-        LOG.exception("Post Processing Failed.")
-        raise StageSkip("Post Processing failed!") from e
+    df_da, df_angle, df_seed = create_da_tfs(jobname, basedir)
+    create_polar_plots(jobname, basedir, df_da, df_angle)
     LOG.info("Post-Processing finished.")
 
 

@@ -64,6 +64,23 @@ MEAN, STD, MIN, MAX, N = "MEAN", "STD", "MIN", "MAX", "N"
 SEED, ANGLE, ALOST1, ALOST2, AMP = "SEED", "ANGLE", "ALOST1", "ALOST2", "A"
 
 
+# Errors ---
+
+
+class StageSkip(Exception):
+    """ Indicates that the stage was not completed or skipped entirely.
+    This can be due to an error or on purpose (e.g. user interaction before
+    restart). """
+    pass
+
+
+class StageStop(Exception):
+    """ A signal sent at the end of a Stage indicating, that it has succeeded
+    and that any iteration should be stopped after this Stage as the jobs have
+    been submitted and the user needs to wait for them to finish. """
+    pass
+
+
 # Workspace Paths --------------------------------------------------------------
 
 # Input ---
@@ -132,3 +149,4 @@ def get_tfs_da_seed_stats_path(jobname: str, basedir: Path) -> Path:
 
 def get_tfs_da_angle_stats_path(jobname: str, basedir: Path) -> Path:
     return get_autosix_results_path(jobname, basedir) / f"{jobname}_da_per_angle.tfs"
+

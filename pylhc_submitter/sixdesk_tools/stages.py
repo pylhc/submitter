@@ -8,35 +8,22 @@ In this module the stages are organized.
 """
 import logging
 import re
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, ABCMeta
 
 from generic_parser import DotDict
 
-from pylhc_submitter.constants.autosix import get_stagefile_path
+from pylhc_submitter.constants.autosix import get_stagefile_path, StageSkip, StageStop
 from pylhc_submitter.sixdesk_tools.create_workspace import (
     create_job, init_workspace, fix_pythonfile_call,
     remove_twiss_fail_check
 )
 from pylhc_submitter.sixdesk_tools.post_process_da import post_process_da
-from pylhc_submitter.sixdesk_tools.submit import (submit_mask, check_sixtrack_input, submit_sixtrack,
-    check_sixtrack_output, sixdb_load, sixdb_cmd)
+from pylhc_submitter.sixdesk_tools.submit import (
+    submit_mask, check_sixtrack_input, submit_sixtrack,
+    check_sixtrack_output, sixdb_load, sixdb_cmd
+)
 
 LOG = logging.getLogger(__name__)
-
-
-class StageSkip(Exception):
-    """ Indicates that the stage was not completed or skipped entirely.
-    This can be due to an error or on purpose (e.g. user interaction before
-    restart). """
-    pass
-
-
-class StageStop(Exception):
-    """ A signal sent at the end of a Stage indicating, that it has succeeded
-    and that any iteration should be stopped after this Stage as the jobs have
-    been submitted and the user needs to wait for them to finish. """
-    pass
-
 
 # Overwritten in StageMeta below and actual classes inserted
 STAGE_ORDER = DotDict({
@@ -53,18 +40,57 @@ STAGE_ORDER = DotDict({
 })
 
 
-class StageMeta(type):
+class StageMeta(ABCMeta):
     """ Dynamically generate name and value from STAGE_ORDER """
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # convert CamelCase to snake_case (https://stackoverflow.com/a/1176023/5609590)
         cls.name = re.sub(r'(?<!^)(?=[A-Z])', '_', cls.__name__).lower()
 
+        if cls.name == "stage":
+            # Base Class
+            cls.value = None
+            return
+
         # set value according to list (so we can compare order)
         cls.value = list(STAGE_ORDER.keys()).index(cls.name)
 
         # set class as entry in STAGE_ORDER
         STAGE_ORDER[cls.name] = cls
+    
+    def __str__(cls):
+        return cls.name
+
+    def __int__(cls):
+        return cls.value
+
+    def __add__(cls, other):
+        new_idx = int(cls) + int(other)
+        return list(STAGE_ORDER.values())[new_idx]
+
+    def __sub__(cls, other):
+        new_idx = int(cls) - int(other)
+        if new_idx < 0:
+            raise IndexError("Requested Stage order is negative. Stage not found.")
+        return list(STAGE_ORDER.values())[new_idx]
+    
+    def __gt__(cls, other):
+        return int(cls) > int(other)
+
+    def __ge__(cls, other):
+        return int(cls) >= int(other)
+
+    def __lt__(cls, other):
+        return int(cls) < int(other)
+
+    def __le__(cls, other):
+        return int(cls) <= int(other)
+
+    def __eq__(cls, other):
+        return int(cls) == int(other)
+
+    def __hash__(cls):
+        return hash((cls.value, cls.name))
 
 
 class Stage(ABC, metaclass=StageMeta):
@@ -83,7 +109,7 @@ class Stage(ABC, metaclass=StageMeta):
                     LOG.error(e)
                 # break  # stop here or always run to the end and show all skipped stages
             except StageStop:
-                LOG.info(f"Stopping after Stage {stage.name} as the submitted jobs will now run. "
+                LOG.info(f"Stopping after Stage '{stage.name}' as the submitted jobs will now run. "
                          f"Check `condor_q` for their progress and restart autosix when they are done.")
                 break
         LOG.info(f"^^---------------- Job {jobname} -------------------^^")
@@ -98,22 +124,17 @@ class Stage(ABC, metaclass=StageMeta):
         self.max_stage = env.max_stage
         self.stage_file = get_stagefile_path(self.jobname, self.basedir)
 
-    def __repr__(self):
-        return self.name
-
     def __str__(self):
-        return self.__repr__()
+        return self.name
 
     def __int__(self):
         return self.value
 
-    def __add__(self, other):
-        new_idx = self.value + int(other)
-        return list(STAGE_ORDER.keys())[new_idx](self.jobname, self.basedir, self.max_stage)
-
     def __sub__(self, other):
-        new_idx = self.value - int(other)
-        return list(STAGE_ORDER.keys())[new_idx](self.jobname, self.basedir, self.max_stage)
+        return StageMeta.__sub__(self.__class__, other)(self.jobname, self.jobargs, self.env)
+
+    def __add__(self, other):
+        return StageMeta.__add__(self.__class__, other)(self.jobname, self.jobargs, self.env)
 
     def __gt__(self, other):
         return int(self) > int(other)
@@ -179,6 +200,13 @@ class Stage(ABC, metaclass=StageMeta):
             # but that there should be a stop in the loop.
             self.stage_done()
             raise e
+        except Exception as e:
+            # convert any exception to a StageSkip,
+            # so the other jobs can continue running.
+            LOG.exception(f"Stage {self!s} failed!")
+            raise StageSkip(f"Stage {self!s} failed!") from e
+
+        self.stage_done()
 
     @abstractmethod
     def _run(self):
@@ -201,7 +229,7 @@ class CreateJob(Stage):
         create_job(self.jobname, self.basedir,
                    executable=self.env.executable,
                    mask_text=self.env.mask_text,
-                   sixdesk=self.env.sixdesk_path,
+                   sixdesk=self.env.sixdesk_directory,
                    ssh=self.env.ssh,
                    **self.jobargs)
 
@@ -356,21 +384,3 @@ class Final(Stage):
             "in case you want to rerun some stages."
         )
         raise StageSkip()
-
-
-STAGE_ORDER = DotDict({
-    "create_job": CreateJob,
-    "initialize_workspace": InitializeWorkspace,
-    "submit_mask": SubmitMask,
-    "check_input": CheckInput,
-    "submit_sixtrack": SubmitSixtrack,
-    "check_sixtrack_output": CheckSixtrackOutput,
-    "sixdb_load": SixdbLoad,
-    "sixdb_cmd": SixdbCmd,
-    "post_process": PostProcess,
-    "final": Final,
-})
-
-
-
-

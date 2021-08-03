@@ -13,11 +13,10 @@ from pylhc_submitter.constants.autosix import (
     RUNSIX_SH,
     RUNSTATUS_SH,
     SIXDB,
-    get_sixjobs_path,
+    get_sixjobs_path, StageSkip,
 )
 from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
 from pylhc_submitter.sixdesk_tools.utils import start_subprocess
-from pylhc_submitter.sixdesk_tools.stages import StageSkip
 
 LOG = logging.getLogger(__name__)
 

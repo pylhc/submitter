@@ -1,6 +1,9 @@
 Sixdesk Tools
 **************************
 
+.. automodule:: pylhc_submitter.sixdesk_tools.stages
+    :members:
+
 .. automodule:: pylhc_submitter.sixdesk_tools.create_workspace
     :members:
 
