@@ -4,8 +4,10 @@ AutoSix
 
 ``AutoSix`` is a wrapper to automatically perform the necessary setup and steps needed for ``SixDesk`` use.
 
-The functionality is similar to the ``pylhc_submitter.job_submitter`` in that the inner product of a ``replace_dict`` is used to automatically create a set of job-directories to gather the data.
-To avoid conflicts, each of these job-directories is a ``SixDesk`` workspace, meaning there can be only one study per directory.
+The functionality is similar to the ``pylhc_submitter.job_submitter`` in that the inner product of a ``replace_dict``
+is used to automatically create a set of job-directories to gather the data.
+To avoid conflicts, each of these job-directories is a ``SixDesk`` workspace,
+meaning there can be only one study per directory.
 
 The ``replace_dict`` contains variables for your mask as well as variables for the SixDesk environment.
 See the description of ``replace_dict`` below.
@@ -29,11 +31,11 @@ Arguments:
 
     Dict with keys of the strings to be replaced in the mask (required) as
     well as the mask_sixdeskenv and mask_sysenv files in the sixdesk_tools
-    module. Required fields are TURNS, AMPMIN, AMPMAX, AMPSTEP,
-    ANGLES. Optional fields are RESUBMISSION, PLATFORM, LOGLEVEL,
-    FIRSTSEED, LASTSEED, ENERGY, NPAIRS, EMITTANCE, DIMENSIONS, WRITEBINS.
-    These keys can also be used in the mask if needed. The values of this
-    dict are lists of values to replace these or single entries.
+    module. Required fields are TURNS, AMPMIN, AMPMAX, AMPSTEP, ANGLES.
+    Optional fields are RESUBMISSION, PLATFORM, LOGLEVEL, FIRSTSEED,
+    LASTSEED, ENERGY, NPAIRS, EMITTANCE, DIMENSIONS, WRITEBINS. These keys
+    can also be used in the mask if needed. The values of this dict are
+    lists of values to replace these or single entries.
 
 
 - **working_directory** *(PathOrStr)*:
@@ -42,6 +44,15 @@ Arguments:
 
 
 *--Optional--*
+
+- **apply_mad6t_hacks**:
+
+    Apply two hacks: Removes '<' in binary call andignore the check for
+    'Twiss fail' in the submission file. This is hack needed in case this
+    check greps the wrong lines, e.g. in madx-comments. USE WITH CARE!!
+
+    action: ``store_true``
+
 
 - **da_turnstep** *(int)*:
 
@@ -57,19 +68,28 @@ Arguments:
     default: ``/afs/cern.ch/user/m/mad/bin/madx``
 
 
-- **apply_mad6t_hacks**:
-
-    Apply two hacks: Removes '<' in binary call and
-    ignore the check for 'Twiss fail' in the submission file.
-    This hack is needed in case this check greps the wrong lines,
-    e.g. in madx- comments. USE WITH CARE!!
-
-    action: ``store_true``
-
-
 - **jobid_mask** *(str)*:
 
     Mask to name jobs from replace_dict
+
+
+- **max_materialize** *(int)*:
+
+    Maximum jobs to be materialized in scheduler. See htcondor API.
+
+
+- **max_stage** *(str)*:
+
+    Last stage to be run. All following stages are skipped.
+
+
+- **python2** *(PathOrStr)*:
+
+    Path to python to use with run_six.sh (python2 with requirements
+    installed). ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS
+    NEEDED! And it can't be an Anaconda Distribution.
+
+    default: ``None``
 
 
 - **python3** *(PathOrStr)*:
@@ -78,15 +98,6 @@ Arguments:
     installed).
 
     default: ``python3``
-
-
-- **python2** *(PathOrStr)*:
-
-    Path to python to use with run_six.sh (python2 with requirements installed).
-    ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS NEEDED!
-    And it can't be an Anaconda Distribution.
-
-    default: None (uses the first ``python`` in path)
 
 
 - **resubmit**:
@@ -273,6 +284,11 @@ def get_params():
         type=str,
         help="Last stage to be run. All following stages are skipped.",
     )
+    params.add_parameter(
+        name="max_materialize",
+        type=int,
+        help="Maximum jobs to be materialized in scheduler. See htcondor API.",
+    )
     return params
 
 
@@ -299,6 +315,7 @@ def main(opt):
             da_turnstep=opt.da_turnstep,
             apply_mad6t_hacks=opt.apply_mad6t_hacks,
             max_stage=opt.max_stage,
+            max_materialize=opt.max_materialize,
             # kwargs passed only to create_jobs:
             mask_text=mask,
             binary_path=opt.executable,
@@ -340,6 +357,7 @@ def setup_and_run(jobname: str, basedir: Path, **kwargs):
     apply_mad6t_hacks: bool = kwargs.pop("apply_mad6t_hacks", False)
     stop_workspace_init: bool = kwargs.pop("stop_workspace_init", False)
     max_stage: str = kwargs.pop("max_stage", None)
+    max_materialize: str = kwargs.pop("max_materialize", None)
     if max_stage is not None:
         max_stage = Stage[max_stage]
 
@@ -381,6 +399,8 @@ def setup_and_run(jobname: str, basedir: Path, **kwargs):
             if apply_mad6t_hacks:
                 fix_pythonfile_call(jobname, basedir)  # removes "<" in call
                 remove_twiss_fail_check(jobname, basedir)  # removes 'grep twiss fail'
+            if max_materialize:
+                set_max_materialize(jobname, basedir, max_materialize)  # adds max_materialize to tracking sub-file
 
     with check_stage(Stage.submit_mask, jobname, basedir, max_stage) as check_ok:
         """

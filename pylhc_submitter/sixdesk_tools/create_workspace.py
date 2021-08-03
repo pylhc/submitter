@@ -4,6 +4,7 @@ Create SixDesk Workspace
 
 Tools to setup the workspace for sixdesk.
 """
+import re
 import shutil
 from pathlib import Path
 
@@ -22,7 +23,7 @@ from pylhc_submitter.constants.autosix import (
     get_mad6t1_mask_path,
     get_autosix_results_path,
     get_sysenv_path,
-    get_sixdeskenv_path,
+    get_sixdeskenv_path, get_sixtrack_submission_template_path,
 )
 from pylhc_submitter.sixdesk_tools.utils import start_subprocess
 
@@ -97,6 +98,22 @@ def fix_pythonfile_call(jobname: str, basedir: Path):
 
         with open(mad6t_path, "w") as f:
             f.writelines(lines)
+
+
+def set_max_materialize(jobname: str, basedir: Path, max_materialize: int):
+    """ Adds the ``max_materialize`` option into the htcondor sixtrack
+    submission-file."""
+    LOG.info("Setting max_materialize for SixTrack.")
+    sub_path = get_sixtrack_submission_template_path(jobname, basedir)
+    max_materialize_str = f"max_materialize = {max_materialize:d}"
+    sub_content = sub_path.read_text()
+    if "max_materialize" in sub_content:
+        LOG.info("max_materialize already set. Replacing it with new number.")
+        sub_content = re.sub(r"max_materialize\s*=\s*\d+", max_materialize_str, sub_content)
+    else:
+        sub_content = sub_content.replace("\nqueue", f"\n{max_materialize_str}\nqueue")
+    sub_path.write_text(sub_content)
+
 
 # Helper -----------------------------------------------------------------------
 

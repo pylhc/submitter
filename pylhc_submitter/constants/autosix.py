@@ -125,6 +125,14 @@ def get_mad6t1_mask_path(jobname: str, basedir: Path) -> Path:
     return get_sixtrack_input_path(jobname, basedir) / "mad6t1.sh"
 
 
+def get_sixtrack_work_path(jobname: str, basedir: Path) -> Path:
+    return get_sixjobs_path(jobname, basedir) / "work"
+
+
+def get_sixtrack_submission_template_path(jobname: str, basedir: Path) -> Path:
+    return get_sixtrack_work_path(jobname, basedir) / "htcondor_run_six.sub"
+
+
 # Output ---
 
 
