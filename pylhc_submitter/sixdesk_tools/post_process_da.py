@@ -39,7 +39,7 @@ from pylhc_submitter.constants.autosix import (
     ALOST2,
     AMP,
 )
-from pylhc_submitter.sixdesk_tools.utils import StageSkip
+from pylhc_submitter.sixdesk_tools.stages import StageSkip
 
 LOG = logging.getLogger(__name__)
 

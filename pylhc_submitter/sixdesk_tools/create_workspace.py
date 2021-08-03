@@ -7,9 +7,13 @@ Tools to setup the workspace for sixdesk.
 import re
 import shutil
 from pathlib import Path
+from typing import Union
 
 import numpy as np
 import logging
+
+from generic_parser import DotDict
+
 from pylhc_submitter.constants.autosix import (
     SETENV_SH,
     SIXENV_DEFAULT,
@@ -23,8 +27,9 @@ from pylhc_submitter.constants.autosix import (
     get_mad6t1_mask_path,
     get_autosix_results_path,
     get_sysenv_path,
-    get_sixdeskenv_path, get_sixtrack_submission_template_path,
+    get_sixdeskenv_path
 )
+from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
 from pylhc_submitter.sixdesk_tools.utils import start_subprocess
 
 SYSENV_MASK = Path(__file__).parent / "mask_sysenv"
@@ -36,19 +41,24 @@ LOG = logging.getLogger(__name__)
 # Main -------------------------------------------------------------------------
 
 
-def create_job(jobname: str, basedir: Path, mask_text: str, binary_path: Path, ssh: str = None, **kwargs):
-    """ Create environment and individual jobs/masks for SixDesk to send to HTC. """
-    _create_workspace(jobname, basedir, ssh=ssh)
-    _create_sysenv(jobname, basedir, binary_path=binary_path)
+def create_job(jobname: str, basedir: Path, executable: Union[Path, str], mask_text: str,
+               sixdesk: Path = SIXDESK_UTILS, ssh: str = None, **kwargs):
+    """ Create environment and individual jobs/masks for SixDesk to send to HTC.
+
+    Keyword Args:
+        Need to contain all replacements for sysenv, sixdeskenv and the mask.
+    """
+    _create_workspace(jobname, basedir, sixdesk=sixdesk, ssh=ssh)
+    _create_sysenv(jobname, basedir, binary_path=executable)
     _create_sixdeskenv(jobname, basedir, **kwargs)
     _write_mask(jobname, basedir, mask_text, **kwargs)
     LOG.info("Workspace prepared.")
 
 
-def init_workspace(jobname: str, basedir: Path, ssh: str = None):
+def init_workspace(jobname: str, basedir: Path, sixdesk: Path = SIXDESK_UTILS, ssh: str = None):
     """ Initializes the workspace with sixdeskenv and sysenv. """
     sixjobs_path = get_sixjobs_path(jobname, basedir)
-    start_subprocess([SETENV_SH, "-s"], cwd=sixjobs_path, ssh=ssh)
+    start_subprocess([sixdesk / SETENV_SH, "-s"], cwd=sixjobs_path, ssh=ssh)
     LOG.info("Workspace initialized.")
 
 
@@ -100,11 +110,11 @@ def fix_pythonfile_call(jobname: str, basedir: Path):
             f.writelines(lines)
 
 
-def set_max_materialize(jobname: str, basedir: Path, max_materialize: int):
+def set_max_materialize(sixdesk: Path, max_materialize: int):
     """ Adds the ``max_materialize`` option into the htcondor sixtrack
     submission-file."""
-    LOG.info("Setting max_materialize for SixTrack.")
-    sub_path = get_sixtrack_submission_template_path(jobname, basedir)
+    LOG.info(f"Setting max_materialize for SixTrack to {max_materialize}.")
+    sub_path = sixdesk / "utilities" / "templates" / "htcondor" / "htcondor_run_six.sub"
     max_materialize_str = f"max_materialize = {max_materialize:d}"
     sub_content = sub_path.read_text()
     if "max_materialize" in sub_content:
@@ -112,13 +122,17 @@ def set_max_materialize(jobname: str, basedir: Path, max_materialize: int):
         sub_content = re.sub(r"max_materialize\s*=\s*\d+", max_materialize_str, sub_content)
     else:
         sub_content = sub_content.replace("\nqueue", f"\n{max_materialize_str}\nqueue")
-    sub_path.write_text(sub_content)
+    try:
+        sub_path.write_text(sub_content)
+    except IOError as e:
+        raise IOError(f"Could not write to {sub_path!s}. `max_materialization` could not be set."
+                      f"Remove option or use a SixDesk with writing rights.") from e
 
 
 # Helper -----------------------------------------------------------------------
 
 
-def _create_workspace(jobname: str, basedir: Path, ssh: str = None):
+def _create_workspace(jobname: str,  basedir: Path, sixdesk: Path = SIXDESK_UTILS, ssh: str = None):
     """ Create workspace structure (with default files). """
     workspace_path = get_workspace_path(jobname, basedir)
     scratch_path = get_scratch_path(basedir)
@@ -142,7 +156,7 @@ def _create_workspace(jobname: str, basedir: Path, ssh: str = None):
 
     # create environment with all necessary files
     # _start_subprocess(['git', 'clone', GIT_REPO, basedir])
-    start_subprocess([SETENV_SH, "-N", workspace_path.name], cwd=basedir, ssh=ssh)
+    start_subprocess([sixdesk / SETENV_SH, "-N", workspace_path.name], cwd=basedir, ssh=ssh)
 
     # create autosix results folder.
     # Needs to be done after above command (as it crashes if folder exists)

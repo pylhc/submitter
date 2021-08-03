@@ -10,16 +10,17 @@ Collections of constants and paths used in autosix.
 """
 from pathlib import Path
 
-from pylhc_submitter.constants.external_paths import SIXDESK_UTILS, MADX_BIN
-from enum import IntEnum
+from pylhc_submitter.constants.external_paths import MADX_BIN, SIXDESK_UTILS
 
 # Program Paths ----------------------------------------------------------------
-SETENV_SH = SIXDESK_UTILS / "set_env.sh"
-MAD_TO_SIXTRACK_SH = SIXDESK_UTILS / "mad6t.sh"
-RUNSIX_SH = SIXDESK_UTILS / "run_six.sh"
-RUNSTATUS_SH = SIXDESK_UTILS / "run_status"
-DOT_PROFILE = SIXDESK_UTILS / "dot_profile"
-SIXDB = SIXDESK_UTILS.parent / "externals" / "SixDeskDB" / "sixdb"
+UTILITIES_DIR = Path("utilities")
+BASH_DIR = UTILITIES_DIR / "bash"
+SETENV_SH = BASH_DIR / "set_env.sh"
+MAD_TO_SIXTRACK_SH = BASH_DIR / "mad6t.sh"
+RUNSIX_SH = BASH_DIR / "run_six.sh"
+RUNSTATUS_SH = BASH_DIR / "run_status"
+DOT_PROFILE = BASH_DIR / "dot_profile"
+SIXDB = UTILITIES_DIR / "externals" / "SixDeskDB" / "sixdb"
 SIXDESKLOCKFILE = "sixdesklock"
 
 # Constants and Requirements ---------------------------------------------------
@@ -33,23 +34,8 @@ DEFAULTS = dict(
     python3="python3",
     da_turnstep=100,
     executable=MADX_BIN,
+    sixdesk_directory=SIXDESK_UTILS
 )
-
-# Stages ---
-Stage = IntEnum('Stage',
-                names=[
-                    "create_job",
-                    "initialize_workspace",
-                    "submit_mask",
-                    "check_input",
-                    "submit_sixtrack",
-                    "check_sixtrack_output",
-                    "sixdb_load",
-                    "sixdb_cmd",
-                    "post_process",
-                    "final",
-                ],
-                start=0)
 
 # Sixenv ---
 SIXENV_REQUIRED = ["TURNS", "AMPMIN", "AMPMAX", "AMPSTEP", "ANGLES"]
@@ -123,14 +109,6 @@ def get_mad6t_mask_path(jobname: str, basedir: Path) -> Path:
 
 def get_mad6t1_mask_path(jobname: str, basedir: Path) -> Path:
     return get_sixtrack_input_path(jobname, basedir) / "mad6t1.sh"
-
-
-def get_sixtrack_work_path(jobname: str, basedir: Path) -> Path:
-    return get_sixjobs_path(jobname, basedir) / "work"
-
-
-def get_sixtrack_submission_template_path(jobname: str, basedir: Path) -> Path:
-    return get_sixtrack_work_path(jobname, basedir) / "htcondor_run_six.sub"
 
 
 # Output ---

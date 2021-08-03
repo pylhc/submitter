@@ -9,9 +9,9 @@ from pylhc_submitter.sixdesk_tools.post_process_da import plot_polar, plt
 from pylhc_submitter.autosix import _generate_jobs, setup_and_run
 from pylhc_submitter.constants.autosix import (
     get_masks_path, get_autosix_results_path, get_sixdeskenv_path,
-    get_sysenv_path, get_stagefile_path, ANGLE, Stage,
-    get_mad6t_mask_path, get_mad6t1_mask_path
+    get_sysenv_path, get_stagefile_path, ANGLE, get_mad6t_mask_path, get_mad6t1_mask_path
 )
+from pylhc_submitter.sixdesk_tools.stages import Stage
 
 STAGE_NAMES = [s.name for s in Stage]
 

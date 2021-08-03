@@ -8,9 +8,15 @@ import logging
 from pathlib import Path
 
 from pylhc_submitter.autosix import get_jobs_and_values
-from pylhc_submitter.constants.autosix import (get_stagefile_path, Stage, get_track_path,
-                                               get_workspace_path, SIXTRACK_INPUT_CHECK_FILES,
-                                               SIXTRACK_OUTPUT_FILES, get_database_path)
+from pylhc_submitter.constants.autosix import (
+    get_stagefile_path,
+    get_track_path,
+    get_workspace_path,
+    SIXTRACK_INPUT_CHECK_FILES,
+    SIXTRACK_OUTPUT_FILES,
+    get_database_path
+)
+from pylhc_submitter.sixdesk_tools.stages import STAGE_ORDER
 
 LOG = logging.getLogger(__name__)
 
@@ -20,8 +26,8 @@ LOG = logging.getLogger(__name__)
 def get_last_stage(jobname, basedir):
     """ Get the last run stage of job `jobname`. """
     stage_file = get_stagefile_path(jobname, basedir)
-    last_stage = Stage[stage_file.read_text().strip('\n').split('\n')[-1]]
-    return last_stage
+    last_stage = stage_file.read_text().strip('\n').split('\n')[-1]
+    return STAGE_ORDER[last_stage]
 
 
 # Set Stages ---
@@ -30,33 +36,33 @@ def set_stages_for_setup(basedir: Path, stage_name: str, jobid_mask: str, replac
     """ Sets the last run stage for all jobs from given job-setups. """
     jobs, _ = get_jobs_and_values(jobid_mask, **replace_dict)
     for job in jobs:
-        LOG.info(f"Setting stage to {stage_name} in {jobname}")
+        LOG.info(f"Setting stage to {stage_name} in {job}")
         set_stages(job, basedir, stage_name)
 
 
 def set_stages(jobname: str, basedir: Path, stage_name: str):
     """ Sets the last run stage of all given jobs to `stage_name`. """
-    if stage_name not in Stage.__members__:
+    if stage_name not in STAGE_ORDER.keys():
         raise ValueError(f"Unknown stage '{stage_name}'")
+    new_stage = STAGE_ORDER[stage_name]
+
+    stages = []
+    for stage in STAGE_ORDER.keys():
+        stages.append(stage.name)
+        if stage == new_stage:
+            break
 
     stage_file = get_stagefile_path(jobname, basedir)
-    if stage_file.exists():
-        stage_file.unlink()
-    for stage in Stage:
-        with open(stage_file, "a+") as f:
-            f.write(f"{stage.name}\n")
-
-        if stage.name == stage_name:
-            break
+    stage_file.write_text('\n'.join(stages))  # overwrites old file
 
 
 def skip_stages(jobname: str, basedir: Path, stage_name: str):
     """ Skip stages until `stagename`, i.e. similar to `set_stages` but only if
     the stage hasn't been reached yet. Inverse to `reset_stages`"""
-    if stage_name not in Stage.__members__:
+    if stage_name not in STAGE_ORDER.keys():
         raise ValueError(f"Unknown stage '{stage_name}'")
 
-    new_stage = Stage[stage_name]
+    new_stage = STAGE_ORDER[stage_name]
     last_stage = get_last_stage(jobname, basedir)
     if last_stage < new_stage:
         LOG.info(f"Skipping stage form {last_stage.name} to {new_stage.name} in {jobname}")
@@ -65,13 +71,13 @@ def skip_stages(jobname: str, basedir: Path, stage_name: str):
         LOG.debug(f"Stage {last_stage.name} unchanged in {jobname}")
 
 
-def reset_stages(jobname: str, basedir: Path, stagename: str):
+def reset_stages(jobname: str, basedir: Path, stage_name: str):
     """ Reset stages until `stagename`, i.e. similar to `set_stages` but only if
     the stage has already been run. Inverse to `skip_stages`"""
-    if stage_name not in Stage.__members__:
+    if stage_name not in STAGE_ORDER.keys():
         raise ValueError(f"Unknown stage '{stage_name}'")
 
-    new_stage = Stage[stage_name]
+    new_stage = STAGE_ORDER[stage_name]
     last_stage = get_last_stage(jobname, basedir)
     if last_stage > new_stage:
         LOG.info(f"Resetting stage from {last_stage.name} to {new_stage.name} in {jobname}")

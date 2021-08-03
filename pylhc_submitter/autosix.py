@@ -134,22 +134,23 @@ Arguments:
 """
 import itertools
 import logging
+from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Union
 
 import numpy as np
 import tfs
-from generic_parser import EntryPointParameters, entrypoint
+from generic_parser import EntryPointParameters, entrypoint, DotDict
 from generic_parser.entry_datatypes import DictAsString
 
 from pylhc_submitter.constants.autosix import (
-    Stage,
     HEADER_BASEDIR,
     get_stagefile_path,
     DEFAULTS,
     SIXENV_REQUIRED,
     SIXENV_DEFAULT,
 )
+from pylhc_submitter.sixdesk_tools.stages import Stage, StageSkip, check_stage, STAGE_ORDER, create_stages_for_job
 from pylhc_submitter.htc.mask import generate_jobdf_index
 from pylhc_submitter.job_submitter import (
     JOBSUMMARY_FILE,
@@ -159,7 +160,7 @@ from pylhc_submitter.sixdesk_tools.create_workspace import (
     create_job,
     remove_twiss_fail_check,
     init_workspace,
-    fix_pythonfile_call
+    fix_pythonfile_call, set_max_materialize
 )
 from pylhc_submitter.sixdesk_tools.post_process_da import post_process_da
 from pylhc_submitter.sixdesk_tools.submit import (
@@ -172,9 +173,7 @@ from pylhc_submitter.sixdesk_tools.submit import (
 )
 from pylhc_submitter.sixdesk_tools.utils import (
     is_locked,
-    check_mask,
-    check_stage,
-    StageSkip
+    check_mask, BaseData
 )
 from pylhc_submitter.utils.iotools import (
     PathOrStr,
@@ -190,13 +189,13 @@ def get_params():
     params = EntryPointParameters()
     params.add_parameter(
         name="mask",
-        type=PathOrStr,
+        type=Path,
         required=True,
         help="Program mask to use",
     )
     params.add_parameter(
         name="working_directory",
-        type=PathOrStr,
+        type=Path,
         required=True,
         help="Directory where data should be put",
     )
@@ -214,6 +213,12 @@ def get_params():
         ),
         type=DictAsString,
         required=True,
+    )
+    params.add_parameter(
+        name="sixdesk_directory",
+        type=Path,
+        default=DEFAULTS["sixdesk_directory"],
+        help="Directory of SixDesk. Default is pro version on AFS.",
     )
     params.add_parameter(
         name="executable",
@@ -301,215 +306,44 @@ def main(opt):
     opt = _check_opts(mask, opt)
     save_config(opt.working_directory, opt, "autosix")
 
-    jobdf = _generate_jobs(opt.working_directory, opt.jobid_mask, **opt.replace_dict)
-    for job_args in jobdf.iterrows():
-        setup_and_run(
-            jobname=job_args[0],
-            basedir=opt.working_directory,
-            # kwargs:
-            ssh=opt.ssh,
-            python2=opt.python2,
-            python3=opt.python3,
-            unlock=opt.unlock,
-            resubmit=opt.resubmit,
-            da_turnstep=opt.da_turnstep,
-            apply_mad6t_hacks=opt.apply_mad6t_hacks,
-            max_stage=opt.max_stage,
-            max_materialize=opt.max_materialize,
-            # kwargs passed only to create_jobs:
-            mask_text=mask,
-            binary_path=opt.executable,
-            stop_workspace_init=opt.stop_workspace_init,
-            **job_args[1],
-        )
+    if opt.max_materialize:
+        # adds max_materialize to tracking sub-file template (for all jobs)
+        set_max_materialize(opt.sixdesk_directory, opt.max_materialize)
+
+    jobdf = _generate_jobs(
+        opt.working_directory,
+        opt.pop('jobid_mask'),  # not needed anymore
+        **opt.pop('replace_dict')  # not needed anymore
+    )
+
+    for jobname, jobargs in jobdf.iterrows():
+        run_job(jobname=jobname, jobargs=jobargs, env=opt)
 
 
-def setup_and_run(jobname: str, basedir: Path, **kwargs):
+def run_job(jobname: str, jobargs: dict, env: DotDict):
     """Main submitting procedure for single job.
 
     Args:
         jobname (str): Name of the job/study
-        basedir (Path): Working directory
-
-    Keyword Args (optional):
-        unlock (bool): unlock folder
-        ssh (str): ssh-server to use
-        python (str): python binary to use for sixDB
-        resubmit(bool): Resubmit jobs if checks fail
-        da_turnstep (int): Step in turns for DA
-        ignore_twissfail_check (bool): Hack to ignore check for 'Twiss fail' after run
-        max_stage (str): Last stage to run
 
     Keyword Args (needed for create jobs):
-        mask_text (str): Content of the mask to use.
-        binary_path (Path): path to binary to use in jobs
         All Key=Values needed to fill the mask!
-        All Key=Values needed to fill the mask!
-
     """
-    LOG.info(f"vv---------------- Job {jobname} -------------------vv")
-    unlock: bool = kwargs.pop("unlock", False)
-    ssh: str = kwargs.pop("ssh", None)
-    python2: Union[Path, str] = kwargs.pop("python2", DEFAULTS["python2"])
-    python3: Union[Path, str] = kwargs.pop("python3", DEFAULTS["python3"])
-    resubmit: bool = kwargs.pop("resubmit", False)
-    da_turnstep: int = kwargs.pop("da_turnstep", DEFAULTS["da_turnstep"])
-    apply_mad6t_hacks: bool = kwargs.pop("apply_mad6t_hacks", False)
-    stop_workspace_init: bool = kwargs.pop("stop_workspace_init", False)
-    max_stage: str = kwargs.pop("max_stage", None)
-    max_materialize: str = kwargs.pop("max_materialize", None)
-    if max_stage is not None:
-        max_stage = Stage[max_stage]
-
-    if is_locked(jobname, basedir, unlock=unlock):
+    if is_locked(jobname, env.working_directory, unlock=env.unlock):
         LOG.info(f"{jobname} is locked. Try 'unlock' flag if this causes errors.")
 
-    with check_stage(Stage.create_job, jobname, basedir, max_stage) as check_ok:
-        """
-        create workspace
-        > cd $basedir
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/set_env.sh -N workspace-$jobname
-
-        write sixdeskenv, sysenv, filled mask (manual)
-
-        """
-        if check_ok:
-            create_job(jobname, basedir, ssh=ssh, **kwargs)
-
-    with check_stage(Stage.initialize_workspace, jobname, basedir, max_stage) as check_ok:
-        """
-        initialize workspace
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/set_env.sh -s
-
-        remove the twiss-fail check in sixtrack_input
-        (manual)
-        """
-        if check_ok:
-            if stop_workspace_init:
-                LOG.info(
-                    f"Workspace creation for job {jobname} interrupted."
-                    " Check directory to manually adapt ``sixdeskenv``"
-                    " and ``sysenv``. Remove 'stop_workspace_init' from input"
-                    " parameters or set to 'False' to continue run."
-                )
-                raise StageSkip()
-
-            init_workspace(jobname, basedir, ssh=ssh)
-            if apply_mad6t_hacks:
-                fix_pythonfile_call(jobname, basedir)  # removes "<" in call
-                remove_twiss_fail_check(jobname, basedir)  # removes 'grep twiss fail'
-            if max_materialize:
-                set_max_materialize(jobname, basedir, max_materialize)  # adds max_materialize to tracking sub-file
-
-    with check_stage(Stage.submit_mask, jobname, basedir, max_stage) as check_ok:
-        """
-        submit for input generation
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/mad6t.sh -s
-        """
-        if check_ok:
-            submit_mask(jobname, basedir, ssh=ssh)
-            return  # takes a while, so we interrupt here
-
-    with check_stage(Stage.check_input, jobname, basedir, max_stage) as check_ok:
-        """
-        Check if input files have been generated properly
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/mad6t.sh -c
-
-        If not, and resubmit is active
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/mad6t.sh -w
-        """
-        if check_ok:
-            check_sixtrack_input(jobname, basedir, ssh=ssh, resubmit=resubmit)
-
-    with check_stage(Stage.submit_sixtrack, jobname, basedir, max_stage) as check_ok:
-        """
-        Generate simulation files (-g) and check if runnable (-c) and submit (-s) (-g -c -s == -a).
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/run_six.sh -a
-        """
-        if check_ok:
-            submit_sixtrack(jobname, basedir, python=python2, ssh=ssh)
-            return  # takes even longer
-
-    with check_stage(Stage.check_sixtrack_output, jobname, basedir, max_stage) as check_ok:
-        """
-        Checks sixtrack output via run_status. If this fails even though all
-        jobs have finished on the scheduler, check the log-output (run_status
-        messages are logged to debug).
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/run_status
-        
-        If not, and resubmit is active
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/run_six.sh -i
-        """
-        if check_ok:
-            check_sixtrack_output(jobname, basedir, python=python2, ssh=ssh, resubmit=resubmit)
-
-    with check_stage(Stage.sixdb_load, jobname, basedir, max_stage) as check_ok:
-        """
-        Gather results into database via sixdb.
-        > cd $basedir/workspace-$jobname/sixjobs
-        > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb . load_dir
-        """
-        if check_ok:
-            sixdb_load(jobname, basedir, python=python3, ssh=ssh)
-
-    with check_stage(Stage.sixdb_cmd, jobname, basedir, max_stage) as check_ok:
-        """
-        Analysise results in database via sixdb.
-        > cd $basedir/workspace-$jobname/sixjobs
-        > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb $jobname da
-
-        when fixed:
-        > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb $jobname da_vs_turns -turnstep 100 -outfile
-        > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb $jobname plot_da_vs_turns
-        """
-        if check_ok:
-            sixdb_cmd(jobname, basedir, cmd=["da"], python=python3, ssh=ssh)
-
-            # da_vs_turns is broken at the moment (jdilly, 19.10.2020)
-            # sixdb_cmd(jobname, basedir, cmd=['da_vs_turns', '-turnstep', str(da_turnstep), '-outfile'],
-            #           python=python, ssh=ssh)
-            # sixdb_cmd(jobname, basedir, cmd=['plot_da_vs_turns'], python=python, ssh=ssh)
-
-    with check_stage(Stage.post_process, jobname, basedir, max_stage) as check_ok:
-        """
-        Extracts the analysed data in the database and writes them to three tfs files:
-
-        - All DA values
-        - Statistics over angles, listed per seed (+ Seed 0 as over seeds and angles)
-        - Statistics over seeds, listed per angle
-
-        The statistics over the seeds are then plotted in a polar plot.
-        All files are outputted to the ``sixjobs/autosix_output`` folder in the job directory.
-        """
-        if check_ok:
-            post_process_da(jobname, basedir)
-
-    with check_stage(Stage.final, jobname, basedir, max_stage) as check_ok:
-        """ Just info about finishing this script and where to check the stagefile. """
-        if check_ok:
-            stage_file = get_stagefile_path(jobname, basedir)
-            LOG.info(
-                f"All stages run. Check stagefile {str(stage_file)} "
-                "in case you want to rerun some stages."
-            )
-            raise StageSkip()
-
-    LOG.info(f"^^---------------- Job {jobname} -------------------^^")
+    Stage.run_all_stages(jobname, jobargs, env)
 
 
-# Helper for main --------------------------------------------------------------
+# Helper  ----------------------------------------------------------------------
 
 
 def _check_opts(mask_text, opt):
     opt = keys_to_path(opt, "mask", "working_directory", "executable")
     check_mask(mask_text, opt.replace_dict)
     opt.replace_dict = make_replace_entries_iterable(opt.replace_dict)
+    if opt.max_stage is not None and not isinstance(opt.max_stage, Stage):
+        opt.max_stage = {name: stage for stage, name in STAGE_ORDER}[opt.max_stage]
     return opt
 
 
