@@ -6,17 +6,19 @@ Tools to process data after sixdb has calculated the
 da. Includes functions for extracting data from database
 as well as plotting of DA polar plots.
 """
+import logging
 import sqlite3 as sql
 from pathlib import Path
-from typing import Any, Tuple, Iterable, Union
-import logging
+from typing import Any, Tuple, Iterable
 
-import mpl_toolkits.axisartist
 import numpy as np
 import pandas as pd
 from generic_parser import DotDict
 from matplotlib import pyplot as plt
 from matplotlib import rcParams, lines as mlines
+from scipy.interpolate import interp1d
+from tfs import TfsDataFrame, write_tfs
+
 from pylhc_submitter.constants.autosix import (
     get_database_path,
     get_tfs_da_path,
@@ -37,9 +39,6 @@ from pylhc_submitter.constants.autosix import (
     ALOST2,
     AMP,
 )
-from scipy.interpolate import interp1d
-from tfs import TfsDataFrame, write_tfs
-
 from pylhc_submitter.sixdesk_tools.utils import StageSkip
 
 LOG = logging.getLogger(__name__)
