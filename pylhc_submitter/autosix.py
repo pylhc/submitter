@@ -327,7 +327,7 @@ def _check_opts(opt):
     check_mask(opt.mask_text, opt.replace_dict)
     opt.replace_dict = make_replace_entries_iterable(opt.replace_dict)
     if opt.max_stage is not None and not isinstance(opt.max_stage, Stage):
-        opt.max_stage = {name: stage for stage, name in STAGE_ORDER}[opt.max_stage]
+        opt.max_stage = STAGE_ORDER[opt.max_stage]
     return opt
 
 
