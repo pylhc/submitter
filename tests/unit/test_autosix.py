@@ -1,10 +1,11 @@
 import logging
+import shutil
 from pathlib import Path
 from unittest.mock import patch
 
 import tfs
 
-from pylhc_submitter.sixdesk_tools.create_workspace import remove_twiss_fail_check
+from pylhc_submitter.sixdesk_tools.create_workspace import remove_twiss_fail_check, set_max_materialize
 from pylhc_submitter.sixdesk_tools.post_process_da import plot_polar, plt
 from pylhc_submitter.autosix import _generate_jobs, run_job
 from pylhc_submitter.constants.autosix import (
@@ -200,6 +201,29 @@ def test_twissfail_removal(tmp_path):
 
         assert all(l.startswith("#") for l in mad6t_lines[:-1])
         assert mad6t_lines[-1].startswith("if")
+
+
+def test_max_materialize_setter(tmp_path):
+    subfile_path = tmp_path / "utilities" / "templates" / "htcondor" / "htcondor_run_six.sub"
+    def check_max_materialize_is(value):
+        text = subfile_path.read_text()
+        if value is None:
+            assert "max_materialize" not in text
+        else:
+            assert f"\nmax_materialize = {value}\n" in text
+
+    subfile_path.parent.mkdir(parents=True)
+    shutil.copy(INPUTS / "sixdesk" / "htcondor_run_six.sub", subfile_path)
+    check_max_materialize_is(None)
+
+    set_max_materialize(tmp_path, 10)
+    check_max_materialize_is(10)
+
+    set_max_materialize(tmp_path, 58394058)
+    check_max_materialize_is(58394058)
+
+    set_max_materialize(tmp_path, None)
+    check_max_materialize_is(None)
 
 
 # Helper -----------------------------------------------------------------------
