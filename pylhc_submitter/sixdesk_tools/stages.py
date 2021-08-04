@@ -154,7 +154,7 @@ class Stage(ABC, metaclass=StageMeta):
     def should_run_stage(self):
         """ Checks if the stage should be run. """
         if not self.stage_file.exists():
-            if self.value == 0:
+            if self == 0:
                 return True
             else:
                 LOG.debug(f"Stage '{self!s}' not run because previous stage(s) missing.")
