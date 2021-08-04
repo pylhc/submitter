@@ -75,7 +75,7 @@ class SixDeskEnvironment:
 
 
 SIXENV_REQUIRED = [f.name for f in fields(SixDeskEnvironment) if (f.default is MISSING)]  # required by user
-SIXENV_OPTIONAL = [f.name for f in fields(SixDeskEnvironment) if (f.default is MISSING) or (f.default is not None)]
+SIXENV_OPTIONAL = [f.name for f in fields(SixDeskEnvironment) if (f.default is not MISSING) and (f.default is not None)]
 SEED_KEYS = ["FIRSTSEED", "LASTSEED"]
 
 # SixDB and Postprocess ---
