@@ -47,7 +47,7 @@ def create_job(jobname: str, basedir: Path, executable: Union[Path, str], mask_t
     """ Create environment and individual jobs/masks for SixDesk to send to HTC.
 
     Keyword Args:
-        Need to contain all replacements for sysenv, sixdeskenv and the mask.
+        Need to contain all replacements for sixdeskenv and the mask.
     """
     _create_workspace(jobname, basedir, sixdesk=sixdesk, ssh=ssh)
     _create_sysenv(jobname, basedir, binary_path=executable)
@@ -116,13 +116,26 @@ def set_max_materialize(sixdesk: Path, max_materialize: int):
     submission-file."""
     LOG.info(f"Setting max_materialize for SixTrack to {max_materialize}.")
     sub_path = sixdesk / "utilities" / "templates" / "htcondor" / "htcondor_run_six.sub"
-    max_materialize_str = f"max_materialize = {max_materialize:d}"
     sub_content = sub_path.read_text()
-    if "max_materialize" in sub_content:
-        LOG.info("max_materialize already set. Replacing it with new number.")
-        sub_content = re.sub(r"max_materialize\s*=\s*\d+", max_materialize_str, sub_content)
+
+    # Remove whole max_materialize line if present
+    if max_materialize is None:
+        if "max_materialize" in sub_content:
+            LOG.info("'max_materialize' already set. Removing.")
+            sub_content = re.sub(r"max_materialize\s*=\s*\d+\s*", "", sub_content)
+        else:
+            LOG.debug("'max_materialize' is already not present (as desired).")
+
+    # Set/replace with number
     else:
-        sub_content = sub_content.replace("\nqueue", f"\n{max_materialize_str}\nqueue")
+        max_materialize_str = f"max_materialize = {max_materialize:d}"
+        if "max_materialize" in sub_content:
+            LOG.info("max_materialize already set. Replacing it with new number.")
+            sub_content = re.sub(r"max_materialize\s*=\s*\d+", max_materialize_str, sub_content)
+        else:
+            sub_content = sub_content.replace("\nqueue", f"\n{max_materialize_str}\nqueue")
+
+    # Write out
     try:
         sub_path.write_text(sub_content)
     except IOError as e:

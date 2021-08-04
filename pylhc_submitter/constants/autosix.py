@@ -29,6 +29,7 @@ SIXDESKLOCKFILE = "sixdesklock"
 
 HEADER_BASEDIR = "BASEDIR"
 
+
 # AutoSix Environment (also defines defaults) ---
 @dataclass
 class AutoSixEnvironment:
@@ -45,6 +46,7 @@ class AutoSixEnvironment:
     stop_workspace_init: bool = False
     apply_mad6t_hacks: bool = False
     resubmit: bool = False
+    max_materialize: int = None
 
 
 # Sixenv ---

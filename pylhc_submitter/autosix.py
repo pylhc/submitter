@@ -290,10 +290,6 @@ def main(opt):
     opt = _check_opts(opt)
     save_config(opt.working_directory, opt, "autosix")
 
-    if opt.max_materialize:
-        # adds max_materialize to tracking sub-file template (for all jobs)
-        set_max_materialize(opt.sixdesk_directory, opt.max_materialize)
-
     jobdf = _generate_jobs(
         opt.working_directory,
         opt.pop('jobid_mask'),  # not needed anymore
@@ -324,8 +320,11 @@ def run_job(jobname: str, jobargs: dict, env: AutoSixEnvironment):
 
 def _check_opts(opt):
     opt = keys_to_path(opt, "mask", "working_directory", "executable")
+
     opt.mask_text = opt.mask.read_text()
     check_mask(opt.mask_text, opt.replace_dict)
+    del opt.mask
+
     opt.replace_dict = make_replace_entries_iterable(opt.replace_dict)
     if opt.max_stage is not None and not isinstance(opt.max_stage, Stage):
         opt.max_stage = STAGE_ORDER[opt.max_stage]

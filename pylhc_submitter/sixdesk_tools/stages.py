@@ -15,7 +15,7 @@ from generic_parser import DotDict
 from pylhc_submitter.constants.autosix import get_stagefile_path, StageSkip, StageStop, AutoSixEnvironment
 from pylhc_submitter.sixdesk_tools.create_workspace import (
     create_job, init_workspace, fix_pythonfile_call,
-    remove_twiss_fail_check
+    remove_twiss_fail_check, set_max_materialize
 )
 from pylhc_submitter.sixdesk_tools.post_process_da import post_process_da
 from pylhc_submitter.sixdesk_tools.submit import (
@@ -300,10 +300,16 @@ class SubmitSixtrack(Stage):
     > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/run_six.sh -a
     """
     def _run(self):
+        # adds max_materialize to tracking sub-file template
+        # might run into a race condition, this is why it's done here.
+        # Also I assume we use the same value for all jobs anyway.
+        set_max_materialize(self.env.sixdesk_directory, self.env.max_materialize)
+
         submit_sixtrack(self.jobname, self.basedir,
                         sixdesk=self.env.sixdesk_directory,
                         ssh=self.env.ssh,
                         python=self.env.python2)
+
         raise StageStop()
 
 
