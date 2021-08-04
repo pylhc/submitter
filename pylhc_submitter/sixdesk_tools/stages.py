@@ -109,7 +109,7 @@ class Stage(ABC, metaclass=StageMeta):
                     LOG.error(e)
                 # break  # stop here or always run to the end and show all skipped stages
             except StageStop:
-                LOG.info(f"Stopping after Stage '{stage.name}' as the submitted jobs will now run. "
+                LOG.info(f"Stopping after Stage '{stage!s}' as the submitted jobs will now run. "
                          f"Check `condor_q` for their progress and restart autosix when they are done.")
                 break
         LOG.info(f"^^---------------- Job {jobname} -------------------^^")
@@ -157,14 +157,14 @@ class Stage(ABC, metaclass=StageMeta):
             if self.value == 0:
                 return True
             else:
-                LOG.debug(f"Stage {self!s} not run because previous stage(s) missing.")
+                LOG.debug(f"Stage '{self!s}' not run because previous stage(s) missing.")
                 return False
 
         stage_file_txt = self.stage_file.read_text().split("\n")
         run_stages = [line.strip() for line in stage_file_txt if line.strip()]
 
         if self.name in run_stages:
-            LOG.info(f"Stage {self!s} has already been run. Skipping.")
+            LOG.info(f"Stage '{self!s}' has already been run. Skipping.")
             return False
 
         if self == 0:
@@ -172,15 +172,15 @@ class Stage(ABC, metaclass=StageMeta):
 
         # check if user requested a stop at a certain stage
         if (self.max_stage is not None) and (self > self.max_stage):
-            LOG.info(f"Stage {self!s} would run after requested "
-                     f"maximum stage {self.max_stage!s}. Skipping.")
+            LOG.info(f"Stage '{self!s}' would run after requested "
+                     f"maximum stage '{self.max_stage!s}'. Skipping.")
             return False
 
         # check if last run stage is also the stage before current stage in stage order
         if run_stages[-1] == (self - 1).name:
             return True
 
-        LOG.debug(f"Stage {self!s} not run because previous stage(s) missing.")
+        LOG.debug(f"Stage '{self!s}' not run because previous stage(s) missing.")
         return False
 
     def stage_done(self):
