@@ -1,0 +1,20 @@
+# A.Mereghetti, 2017-03-07
+# htcondor sub file for LSF-like jobs
+# condor_submit is issued in the track dir, whereas this file and the
+#   list are in the work/htcondorjobs dir
+# <study_name>.list contains the list of subdirs in track tree
+#   (eg hllhc10BaseB1/23/simul/62.275_60.283/5_6.666/e4/75)
+#   the list is automatically deleted after a successful submission
+universe = vanilla
+# executable, completed by run_six.sh
+executable = /afs/cern.ch/project/sixtrack/build/sixtrack
+arguments = "$(dirname)"
+output = $(dirname)/htcondor.$(ClusterId).$(ProcId).out
+error = $(dirname)/htcondor.$(ClusterId).$(ProcId).err
+log = $(dirname)/htcondor.$(ClusterId).$(ProcId).log
+# do not ask htcondor to take care of output files, otherwise empty ones will be created while the simulation proceeds
+transfer_output_files = ""
+ShouldTransferFiles = YES
+WhenToTransferOutput = ON_EXIT_OR_EVICT
++JobFlavour = "tomorrow"
+queue dirname from <fullPathToWork>/htcondorjobs/<study_name>.list
