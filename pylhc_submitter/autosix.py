@@ -143,9 +143,9 @@ from generic_parser.entry_datatypes import DictAsString
 
 from pylhc_submitter.constants.autosix import (
     HEADER_BASEDIR,
-    DEFAULTS,
     SIXENV_REQUIRED,
-    SIXENV_DEFAULT,
+    SIXENV_OPTIONAL,
+    AutoSixEnvironment,
 )
 from pylhc_submitter.htc.mask import generate_jobdf_index
 from pylhc_submitter.job_submitter import (
@@ -166,6 +166,7 @@ from pylhc_submitter.utils.iotools import (
     make_replace_entries_iterable,
     keys_to_path
 )
+from pylhc_submitter.utils.logging_tools import log_setup
 
 LOG = logging.getLogger(__name__)
 
@@ -191,7 +192,7 @@ def get_params():
             "as well as the mask_sixdeskenv and mask_sysenv files "
             "in the sixdesk_tools module. "
             f"Required fields are {', '.join(SIXENV_REQUIRED)}. "
-            f"Optional fields are {', '.join(SIXENV_DEFAULT.keys())}. "
+            f"Optional fields are {', '.join(SIXENV_OPTIONAL)}. "
             "These keys can also be used in the mask if needed. "
             "The values of this dict are lists of values to replace "
             "these or single entries."
@@ -202,18 +203,18 @@ def get_params():
     params.add_parameter(
         name="sixdesk_directory",
         type=Path,
-        default=DEFAULTS["sixdesk_directory"],
+        default=AutoSixEnvironment.sixdesk_directory,
         help="Directory of SixDesk. Default is pro version on AFS.",
     )
     params.add_parameter(
         name="executable",
-        default=DEFAULTS["executable"],
+        default=AutoSixEnvironment.executable,
         type=PathOrStr,
         help="Path to executable.",
     )
     params.add_parameter(
         name="python2",
-        default=DEFAULTS["python2"],
+        default=AutoSixEnvironment.python2,
         type=PathOrStr,
         help=("Path to python to use with run_six.sh (python2 with requirements installed)."
               " ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS NEEDED!"
@@ -221,7 +222,7 @@ def get_params():
     )
     params.add_parameter(
         name="python3",
-        default=DEFAULTS["python3"],
+        default=AutoSixEnvironment.python3,
         type=PathOrStr,
         help="Path to python to use with sixdb (python3 with requirements installed).",
     )
@@ -267,7 +268,7 @@ def get_params():
         name="da_turnstep",
         type=int,
         help="Step between turns used in DA-vs-Turns plot.",
-        default=DEFAULTS["da_turnstep"],
+        default=AutoSixEnvironment.da_turnstep,
     )
     params.add_parameter(
         name="max_stage",
@@ -298,19 +299,19 @@ def main(opt):
         opt.pop('jobid_mask'),  # not needed anymore
         **opt.pop('replace_dict')  # not needed anymore
     )
+    env = AutoSixEnvironment(**opt)  # basically checks that everything is there
 
     for jobname, jobargs in jobdf.iterrows():
-        run_job(jobname=jobname, jobargs=jobargs, env=opt)
+        run_job(jobname=jobname, jobargs=jobargs, env=env)
 
 
-def run_job(jobname: str, jobargs: dict, env: DotDict):
+def run_job(jobname: str, jobargs: dict, env: AutoSixEnvironment):
     """Main submitting procedure for single job.
 
     Args:
         jobname (str): Name of the job/study
-
-    Keyword Args (needed for create jobs):
-        All Key=Values needed to fill the mask!
+        env (DotDict): A full
+        jobargs(dict): All Key=Values needed to fill the mask!
     """
     if is_locked(jobname, env.working_directory, unlock=env.unlock):
         LOG.info(f"{jobname} is locked. Try 'unlock' flag if this causes errors.")

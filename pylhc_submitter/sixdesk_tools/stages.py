@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod, ABCMeta
 
 from generic_parser import DotDict
 
-from pylhc_submitter.constants.autosix import get_stagefile_path, StageSkip, StageStop
+from pylhc_submitter.constants.autosix import get_stagefile_path, StageSkip, StageStop, AutoSixEnvironment
 from pylhc_submitter.sixdesk_tools.create_workspace import (
     create_job, init_workspace, fix_pythonfile_call,
     remove_twiss_fail_check
@@ -114,7 +114,7 @@ class Stage(ABC, metaclass=StageMeta):
                 break
         LOG.info(f"^^---------------- Job {jobname} -------------------^^")
 
-    def __init__(self, jobname: str, jobargs: dict, env: DotDict):  # can't import due to cyclic ref.
+    def __init__(self, jobname: str, jobargs: dict, env: AutoSixEnvironment):
         self.jobname = jobname
         self.env = env
         self.jobargs = jobargs

@@ -8,7 +8,9 @@ Collections of constants and paths used in autosix.
 :author: jdilly
 
 """
+from dataclasses import dataclass, fields, MISSING
 from pathlib import Path
+from typing import Union
 
 from pylhc_submitter.constants.external_paths import MADX_BIN, SIXDESK_UTILS
 
@@ -27,32 +29,52 @@ SIXDESKLOCKFILE = "sixdesklock"
 
 HEADER_BASEDIR = "BASEDIR"
 
-# Defaults ---
+# AutoSix Environment (also defines defaults) ---
+@dataclass
+class AutoSixEnvironment:
+    mask_text: str
+    working_directory: Path
+    executable: Union[str, Path] = MADX_BIN
+    python2: Union[str, Path] = None
+    python3: Union[str, Path] = "python3"
+    da_turnstep: int = 100
+    sixdesk_directory: Path = SIXDESK_UTILS
+    unlock: bool = False
+    max_stage: 'Stage' = None
+    ssh: str = None
+    stop_workspace_init: bool = False
+    apply_mad6t_hacks: bool = False
+    resubmit: bool = False
 
-DEFAULTS = dict(
-    python2=None,
-    python3="python3",
-    da_turnstep=100,
-    executable=MADX_BIN,
-    sixdesk_directory=SIXDESK_UTILS
-)
 
 # Sixenv ---
-SIXENV_REQUIRED = ["TURNS", "AMPMIN", "AMPMAX", "AMPSTEP", "ANGLES"]
-SIXENV_DEFAULT = dict(
-    RESUBMISSION=0,  # 0: never, 1: if fort.10, 2: always
-    PLATFORM="HTCondor",
-    LOGLEVEL=0,  # 0: basic + errors , 1: + info, >=2: + debug
-    FIRSTSEED=1,
-    LASTSEED=60,
-    ENERGY="col",  # 'col' or 'inj'
-    NPAIRS=30,  # 1-32 particle pairs
-    EMITTANCE=3.75,  # normalized emittance
-    DIMENSIONS=6,  # Phase-Space dimensions
-    WRITEBINS=500,
-)
-SEED_KEYS = ["FIRSTSEED", "LASTSEED"]
+@dataclass
+class SixDeskEnvironment:
+    TURNS: int
+    AMPMIN: int
+    AMPMAX: int
+    AMPSTEP: int
+    ANGLES: int
+    JOBNAME: str = None  # set dynamically
+    WORKSPACE: str = None  # set dynamically
+    BASEDIR: str = None  # set dynamically
+    SCRATCHDIR: str = None  # set dynamically
+    TURNSPOWER: int = None  # set dynamically
+    RESUBMISSION: int = 0  # 0: never, 1: if fort.10, 2: always
+    PLATFORM: str = "HTCondor"
+    LOGLEVEL: int = 0  # 0: basic + errors , 1: + info, >=2: + debug
+    FIRSTSEED: int = 1
+    LASTSEED: int = 60
+    ENERGY: str = "col"  # 'col' or 'inj'
+    NPAIRS: int = 30  # 1-32 particle pairs
+    EMITTANCE: float = 3.75  # normalized emittance
+    DIMENSIONS: int = 6  # Phase-Space dimensions
+    WRITEBINS: int = 500
 
+
+SIXENV_REQUIRED = [f.name for f in fields(SixDeskEnvironment) if (f.default is MISSING)]  # required by user
+SIXENV_OPTIONAL = [f.name for f in fields(SixDeskEnvironment) if (f.default is MISSING) or (f.default is not None)]
+SEED_KEYS = ["FIRSTSEED", "LASTSEED"]
 
 # SixDB and Postprocess ---
 

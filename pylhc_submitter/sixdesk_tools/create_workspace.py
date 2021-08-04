@@ -6,6 +6,7 @@ Tools to setup the workspace for sixdesk.
 """
 import re
 import shutil
+from dataclasses import asdict
 from pathlib import Path
 from typing import Union
 
@@ -16,7 +17,6 @@ from generic_parser import DotDict
 
 from pylhc_submitter.constants.autosix import (
     SETENV_SH,
-    SIXENV_DEFAULT,
     SIXENV_REQUIRED,
     SEED_KEYS,
     get_workspace_path,
@@ -27,7 +27,8 @@ from pylhc_submitter.constants.autosix import (
     get_mad6t1_mask_path,
     get_autosix_results_path,
     get_sysenv_path,
-    get_sixdeskenv_path
+    get_sixdeskenv_path,
+    SixDeskEnvironment, SIXENV_OPTIONAL,
 )
 from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
 from pylhc_submitter.sixdesk_tools.utils import start_subprocess
@@ -174,35 +175,32 @@ def _create_sixdeskenv(jobname: str, basedir: Path, **kwargs):
     if len(missing):
         raise ValueError(f"The following keys are required but missing {missing}.")
 
-    sixenv_replace = SIXENV_DEFAULT.copy()
-    sixenv_replace.update(kwargs)
-    sixenv_replace.update(
-        dict(
-            JOBNAME=jobname,
-            WORKSPACE=workspace_path.name,
-            BASEDIR=str(basedir),
-            SCRATCHDIR=str(scratch_path),
-            TURNSPOWER=np.log10(sixenv_replace["TURNS"]),
-        )
+    sixenv_variables = SixDeskEnvironment(
+        JOBNAME=jobname,
+        WORKSPACE=workspace_path.name,
+        BASEDIR=str(basedir),
+        SCRATCHDIR=str(scratch_path),
+        TURNSPOWER=np.log10(kwargs["TURNS"]),
+        **{k: v for k, v in kwargs.items() if k in SIXENV_REQUIRED + SIXENV_OPTIONAL},
     )
 
-    if any(sixenv_replace[key] is None for key in SEED_KEYS):
+    if any(getattr(sixenv_variables, key) is None for key in SEED_KEYS):
         for key in SEED_KEYS:
-            sixenv_replace[key] = 0
+            setattr(sixenv_variables, key, 0)
 
     # the following checks are limits of SixDesk in 2020
     # and might be fixed upstream in the future
-    if sixenv_replace["AMPMAX"] < sixenv_replace["AMPMIN"]:
+    if sixenv_variables.AMPMAX < sixenv_variables.AMPMIN:
         raise ValueError("Given AMPMAX is smaller than AMPMIN.")
 
-    if (sixenv_replace["AMPMAX"] - sixenv_replace["AMPMIN"]) % sixenv_replace["AMPSTEP"]:
+    if (sixenv_variables.AMPMAX - sixenv_variables.AMPMIN) % sixenv_variables.AMPSTEP:
         raise ValueError("The amplitude range need to be dividable by the amplitude steps!")
 
-    if not sixenv_replace["ANGLES"] % 2:
+    if not sixenv_variables.ANGLES % 2:
         raise ValueError("The number of angles needs to be an uneven one.")
 
     sixenv_text = SIXDESKENV_MASK.read_text()
-    sixdeskenv_path.write_text(sixenv_text % sixenv_replace)
+    sixdeskenv_path.write_text(sixenv_text % asdict(sixenv_variables))
     LOG.debug("sixdeskenv written.")
 
 
@@ -222,7 +220,7 @@ def _create_sysenv(jobname: str, basedir: Path, binary_path: Path):
 def _write_mask(jobname: str, basedir: Path, mask_text: str, **kwargs):
     """ Fills mask with arguments and writes it out. """
     masks_path = get_masks_path(jobname, basedir)
-    seed_range = [kwargs.get(key, SIXENV_DEFAULT[key]) for key in SEED_KEYS]
+    seed_range = [kwargs.get(key, getattr(SixDeskEnvironment, key)) for key in SEED_KEYS]
 
     if seed_range.count(None) == 1:
         raise ValueError(
