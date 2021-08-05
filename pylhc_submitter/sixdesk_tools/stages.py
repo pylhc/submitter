@@ -157,7 +157,7 @@ class Stage(ABC, metaclass=StageMeta):
             if self == 0:
                 return True
             else:
-                LOG.debug(f"Stage '{self!s}' not run because previous stage(s) missing.")
+                LOG.info(f"Stage '{self!s}' not run because previous stage(s) missing.")
                 return False
 
         stage_file_txt = self.stage_file.read_text().split("\n")
@@ -180,7 +180,7 @@ class Stage(ABC, metaclass=StageMeta):
         if run_stages[-1] == (self - 1).name:
             return True
 
-        LOG.debug(f"Stage '{self!s}' not run because previous stage(s) missing.")
+        LOG.info(f"Stage '{self!s}' not run because previous stage(s) missing.")
         return False
 
     def stage_done(self):
