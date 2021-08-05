@@ -75,7 +75,11 @@ Arguments:
 
 - **max_materialize** *(int)*:
 
-    Maximum jobs to be materialized in scheduler. See htcondor API.
+    Maximum jobs to be materialized in scheduler. Here: ``None`` leaves the
+    settings as defined in the SixDesk htcondor_run_six.sub template and
+    ``0`` removes it from the template. Warning: This setting modifies the
+     template in the ``sixdesk_directory`` permanently.
+     For more details htcondor API.
 
 
 - **max_stage** *(str)*:
@@ -278,7 +282,11 @@ def get_params():
     params.add_parameter(
         name="max_materialize",
         type=int,
-        help="Maximum jobs to be materialized in scheduler. See htcondor API.",
+        help="Maximum jobs to be materialized in scheduler. "
+             "Here: ``None`` leaves the settings as defined in the SixDesk "
+             "htcondor_run_six.sub template and ``0`` removes it from the "
+             "template. Warning: This setting modifies the template in the "
+             "``sixdesk_directory`` permanently. For more details htcondor API.",
     )
     return params
 

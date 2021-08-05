@@ -207,14 +207,14 @@ def test_max_materialize_setter(tmp_path):
     subfile_path = tmp_path / "utilities" / "templates" / "htcondor" / "htcondor_run_six.sub"
     def check_max_materialize_is(value):
         text = subfile_path.read_text()
-        if value is None:
+        if value == 0:
             assert "max_materialize" not in text
         else:
             assert f"\nmax_materialize = {value}\n" in text
 
     subfile_path.parent.mkdir(parents=True)
     shutil.copy(INPUTS / "sixdesk" / "htcondor_run_six.sub", subfile_path)
-    check_max_materialize_is(None)
+    check_max_materialize_is(0)
 
     set_max_materialize(tmp_path, 10)
     check_max_materialize_is(10)
@@ -223,7 +223,10 @@ def test_max_materialize_setter(tmp_path):
     check_max_materialize_is(58394058)
 
     set_max_materialize(tmp_path, None)
-    check_max_materialize_is(None)
+    check_max_materialize_is(58394058)
+
+    set_max_materialize(tmp_path, 0)
+    check_max_materialize_is(0)
 
 
 # Helper -----------------------------------------------------------------------

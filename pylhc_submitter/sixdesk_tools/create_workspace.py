@@ -111,15 +111,18 @@ def fix_pythonfile_call(jobname: str, basedir: Path):
             f.writelines(lines)
 
 
-def set_max_materialize(sixdesk: Path, max_materialize: int):
+def set_max_materialize(sixdesk: Path, max_materialize: int = None):
     """ Adds the ``max_materialize`` option into the htcondor sixtrack
     submission-file."""
+    if max_materialize is None:
+        return
+
     LOG.info(f"Setting max_materialize for SixTrack to {max_materialize}.")
     sub_path = sixdesk / "utilities" / "templates" / "htcondor" / "htcondor_run_six.sub"
     sub_content = sub_path.read_text()
 
     # Remove whole max_materialize line if present
-    if max_materialize is None:
+    if max_materialize == 0:
         if "max_materialize" in sub_content:
             LOG.info("'max_materialize' already set. Removing.")
             sub_content = re.sub(r"max_materialize\s*=\s*\d+\s*", "", sub_content)
