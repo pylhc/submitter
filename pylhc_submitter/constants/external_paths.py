@@ -12,6 +12,6 @@ LINTRACK = AFS_CERN / "eng" / "sl" / "lintrack"
 
 # Binary Files -----------------------------------------------------------------
 MADX_BIN = AFS_CERN / "user" / "m" / "mad" / "bin" / "madx"
-PYTHON3_BIN = LINTRACK / "anaconda3" / "bin" / "python"
+PYTHON3_BIN = LINTRACK / "omc_python3" / "bin" / "python"
 PYTHON2_BIN = LINTRACK / "miniconda2" / "bin" / "python"
 SIXDESK_UTILS = AFS_CERN / "project" / "sixtrack" / "SixDesk_utilities" / "pro"
