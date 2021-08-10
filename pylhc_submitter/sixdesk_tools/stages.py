@@ -200,10 +200,13 @@ class Stage(ABC, metaclass=StageMeta):
             # but that there should be a stop in the loop.
             self.stage_done()
             raise e
+        except StageSkip as e:
+            # logged/handled outside
+            raise e
         except Exception as e:
             # convert any exception to a StageSkip,
             # so the other jobs can continue running.
-            LOG.exception(f"Stage {self!s} failed!")
+            LOG.exception(str(e))
             raise StageSkip(f"Stage {self!s} failed!") from e
 
         self.stage_done()
