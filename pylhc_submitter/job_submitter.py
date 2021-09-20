@@ -349,7 +349,7 @@ def _create_jobs(
         )
 
     LOG.debug(f"Initial number of jobs: {njobs:d}")
-    data_df = pd.DataFrame(
+    data_df = tfs.TfsDataFrame(
         index=generate_jobdf_index(job_df, jobid_mask, replace_dict.keys(), values_grid),
         columns=list(replace_dict.keys()),
         data=values_grid,
