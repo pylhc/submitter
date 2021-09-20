@@ -354,7 +354,7 @@ def _create_jobs(
         columns=list(replace_dict.keys()),
         data=values_grid,
     )
-    job_df = job_df.append(data_df, sort=False)
+    job_df = job_df.append(data_df, sort=False, how_headers='left')
     job_df = _setup_folders(job_df, cwd)
 
     if htcutils.is_mask_file(mask_path_or_string):
