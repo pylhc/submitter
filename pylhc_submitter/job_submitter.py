@@ -85,7 +85,6 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
 import tfs
 from generic_parser import EntryPointParameters, entrypoint
 from generic_parser.entry_datatypes import DictAsString
