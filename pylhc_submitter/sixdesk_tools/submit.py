@@ -22,7 +22,13 @@ LOG = logging.getLogger(__name__)
 
 
 def submit_mask(jobname: str, basedir: Path, sixdesk: Path = SIXDESK_UTILS, ssh: str = None):
-    """ Run the mask (probably Madx) and generate sixtrack input files. """
+    """ Run the mask (probably Madx) and generate sixtrack input files.
+
+    Args:
+        jobname (str): Name of the Job
+        basedir (Path): SixDesk Basefolder Location
+        sixdesk (Path): Path to the SixDesk installation/repo
+    """
     LOG.info("Submitting mask to run for sixtrack input generation.")
     sixjobs_path = get_sixjobs_path(jobname, basedir)
     start_subprocess([sixdesk / MAD_TO_SIXTRACK_SH, "-s"], cwd=sixjobs_path, ssh=ssh)

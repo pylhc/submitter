@@ -96,7 +96,7 @@ export longHTCq=testmatch
 export daHTCq=testmatch
 
 # Format: "col" or "inj" ( also for run_six)
-export runtype="%(ENERGY)s"
+export runtype="%(RUNTYPE)s"
 # and the beam can be set to "" or b1 or B1 for beam1, or to b2 or B2 for beam2
 # and "_b1" or "_b2" is appended to the mask filename
 export beam=""
@@ -130,15 +130,19 @@ export emit_beam=$emit
 # export xing=185
 
 # e0 gamma
-if test $runtype = "inj"
-then
-  export e0=450000.
-  export gamma=479.6
-elif test $runtype = "col"
-then
-  export e0=6500000.
-  export gamma=6927.6
-fi
+#if test $runtype = "inj"
+#then
+#  export e0=450000.
+#  export gamma=479.6
+#elif test $runtype = "col"
+#then
+#  export e0=6500000.
+#  export gamma=6927.6
+#fi
+# e0 and gamma now calulated in python
+export e0=%(ENERGY).1f
+export gamma=%(GAMMMA).1f
+
 
 #phase space dimension
 export dimen=%(DIMENSIONS)d

@@ -200,21 +200,6 @@ def _create_sixdeskenv(jobname: str, basedir: Path, **kwargs):
         **{k: v for k, v in kwargs.items() if k in SIXENV_REQUIRED + SIXENV_OPTIONAL},
     )
 
-    if any(getattr(sixenv_variables, key) is None for key in SEED_KEYS):
-        for key in SEED_KEYS:
-            setattr(sixenv_variables, key, 0)
-
-    # the following checks are limits of SixDesk in 2020
-    # and might be fixed upstream in the future
-    if sixenv_variables.AMPMAX < sixenv_variables.AMPMIN:
-        raise ValueError("Given AMPMAX is smaller than AMPMIN.")
-
-    if (sixenv_variables.AMPMAX - sixenv_variables.AMPMIN) % sixenv_variables.AMPSTEP:
-        raise ValueError("The amplitude range need to be dividable by the amplitude steps!")
-
-    if not sixenv_variables.ANGLES % 2:
-        raise ValueError("The number of angles needs to be an uneven one.")
-
     sixenv_text = SIXDESKENV_MASK.read_text()
     sixdeskenv_path.write_text(sixenv_text % asdict(sixenv_variables))
     LOG.debug("sixdeskenv written.")
