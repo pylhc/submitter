@@ -15,15 +15,15 @@ from typing import Union
 from pylhc_submitter.constants.external_paths import MADX_BIN, SIXDESK_UTILS
 
 # Program Paths ----------------------------------------------------------------
-UTILITIES_DIR = Path("utilities")
-BASH_DIR = UTILITIES_DIR / "bash"
-SETENV_SH = BASH_DIR / "set_env.sh"
-MAD_TO_SIXTRACK_SH = BASH_DIR / "mad6t.sh"
-RUNSIX_SH = BASH_DIR / "run_six.sh"
-RUNSTATUS_SH = BASH_DIR / "run_status"
-DOT_PROFILE = BASH_DIR / "dot_profile"
-SIXDB = UTILITIES_DIR / "externals" / "SixDeskDB" / "sixdb"
-SIXDESKLOCKFILE = "sixdesklock"
+UTILITIES_DIR: Path = Path("utilities")
+BASH_DIR: Path = UTILITIES_DIR / "bash"
+SETENV_SH: Path = BASH_DIR / "set_env.sh"
+MAD_TO_SIXTRACK_SH: Path = BASH_DIR / "mad6t.sh"
+RUNSIX_SH: Path = BASH_DIR / "run_six.sh"
+RUNSTATUS_SH: Path = BASH_DIR / "run_status"
+DOT_PROFILE: Path = BASH_DIR / "dot_profile"
+SIXDB: Path = UTILITIES_DIR / "externals" / "SixDeskDB" / "sixdb"
+SIXDESKLOCKFILE: Path = "sixdesklock"
 
 # Constants and Requirements ---------------------------------------------------
 
