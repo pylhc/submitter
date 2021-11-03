@@ -85,7 +85,6 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
 import tfs
 from generic_parser import EntryPointParameters, entrypoint
 from generic_parser.entry_datatypes import DictAsString
@@ -349,12 +348,12 @@ def _create_jobs(
         )
 
     LOG.debug(f"Initial number of jobs: {njobs:d}")
-    data_df = pd.DataFrame(
+    data_df = tfs.TfsDataFrame(
         index=generate_jobdf_index(job_df, jobid_mask, replace_dict.keys(), values_grid),
         columns=list(replace_dict.keys()),
         data=values_grid,
     )
-    job_df = job_df.append(data_df, sort=False)
+    job_df = job_df.append(data_df, sort=False, how_headers='left')
     job_df = _setup_folders(job_df, cwd)
 
     if htcutils.is_mask_file(mask_path_or_string):
