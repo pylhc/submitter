@@ -314,7 +314,7 @@ def run_job(jobname: str, jobargs: dict, env: AutoSixEnvironment):
 
     Args:
         jobname (str): Name of the job/study
-        env (DotDict): A full
+        env (DotDict): The ensemble of autosix settings as an ``AutoSixEnvironment`` object.
         jobargs(dict): All Key=Values needed to fill the mask!
     """
     if is_locked(jobname, env.working_directory, unlock=env.unlock):
