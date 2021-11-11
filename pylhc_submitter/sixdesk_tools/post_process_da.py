@@ -7,7 +7,6 @@ da. Includes functions for extracting data from database
 as well as plotting of DA polar plots.
 """
 import logging
-import sqlite3 as sql
 from pathlib import Path
 from typing import Any, Tuple, Iterable
 
@@ -18,10 +17,8 @@ from matplotlib import pyplot as plt
 from matplotlib import rcParams, lines as mlines
 from scipy.interpolate import interp1d
 from tfs import TfsDataFrame, write_tfs
-from extract_data_from_db import extract_da_data
 
 from pylhc_submitter.constants.autosix import (
-    get_database_path,
     get_tfs_da_path,
     get_tfs_da_seed_stats_path,
     get_tfs_da_angle_stats_path,
@@ -40,6 +37,7 @@ from pylhc_submitter.constants.autosix import (
     ALOST2,
     AMP,
 )
+from pylhc_submitter.sixdesk_tools.extract_data_from_db import extract_da_data
 
 LOG = logging.getLogger(__name__)
 
