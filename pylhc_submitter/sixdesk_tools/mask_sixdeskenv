@@ -141,7 +141,7 @@ export emit_beam=$emit
 #fi
 # e0 and gamma now calulated in python
 export e0=%(ENERGY).1f
-export gamma=%(GAMMMA).1f
+export gamma=%(GAMMA).1f
 
 
 #phase space dimension
