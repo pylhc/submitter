@@ -1,10 +1,12 @@
-# <img src="https://twiki.cern.ch/twiki/pub/BEABP/Logos/OMC_logo.png" height="28"> PyLHC Submitter
+# <img src="https://raw.githubusercontent.com/pylhc/pylhc.github.io/master/docs/assets/logos/OMC_logo.svg" height="28"> PyLHC Submitter
 
 [![Cron Testing](https://github.com/pylhc/submitter/workflows/Cron%20Testing/badge.svg)](https://github.com/pylhc/submitter/actions?query=workflow%3A%22Cron+Testing%22)
 [![Code Climate coverage](https://img.shields.io/codeclimate/coverage/pylhc/submitter.svg?style=popout)](https://codeclimate.com/github/pylhc/submitter)
 [![Code Climate maintainability (percentage)](https://img.shields.io/codeclimate/maintainability-percentage/pylhc/submitter.svg?style=popout)](https://codeclimate.com/github/pylhc/submitter)
-[![GitHub last commit](https://img.shields.io/github/last-commit/pylhc/submitter.svg?style=popout)](https://github.com/pylhc/submitter/)
-[![GitHub release](https://img.shields.io/github/release/pylhc/submitter.svg?style=popout)](https://github.com/pylhc/submitter/)
+<!-- [![GitHub last commit](https://img.shields.io/github/last-commit/pylhc/submitter.svg?style=popout)](https://github.com/pylhc/submitter/) -->
+[![PyPI Version](https://img.shields.io/pypi/v/pylhc_submitter?label=PyPI&logo=pypi)](https://pypi.org/project/pylhc_submitter/)
+[![GitHub release](https://img.shields.io/github/v/release/pylhc/submitter?logo=github)](https://github.com/pylhc/submitter/)
+[![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/pylhc_submitter?color=orange&logo=anaconda)](https://anaconda.org/conda-forge/pylhc_submitter)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4818455.svg)](https://doi.org/10.5281/zenodo.4818455)
 
 pylhc-submitter contains scripts to simplify the creation and submission of jobs to HTCondor at CERN.
