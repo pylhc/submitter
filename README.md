@@ -15,7 +15,9 @@ See the [API documentation](https://pylhc.github.io/submitter/) for details.
 
 ## Installing
 
-**Note**: This package is unavailable on `Windows`, and only available on `macOS` through `conda-forge`.
+**Note**: This package is unavailable on `Windows`, and only available on:
+- `Linux` through `PyPI`.
+- `Linux` and `macOS` through `conda-forge`.
 
 Installation is easily done via `pip`:
 ```bash
