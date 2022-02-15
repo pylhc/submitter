@@ -16,15 +16,51 @@ In any other way, these *special* variables behave like normal variables and can
 They are also looped over in the same manner as any other variable (if given as a list).
 
 For additional information and guides, see the `AutoSix page
-<https://pylhc.github.io/packages/pylhcsubmitter/autosix/>`_ in the ``OMC`` documentation site.
+<https://pylhc.github.io/packages/pylhcsubmitter/autosix/>`_
+on the ``OMC`` documentation site.
+
+.. admonition:: Problems with *search.f90*
+    :class: warning
+
+    If you run into
+
+    .. code-block:: bash
+
+       ImportError: cannot import name 'search' from partially initialized module 'sixdeskdb'
+
+    that means that the *SixDesk/utilities/externals/SixDeskDB/sixdeskdb/search.f90* has not been compiled
+    for your current python and OS version (indicated by XXX below).
+    There are two ways to do this:
+
+    **a)** Run
+
+    .. code-block:: bash
+
+        python -m numpy.f2py -c search.f90 -f search
+
+    with your desired python version
+    (a shortcut ``f2py`` might be available if you run in an activated venv).
+    Copy (or symlink) the resulting ``search.cpython-XXX.so`` file into the ``sixdeskdb`` folder
+    (if it is not already there because you ran from that folder)
+
+    **b)** Run
+
+    .. code-block:: bash
+
+        python setup.py build_ext
+
+    on the setup.py in *SixDesk/utilities/externals/SixDeskDB*.
+    Then copy (or symlink) the resulting *build/lib.XXX/sixdeskdb/search.cpython-XXX.so* into
+    the *sixdeskdb*-folder (the name needs to stay as it is).
+
 
 Arguments:
 
 *--Required--*
 
-- **mask** *(PathOrStr)*:
+- **mask** *(Path)*:
 
-    Program mask to use
+    Path to the program's mask to use.
 
 
 - **replace_dict** *(DictAsString)*:
@@ -33,14 +69,14 @@ Arguments:
     well as the mask_sixdeskenv and mask_sysenv files in the sixdesk_tools
     module. Required fields are TURNS, AMPMIN, AMPMAX, AMPSTEP, ANGLES.
     Optional fields are RESUBMISSION, PLATFORM, LOGLEVEL, FIRSTSEED,
-    LASTSEED, ENERGY, NPAIRS, EMITTANCE, DIMENSIONS, WRITEBINS. These keys
-    can also be used in the mask if needed. The values of this dict are
-    lists of values to replace these or single entries.
+    LASTSEED, RUNTYPE, NPAIRS, EMITTANCE, DIMENSIONS, WRITEBINS, ENERGY.
+    These keys can also be used in the mask if needed. The values of this
+    dict are lists of values to replace these or single entries.
 
 
-- **working_directory** *(PathOrStr)*:
+- **working_directory** *(Path)*:
 
-    Directory where data should be put
+    Directory where data should be put into.
 
 
 *--Optional--*
@@ -63,23 +99,25 @@ Arguments:
 
 - **executable** *(PathOrStr)*:
 
-    Path to executable.
+    Path to executable or 'madx', 'python2', 'python3' to use the OMC
+    default paths on AFS.Defaults to the latest MADX-Binary on AFS.
 
     default: ``/afs/cern.ch/user/m/mad/bin/madx``
 
 
 - **jobid_mask** *(str)*:
 
-    Mask to name jobs from replace_dict
+    Mask-String to name jobs, with placeholders from the ``replace_dict``
+    keys.
 
 
 - **max_materialize** *(int)*:
 
-    Maximum jobs to be materialized in scheduler. Here: ``None`` leaves the
-    settings as defined in the SixDesk htcondor_run_six.sub template and
-    ``0`` removes it from the template. Warning: This setting modifies the
-     template in the ``sixdesk_directory`` permanently.
-     For more details htcondor API.
+    Maximum jobs to be materialized in scheduler. Here: ``None`` leaves
+    the settings as defined in the SixDesk htcondor_run_six.sub template
+    and ``0`` removes it from the template. Warning: This setting modifies
+    the template in the ``sixdesk_directory`` permanently. For more
+    details htcondor API.
 
 
 - **max_stage** *(str)*:
@@ -91,7 +129,8 @@ Arguments:
 
     Path to python to use with run_six.sh (python2 with requirements
     installed). ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS
-    NEEDED! And it can't be an Anaconda Distribution.
+    NEEDED! And it can't be an Anaconda Distribution. If ``None`` the
+    system's ``python`` is used (SixDesk internally).
 
     default: ``None``
 
@@ -99,16 +138,26 @@ Arguments:
 - **python3** *(PathOrStr)*:
 
     Path to python to use with sixdb (python3 with requirements
-    installed).
+    installed).Defaults to the system's ``python3``.
 
     default: ``python3``
 
 
 - **resubmit**:
 
-    Resubmits if needed.
+    Resubmits to HTCondor if needed (i.e. in case it finds errors with the
+    previous run).
 
     action: ``store_true``
+
+
+- **sixdesk_directory** *(Path)*:
+
+    Path to the directory of SixDesk. Defaults to the PRO-version on AFS.
+    If you are using your own SixDesk Environment and it does not run,
+    check the AutoSix doc.
+
+    default: ``/afs/cern.ch/project/sixtrack/SixDesk_utilities/pro``
 
 
 - **ssh** *(str)*:
@@ -127,10 +176,9 @@ Arguments:
 
 - **unlock**:
 
-    Forces unlocking of folders.
+    Forces unlocking of folders (if they have been locked by Sixdesk).
 
     action: ``store_true``
-
 
 
 :author: jdilly
@@ -181,13 +229,13 @@ def get_params():
         name="mask",
         type=Path,
         required=True,
-        help="Program mask to use",
+        help="Path to the program's mask to use.",
     )
     params.add_parameter(
         name="working_directory",
         type=Path,
         required=True,
-        help="Directory where data should be put",
+        help="Directory where data should be put into.",
     )
     params.add_parameter(
         name="replace_dict",
@@ -208,13 +256,17 @@ def get_params():
         name="sixdesk_directory",
         type=Path,
         default=AutoSixEnvironment.sixdesk_directory,
-        help="Directory of SixDesk. Default is pro version on AFS.",
+        help="Path to the directory of SixDesk. Defaults to the PRO-version on AFS."
+             " If you are using your own SixDesk Environment and it does not run, "
+             " check the AutoSix doc.",
     )
     params.add_parameter(
         name="executable",
         default=AutoSixEnvironment.executable,
         type=PathOrStr,
-        help="Path to executable.",
+        help="Path to executable or 'madx', 'python2', 'python3' "
+             "to use the OMC default paths on AFS."
+             "Defaults to the latest MADX-Binary on AFS.",
     )
     params.add_parameter(
         name="python2",
@@ -222,17 +274,19 @@ def get_params():
         type=PathOrStr,
         help=("Path to python to use with run_six.sh (python2 with requirements installed)."
               " ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS NEEDED!"
-              " And it can't be an Anaconda Distribution."),
+              " And it can't be an Anaconda Distribution."
+              " If ``None`` the system's ``python`` is used (SixDesk internally)."),
     )
     params.add_parameter(
         name="python3",
         default=AutoSixEnvironment.python3,
         type=PathOrStr,
-        help="Path to python to use with sixdb (python3 with requirements installed).",
+        help="Path to python to use with sixdb (python3 with requirements installed)."
+             "Defaults to the system's ``python3``.",
     )
     params.add_parameter(
         name="jobid_mask",
-        help="Mask to name jobs from replace_dict",
+        help="Mask-String to name jobs, with placeholders from the ``replace_dict`` keys.",
         type=str,
     )
     params.add_parameter(
@@ -242,7 +296,7 @@ def get_params():
     )
     params.add_parameter(
         name="unlock",
-        help="Forces unlocking of folders.",
+        help="Forces unlocking of folders (if they have been locked by Sixdesk).",
         action="store_true",
     )
     params.add_parameter(
@@ -265,7 +319,8 @@ def get_params():
     )
     params.add_parameter(
         name="resubmit",
-        help="Resubmits if needed.",
+        help="Resubmits to HTCondor if needed "
+             "(i.e. in case it finds errors with the previous run).",
         action="store_true",
     )
     params.add_parameter(

@@ -4,8 +4,9 @@ Extract Data From DataBase
 
 These functions operate on the SixDesk database and help to extract data
 form it.
+
 TODO: Implement extraction of data into ``.csv`` (and/or tfs?)
-      like fvanderv does.
+like fvanderv does.
 """
 import logging
 import sqlite3 as sql

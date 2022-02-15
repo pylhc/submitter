@@ -4,7 +4,6 @@ Stages
 
 In this module the stages are organized.
 
-
 """
 import logging
 import re
@@ -75,19 +74,34 @@ class StageMeta(ABCMeta):
         return list(STAGE_ORDER.values())[new_idx]
     
     def __gt__(cls, other):
-        return int(cls) > int(other)
+        try:
+            return int(cls) > int(other)
+        except TypeError:
+            return False
 
     def __ge__(cls, other):
-        return int(cls) >= int(other)
+        try:
+            return int(cls) >= int(other)
+        except TypeError:
+            return False
 
     def __lt__(cls, other):
-        return int(cls) < int(other)
+        try:
+            return int(cls) < int(other)
+        except TypeError:
+            return False
 
     def __le__(cls, other):
-        return int(cls) <= int(other)
+        try:
+            return int(cls) <= int(other)
+        except TypeError:
+            return False
 
     def __eq__(cls, other):
-        return int(cls) == int(other)
+        try:
+            return int(cls) == int(other)
+        except TypeError:
+            return False
 
     def __hash__(cls):
         return hash((cls.value, cls.name))
