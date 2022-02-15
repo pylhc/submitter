@@ -28,8 +28,8 @@ on the ``OMC`` documentation site.
 
        ImportError: cannot import name 'search' from partially initialized module 'sixdeskdb'
 
-    that means that the *SixDesk/utilities/externals/SixDeskDB/sixdeskdb/search.f90* has not been compiled
-    for your current python and OS version (indicated by XXX below).
+    that means that the :file:`SixDesk/utilities/externals/SixDeskDB/sixdeskdb/search.f90`
+    has not been compiled for your current python and OS version (indicated by XXX below).
     There are two ways to do this:
 
     **a)** Run
@@ -40,7 +40,8 @@ on the ``OMC`` documentation site.
 
     with your desired python version
     (a shortcut ``f2py`` might be available if you run in an activated venv).
-    Copy (or symlink) the resulting ``search.cpython-XXX.so`` file into the ``sixdeskdb`` folder
+    Copy (or symlink) the resulting :file:`search.cpython-XXX.so` file into the
+    :file:`sixdeskdb` folder
     (if it is not already there because you ran from that folder)
 
     **b)** Run
@@ -49,9 +50,9 @@ on the ``OMC`` documentation site.
 
         python setup.py build_ext
 
-    on the setup.py in *SixDesk/utilities/externals/SixDeskDB*.
-    Then copy (or symlink) the resulting *build/lib.XXX/sixdeskdb/search.cpython-XXX.so* into
-    the *sixdeskdb*-folder (the name needs to stay as it is).
+    on the :file:`setup.py` in :file:`SixDesk/utilities/externals/SixDeskDB`.
+    Then copy (or symlink) the resulting :file:`build/lib.XXX/sixdeskdb/search.cpython-XXX.so` into
+    the :file:`sixdeskdb` folder (the name needs to stay as it is).
 
 
 Arguments:
