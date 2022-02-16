@@ -8,6 +8,8 @@ The functionality is similar to the ``pylhc_submitter.job_submitter`` in that th
 is used to automatically create a set of job-directories to gather the data.
 To avoid conflicts, each of these job-directories is a ``SixDesk`` workspace,
 meaning there can be only one study per directory.
+Beware that the ``max_materialize`` limit is set for each of these workspaces
+individually, not for all Jobs together (i.e. it should be <=MAX_USER_JOBS / NUMBER_OF_WORKSPACES).
 
 The ``replace_dict`` contains variables for your mask as well as variables for the SixDesk environment.
 See the description of ``replace_dict`` below.
@@ -84,7 +86,7 @@ Arguments:
 
 - **apply_mad6t_hacks**:
 
-    Apply two hacks: Removes '<' in binary call andignore the check for
+    Apply two hacks: Removes '<' in binary call and ignore the check for
     'Twiss fail' in the submission file. This is hack needed in case this
     check greps the wrong lines, e.g. in madx-comments. USE WITH CARE!!
 
@@ -114,11 +116,11 @@ Arguments:
 
 - **max_materialize** *(int)*:
 
-    Maximum jobs to be materialized in scheduler. Here: ``None`` leaves
-    the settings as defined in the SixDesk htcondor_run_six.sub template
-    and ``0`` removes it from the template. Warning: This setting modifies
-    the template in the ``sixdesk_directory`` permanently. For more
-    details htcondor API.
+    Maximum jobs to be materialized in scheduler (per SixDesk Workspace!)..
+    Here: ``None`` leaves the settings as defined in the SixDesk
+    htcondor_run_six.sub template and ``0`` removes it from the template.
+    Warning: This setting modifies the template in the ``sixdesk_directory``
+    permanently. For more details see the htcondor API.
 
 
 - **max_stage** *(str)*:
@@ -303,7 +305,7 @@ def get_params():
     params.add_parameter(
         name="apply_mad6t_hacks",
         help=(
-            "Apply two hacks: Removes '<' in binary call and"
+            "Apply two hacks: Removes '<' in binary call and "
             "ignore the check for 'Twiss fail' in the submission file. "
             "This is hack needed in case this check greps the wrong lines, "
             "e.g. in madx-comments. USE WITH CARE!!"
@@ -338,11 +340,12 @@ def get_params():
     params.add_parameter(
         name="max_materialize",
         type=int,
-        help="Maximum jobs to be materialized in scheduler. "
+        help="Maximum jobs to be materialized in scheduler (per SixDesk Workspace!). "
              "Here: ``None`` leaves the settings as defined in the SixDesk "
              "htcondor_run_six.sub template and ``0`` removes it from the "
              "template. Warning: This setting modifies the template in the "
-             "``sixdesk_directory`` permanently. For more details htcondor API.",
+             "``sixdesk_directory`` permanently. For more details see the "
+             "htcondor API.",
     )
     return params
 

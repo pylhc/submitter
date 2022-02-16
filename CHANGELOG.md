@@ -1,5 +1,22 @@
 # `pylhc-submitter` Changelog
 
+## Version 1.1.0
+
+This release adds some changes the `autosix` module:
+
+- New Features:
+  - Added `sixdesk_directory` option, which allows the user to choose their own 
+    sixdesk environment (default is PRO on AFS).
+  - Added `max_materialize` option, which allows the user to specify the amount of jobs that
+    materialize at once per SixDesk Workspace (i.e. one realization in the `replace_dict`).
+    This enables the user to send more jobs to HTCondor than are allowed within their user limit.
+    See the HTCondor API for details. This option requires writing rights in the `sixdesk_directory`.
+    
+- Changes:
+  - Big object-oriented restructuring of the Stages and increased use of Dataclasses.
+  - Some other small changes to improve readablity.
+  - Fixed the DA-Plot labels from `sigma [sigma]` to `DA [sigma]`
+
 ## Version 1.0.1
 
 Version `1.0.1` is a patch release.
