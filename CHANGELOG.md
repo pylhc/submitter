@@ -11,6 +11,8 @@ This release adds some changes the `autosix` module:
     materialize at once per SixDesk Workspace (i.e. one realization in the `replace_dict`).
     This enables the user to send more jobs to HTCondor than are allowed within their user limit.
     See the HTCondor API for details. This option requires writing rights in the `sixdesk_directory`.
+  - Allow `ENERGY` and `EMMITANCE` to be set via `replace_dict`, which are then 
+    passed to the `sixdeskenv` (`GAMMA` is calculated from the `EMMITANCE` automatically).
     
 - Changes:
   - Big object-oriented restructuring of the Stages and increased use of Dataclasses.
