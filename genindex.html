@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; pylhc_submitter 1.0.1 documentation</title>
+  <title>Index &mdash; pylhc_submitter 1.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <img src="_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.0
+                1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -58,9 +58,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#stages">Stages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
 </ul>
@@ -99,7 +101,8 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#C"><strong>C</strong></a>
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#C"><strong>C</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
@@ -113,6 +116,14 @@
  | <a href="#W"><strong>W</strong></a>
  
 </div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/constants.html#pylhc_submitter.constants.autosix.AutoSixEnvironment">AutoSixEnvironment (class in pylhc_submitter.constants.autosix)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -128,11 +139,13 @@
 </li>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_sixtrack_output_data">check_sixtrack_output_data() (in module pylhc_submitter.sixdesk_tools.troubleshooting)</a>
 </li>
-      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.check_stage">check_stage() (in module pylhc_submitter.sixdesk_tools.utils)</a>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_stages_for_setup">check_stages_for_setup() (in module pylhc_submitter.sixdesk_tools.troubleshooting)</a>
+</li>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckInput">CheckInput (class in pylhc_submitter.sixdesk_tools.stages)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_stages_for_setup">check_stages_for_setup() (in module pylhc_submitter.sixdesk_tools.troubleshooting)</a>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckSixtrackOutput">CheckSixtrackOutput (class in pylhc_submitter.sixdesk_tools.stages)</a>
 </li>
       <li><a href="modules/utils.html#pylhc_submitter.utils.iotools.convert_paths_in_dict_to_strings">convert_paths_in_dict_to_strings() (in module pylhc_submitter.utils.iotools)</a>
 </li>
@@ -148,6 +161,8 @@
 </li>
       <li><a href="modules/htc.html#pylhc_submitter.htc.utils.create_subfile_from_job">create_subfile_from_job() (in module pylhc_submitter.htc.utils)</a>
 </li>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CreateJob">CreateJob (class in pylhc_submitter.sixdesk_tools.stages)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -158,7 +173,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.extract_da_data_from_db">extract_da_data_from_db() (in module pylhc_submitter.sixdesk_tools.post_process_da)</a>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.extract_data_from_db.extract_da_data">extract_da_data() (in module pylhc_submitter.sixdesk_tools.extract_data_from_db)</a>
+</li>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.extract_data_from_db.extract_meta_data">extract_meta_data() (in module pylhc_submitter.sixdesk_tools.extract_data_from_db)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -166,6 +183,8 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Final">Final (class in pylhc_submitter.sixdesk_tools.stages)</a>
+</li>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.find_obviously_failed_sixtrack_submissions">find_obviously_failed_sixtrack_submissions() (in module pylhc_submitter.sixdesk_tools.troubleshooting)</a>
 </li>
   </ul></td>
@@ -200,6 +219,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.InitializeWorkspace">InitializeWorkspace (class in pylhc_submitter.sixdesk_tools.stages)</a>
+</li>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.is_locked">is_locked() (in module pylhc_submitter.sixdesk_tools.utils)</a>
 </li>
   </ul></td>
@@ -250,7 +271,11 @@
 </li>
         <li><a href="modules/sixdesk_tools.html#module-pylhc_submitter.sixdesk_tools.create_workspace">pylhc_submitter.sixdesk_tools.create_workspace</a>
 </li>
+        <li><a href="modules/sixdesk_tools.html#module-pylhc_submitter.sixdesk_tools.extract_data_from_db">pylhc_submitter.sixdesk_tools.extract_data_from_db</a>
+</li>
         <li><a href="modules/sixdesk_tools.html#module-pylhc_submitter.sixdesk_tools.post_process_da">pylhc_submitter.sixdesk_tools.post_process_da</a>
+</li>
+        <li><a href="modules/sixdesk_tools.html#module-pylhc_submitter.sixdesk_tools.stages">pylhc_submitter.sixdesk_tools.stages</a>
 </li>
         <li><a href="modules/sixdesk_tools.html#module-pylhc_submitter.sixdesk_tools.submit">pylhc_submitter.sixdesk_tools.submit</a>
 </li>
@@ -274,6 +299,8 @@
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.plot_polar">plot_polar() (in module pylhc_submitter.sixdesk_tools.post_process_da)</a>
 </li>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.post_process_da">post_process_da() (in module pylhc_submitter.sixdesk_tools.post_process_da)</a>
+</li>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.PostProcess">PostProcess (class in pylhc_submitter.sixdesk_tools.stages)</a>
 </li>
       <li>
     pylhc_submitter.autosix
@@ -317,8 +344,6 @@
         <li><a href="modules/htc.html#module-pylhc_submitter.htc.utils">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pylhc_submitter.job_submitter
 
@@ -326,6 +351,8 @@
         <li><a href="entrypoints/job_submitter.html#module-pylhc_submitter.job_submitter">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pylhc_submitter.sixdesk_tools.create_workspace
 
@@ -334,10 +361,24 @@
 </li>
       </ul></li>
       <li>
+    pylhc_submitter.sixdesk_tools.extract_data_from_db
+
+      <ul>
+        <li><a href="modules/sixdesk_tools.html#module-pylhc_submitter.sixdesk_tools.extract_data_from_db">module</a>
+</li>
+      </ul></li>
+      <li>
     pylhc_submitter.sixdesk_tools.post_process_da
 
       <ul>
         <li><a href="modules/sixdesk_tools.html#module-pylhc_submitter.sixdesk_tools.post_process_da">module</a>
+</li>
+      </ul></li>
+      <li>
+    pylhc_submitter.sixdesk_tools.stages
+
+      <ul>
+        <li><a href="modules/sixdesk_tools.html#module-pylhc_submitter.sixdesk_tools.stages">module</a>
 </li>
       </ul></li>
       <li>
@@ -387,6 +428,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.reset_stages">reset_stages() (in module pylhc_submitter.sixdesk_tools.troubleshooting)</a>
 </li>
+      <li><a href="entrypoints/autosix.html#pylhc_submitter.autosix.run_job">run_job() (in module pylhc_submitter.autosix)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -395,33 +438,45 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/utils.html#pylhc_submitter.utils.iotools.save_config">save_config() (in module pylhc_submitter.utils.iotools)</a>
 </li>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.set_max_materialize">set_max_materialize() (in module pylhc_submitter.sixdesk_tools.create_workspace)</a>
+</li>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.set_stages">set_stages() (in module pylhc_submitter.sixdesk_tools.troubleshooting)</a>
 </li>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.set_stages_for_setup">set_stages_for_setup() (in module pylhc_submitter.sixdesk_tools.troubleshooting)</a>
 </li>
-      <li><a href="entrypoints/autosix.html#pylhc_submitter.autosix.setup_and_run">setup_and_run() (in module pylhc_submitter.autosix)</a>
-</li>
-      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.should_run_stage">should_run_stage() (in module pylhc_submitter.sixdesk_tools.utils)</a>
+      <li><a href="modules/constants.html#pylhc_submitter.constants.autosix.SetDynamically">SetDynamically (in module pylhc_submitter.constants.autosix)</a>
 </li>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.sixdb_cmd">sixdb_cmd() (in module pylhc_submitter.sixdesk_tools.submit)</a>
 </li>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.sixdb_load">sixdb_load() (in module pylhc_submitter.sixdesk_tools.submit)</a>
 </li>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbCmd">SixdbCmd (class in pylhc_submitter.sixdesk_tools.stages)</a>
+</li>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbLoad">SixdbLoad (class in pylhc_submitter.sixdesk_tools.stages)</a>
+</li>
+      <li><a href="modules/constants.html#pylhc_submitter.constants.autosix.SixDeskEnvironment">SixDeskEnvironment (class in pylhc_submitter.constants.autosix)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.skip_stages">skip_stages() (in module pylhc_submitter.sixdesk_tools.troubleshooting)</a>
 </li>
-      <li><a href="modules/constants.html#pylhc_submitter.constants.autosix.Stage">Stage (class in pylhc_submitter.constants.autosix)</a>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Stage">Stage (class in pylhc_submitter.sixdesk_tools.stages)</a>
 </li>
-      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.stage_done">stage_done() (in module pylhc_submitter.sixdesk_tools.utils)</a>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.StageMeta">StageMeta (class in pylhc_submitter.sixdesk_tools.stages)</a>
 </li>
-      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.StageSkip">StageSkip</a>
+      <li><a href="modules/constants.html#pylhc_submitter.constants.autosix.StageSkip">StageSkip</a>
+</li>
+      <li><a href="modules/constants.html#pylhc_submitter.constants.autosix.StageStop">StageStop</a>
 </li>
       <li><a href="modules/htc.html#pylhc_submitter.htc.utils.submit_jobfile">submit_jobfile() (in module pylhc_submitter.htc.utils)</a>
 </li>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.submit_mask">submit_mask() (in module pylhc_submitter.sixdesk_tools.submit)</a>
 </li>
       <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.submit_sixtrack">submit_sixtrack() (in module pylhc_submitter.sixdesk_tools.submit)</a>
+</li>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitMask">SubmitMask (class in pylhc_submitter.sixdesk_tools.stages)</a>
+</li>
+      <li><a href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitSixtrack">SubmitSixtrack (class in pylhc_submitter.sixdesk_tools.stages)</a>
 </li>
   </ul></td>
 </tr></table>

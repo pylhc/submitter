@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AutoSix &mdash; pylhc_submitter 1.0.1 documentation</title>
+  <title>AutoSix &mdash; pylhc_submitter 1.1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -32,7 +32,7 @@
             <img src="../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.0
+                1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -61,9 +61,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#stages">Stages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
 </ul>
@@ -102,40 +104,79 @@
   <span class="target" id="module-pylhc_submitter.autosix"></span><section id="autosix">
 <h1>AutoSix<a class="headerlink" href="#autosix" title="Permalink to this headline"></a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">AutoSix</span></code> is a wrapper to automatically perform the necessary setup and steps needed for <code class="docutils literal notranslate"><span class="pre">SixDesk</span></code> use.</p>
-<p>The functionality is similar to the <code class="docutils literal notranslate"><span class="pre">pylhc_submitter.job_submitter</span></code> in that the inner product of a <code class="docutils literal notranslate"><span class="pre">replace_dict</span></code> is used to automatically create a set of job-directories to gather the data.
-To avoid conflicts, each of these job-directories is a <code class="docutils literal notranslate"><span class="pre">SixDesk</span></code> workspace, meaning there can be only one study per directory.</p>
+<p>The functionality is similar to the <code class="docutils literal notranslate"><span class="pre">pylhc_submitter.job_submitter</span></code> in that the inner product of a <code class="docutils literal notranslate"><span class="pre">replace_dict</span></code>
+is used to automatically create a set of job-directories to gather the data.
+To avoid conflicts, each of these job-directories is a <code class="docutils literal notranslate"><span class="pre">SixDesk</span></code> workspace,
+meaning there can be only one study per directory.
+Beware that the <code class="docutils literal notranslate"><span class="pre">max_materialize</span></code> limit is set for each of these workspaces
+individually, not for all Jobs together (i.e. it should be &lt;=MAX_USER_JOBS / NUMBER_OF_WORKSPACES).</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">replace_dict</span></code> contains variables for your mask as well as variables for the SixDesk environment.
 See the description of <code class="docutils literal notranslate"><span class="pre">replace_dict</span></code> below.</p>
 <p>In any other way, these <em>special</em> variables behave like normal variables and can also be inserted in your mask.
 They are also looped over in the same manner as any other variable (if given as a list).</p>
-<p>For additional information and guides, see the <a class="reference external" href="https://pylhc.github.io/packages/pylhcsubmitter/autosix/">AutoSix page</a> in the <code class="docutils literal notranslate"><span class="pre">OMC</span></code> documentation site.</p>
+<p>For additional information and guides, see the <a class="reference external" href="https://pylhc.github.io/packages/pylhcsubmitter/autosix/">AutoSix page</a>
+on the <code class="docutils literal notranslate"><span class="pre">OMC</span></code> documentation site.</p>
+<div class="warning admonition">
+<p class="admonition-title">Problems with <em>search.f90</em></p>
+<p>If you run into</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ImportError: cannot import name <span class="s1">&#39;search&#39;</span> from partially initialized module <span class="s1">&#39;sixdeskdb&#39;</span>
+</pre></div>
+</div>
+<p>that means that the <code class="file docutils literal notranslate"><span class="pre">SixDesk/utilities/externals/SixDeskDB/sixdeskdb/search.f90</span></code>
+has not been compiled for your current python and OS version (indicated by XXX below).
+There are two ways to do this:</p>
+<p><strong>a)</strong> Run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m numpy.f2py -c search.f90 -f search
+</pre></div>
+</div>
+<p>with your desired python version
+(a shortcut <code class="docutils literal notranslate"><span class="pre">f2py</span></code> might be available if you run in an activated venv).
+Copy (or symlink) the resulting <code class="file docutils literal notranslate"><span class="pre">search.cpython-XXX.so</span></code> file into the
+<code class="file docutils literal notranslate"><span class="pre">sixdeskdb</span></code> folder
+(if it is not already there because you ran from that folder)</p>
+<p><strong>b)</strong> Run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py build_ext
+</pre></div>
+</div>
+<p>on the <code class="file docutils literal notranslate"><span class="pre">setup.py</span></code> in <code class="file docutils literal notranslate"><span class="pre">SixDesk/utilities/externals/SixDeskDB</span></code>.
+Then copy (or symlink) the resulting <code class="file docutils literal notranslate"><span class="pre">build/lib.XXX/sixdeskdb/search.cpython-XXX.so</span></code> into
+the <code class="file docutils literal notranslate"><span class="pre">sixdeskdb</span></code> folder (the name needs to stay as it is).</p>
+</div>
 <p>Arguments:</p>
 <p><em>--Required--</em></p>
 <ul>
-<li><p><strong>mask</strong> <em>(PathOrStr)</em>:</p>
+<li><p><strong>mask</strong> <em>(Path)</em>:</p>
 <blockquote>
-<div><p>Program mask to use</p>
+<div><p>Path to the program’s mask to use.</p>
 </div></blockquote>
 </li>
 <li><p><strong>replace_dict</strong> <em>(DictAsString)</em>:</p>
 <blockquote>
 <div><p>Dict with keys of the strings to be replaced in the mask (required) as
 well as the mask_sixdeskenv and mask_sysenv files in the sixdesk_tools
-module. Required fields are TURNS, AMPMIN, AMPMAX, AMPSTEP,
-ANGLES. Optional fields are RESUBMISSION, PLATFORM, LOGLEVEL,
-FIRSTSEED, LASTSEED, ENERGY, NPAIRS, EMITTANCE, DIMENSIONS, WRITEBINS.
+module. Required fields are TURNS, AMPMIN, AMPMAX, AMPSTEP, ANGLES.
+Optional fields are RESUBMISSION, PLATFORM, LOGLEVEL, FIRSTSEED,
+LASTSEED, RUNTYPE, NPAIRS, EMITTANCE, DIMENSIONS, WRITEBINS, ENERGY.
 These keys can also be used in the mask if needed. The values of this
 dict are lists of values to replace these or single entries.</p>
 </div></blockquote>
 </li>
-<li><p><strong>working_directory</strong> <em>(PathOrStr)</em>:</p>
+<li><p><strong>working_directory</strong> <em>(Path)</em>:</p>
 <blockquote>
-<div><p>Directory where data should be put</p>
+<div><p>Directory where data should be put into.</p>
 </div></blockquote>
 </li>
 </ul>
 <p><em>--Optional--</em></p>
 <ul>
+<li><p><strong>apply_mad6t_hacks</strong>:</p>
+<blockquote>
+<div><p>Apply two hacks: Removes ‘&lt;’ in binary call and ignore the check for
+‘Twiss fail’ in the submission file. This is hack needed in case this
+check greps the wrong lines, e.g. in madx-comments. USE WITH CARE!!</p>
+<p>action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+</div></blockquote>
+</li>
 <li><p><strong>da_turnstep</strong> <em>(int)</em>:</p>
 <blockquote>
 <div><p>Step between turns used in DA-vs-Turns plot.</p>
@@ -144,43 +185,60 @@ dict are lists of values to replace these or single entries.</p>
 </li>
 <li><p><strong>executable</strong> <em>(PathOrStr)</em>:</p>
 <blockquote>
-<div><p>Path to executable.</p>
+<div><p>Path to executable or ‘madx’, ‘python2’, ‘python3’ to use the OMC
+default paths on AFS.Defaults to the latest MADX-Binary on AFS.</p>
 <p>default: <code class="docutils literal notranslate"><span class="pre">/afs/cern.ch/user/m/mad/bin/madx</span></code></p>
-</div></blockquote>
-</li>
-<li><p><strong>apply_mad6t_hacks</strong>:</p>
-<blockquote>
-<div><p>Apply two hacks: Removes ‘&lt;’ in binary call and
-ignore the check for ‘Twiss fail’ in the submission file.
-This hack is needed in case this check greps the wrong lines,
-e.g. in madx- comments. USE WITH CARE!!</p>
-<p>action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
 </div></blockquote>
 </li>
 <li><p><strong>jobid_mask</strong> <em>(str)</em>:</p>
 <blockquote>
-<div><p>Mask to name jobs from replace_dict</p>
+<div><p>Mask-String to name jobs, with placeholders from the <code class="docutils literal notranslate"><span class="pre">replace_dict</span></code>
+keys.</p>
+</div></blockquote>
+</li>
+<li><p><strong>max_materialize</strong> <em>(int)</em>:</p>
+<blockquote>
+<div><p>Maximum jobs to be materialized in scheduler (per SixDesk Workspace!)..
+Here: <code class="docutils literal notranslate"><span class="pre">None</span></code> leaves the settings as defined in the SixDesk
+htcondor_run_six.sub template and <code class="docutils literal notranslate"><span class="pre">0</span></code> removes it from the template.
+Warning: This setting modifies the template in the <code class="docutils literal notranslate"><span class="pre">sixdesk_directory</span></code>
+permanently. For more details see the htcondor API.</p>
+</div></blockquote>
+</li>
+<li><p><strong>max_stage</strong> <em>(str)</em>:</p>
+<blockquote>
+<div><p>Last stage to be run. All following stages are skipped.</p>
+</div></blockquote>
+</li>
+<li><p><strong>python2</strong> <em>(PathOrStr)</em>:</p>
+<blockquote>
+<div><p>Path to python to use with run_six.sh (python2 with requirements
+installed). ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS
+NEEDED! And it can’t be an Anaconda Distribution. If <code class="docutils literal notranslate"><span class="pre">None</span></code> the
+system’s <code class="docutils literal notranslate"><span class="pre">python</span></code> is used (SixDesk internally).</p>
+<p>default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
 </div></blockquote>
 </li>
 <li><p><strong>python3</strong> <em>(PathOrStr)</em>:</p>
 <blockquote>
 <div><p>Path to python to use with sixdb (python3 with requirements
-installed).</p>
+installed).Defaults to the system’s <code class="docutils literal notranslate"><span class="pre">python3</span></code>.</p>
 <p>default: <code class="docutils literal notranslate"><span class="pre">python3</span></code></p>
-</div></blockquote>
-</li>
-<li><p><strong>python2</strong> <em>(PathOrStr)</em>:</p>
-<blockquote>
-<div><p>Path to python to use with run_six.sh (python2 with requirements installed).
-ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS NEEDED!
-And it can’t be an Anaconda Distribution.</p>
-<p>default: None (uses the first <code class="docutils literal notranslate"><span class="pre">python</span></code> in path)</p>
 </div></blockquote>
 </li>
 <li><p><strong>resubmit</strong>:</p>
 <blockquote>
-<div><p>Resubmits if needed.</p>
+<div><p>Resubmits to HTCondor if needed (i.e. in case it finds errors with the
+previous run).</p>
 <p>action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+</div></blockquote>
+</li>
+<li><p><strong>sixdesk_directory</strong> <em>(Path)</em>:</p>
+<blockquote>
+<div><p>Path to the directory of SixDesk. Defaults to the PRO-version on AFS.
+If you are using your own SixDesk Environment and it does not run,
+check the AutoSix doc.</p>
+<p>default: <code class="docutils literal notranslate"><span class="pre">/afs/cern.ch/project/sixtrack/SixDesk_utilities/pro</span></code></p>
 </div></blockquote>
 </li>
 <li><p><strong>ssh</strong> <em>(str)</em>:</p>
@@ -198,7 +256,7 @@ manual changes.</p>
 </li>
 <li><p><strong>unlock</strong>:</p>
 <blockquote>
-<div><p>Forces unlocking of folders.</p>
+<div><p>Forces unlocking of folders (if they have been locked by Sixdesk).</p>
 <p>action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
 </div></blockquote>
 </li>
@@ -215,30 +273,16 @@ manual changes.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pylhc_submitter.autosix.setup_and_run">
-<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.autosix.</span></span><span class="sig-name descname"><span class="pre">setup_and_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basedir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/autosix.html#setup_and_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.autosix.setup_and_run" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="pylhc_submitter.autosix.run_job">
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.autosix.</span></span><span class="sig-name descname"><span class="pre">run_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jobargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../modules/constants.html#pylhc_submitter.constants.autosix.AutoSixEnvironment" title="pylhc_submitter.constants.autosix.AutoSixEnvironment"><span class="pre">pylhc_submitter.constants.autosix.AutoSixEnvironment</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/autosix.html#run_job"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.autosix.run_job" title="Permalink to this definition"></a></dt>
 <dd><p>Main submitting procedure for single job.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>jobname</strong> (<em>str</em>) -- Name of the job/study</p></li>
-<li><p><strong>basedir</strong> (<em>Path</em>) -- Working directory</p></li>
+<li><p><strong>env</strong> (<em>DotDict</em>) -- The ensemble of autosix settings as an <code class="docutils literal notranslate"><span class="pre">AutoSixEnvironment</span></code> object.</p></li>
+<li><p><strong>jobargs</strong> (<em>dict</em>) -- All Key=Values needed to fill the mask!</p></li>
 </ul>
-</dd>
-</dl>
-<dl class="simple">
-<dt>Keyword Args (optional):</dt><dd><p>unlock (bool): unlock folder
-ssh (str): ssh-server to use
-python (str): python binary to use for sixDB
-resubmit(bool): Resubmit jobs if checks fail
-da_turnstep (int): Step in turns for DA
-ignore_twissfail_check (bool): Hack to ignore check for ‘Twiss fail’ after run
-max_stage (str): Last stage to run</p>
-</dd>
-<dt>Keyword Args (needed for create jobs):</dt><dd><p>mask_text (str): Content of the mask to use.
-binary_path (Path): path to binary to use in jobs
-All Key=Values needed to fill the mask!
-All Key=Values needed to fill the mask!</p>
 </dd>
 </dl>
 </dd></dl>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylhc_submitter.sixdesk_tools.create_workspace &mdash; pylhc_submitter 1.0.1 documentation</title>
+  <title>pylhc_submitter.sixdesk_tools.create_workspace &mdash; pylhc_submitter 1.1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <img src="../../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.0
+                1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -58,9 +58,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#stages">Stages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
 </ul>
@@ -103,14 +105,19 @@
 
 <span class="sd">Tools to setup the workspace for sixdesk.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">asdict</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">generic_parser</span> <span class="kn">import</span> <span class="n">DotDict</span>
+
 <span class="kn">from</span> <span class="nn">pylhc_submitter.constants.autosix</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">SETENV_SH</span><span class="p">,</span>
-    <span class="n">SIXENV_DEFAULT</span><span class="p">,</span>
     <span class="n">SIXENV_REQUIRED</span><span class="p">,</span>
     <span class="n">SEED_KEYS</span><span class="p">,</span>
     <span class="n">get_workspace_path</span><span class="p">,</span>
@@ -122,7 +129,9 @@
     <span class="n">get_autosix_results_path</span><span class="p">,</span>
     <span class="n">get_sysenv_path</span><span class="p">,</span>
     <span class="n">get_sixdeskenv_path</span><span class="p">,</span>
+    <span class="n">SixDeskEnvironment</span><span class="p">,</span> <span class="n">SIXENV_OPTIONAL</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.external_paths</span> <span class="kn">import</span> <span class="n">SIXDESK_UTILS</span>
 <span class="kn">from</span> <span class="nn">pylhc_submitter.sixdesk_tools.utils</span> <span class="kn">import</span> <span class="n">start_subprocess</span>
 
 <span class="n">SYSENV_MASK</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;mask_sysenv&quot;</span>
@@ -134,19 +143,24 @@
 <span class="c1"># Main -------------------------------------------------------------------------</span>
 
 
-<div class="viewcode-block" id="create_job"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.create_job">[docs]</a><span class="k">def</span> <span class="nf">create_job</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mask_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">binary_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Create environment and individual jobs/masks for SixDesk to send to HTC. &quot;&quot;&quot;</span>
-    <span class="n">_create_workspace</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="n">ssh</span><span class="o">=</span><span class="n">ssh</span><span class="p">)</span>
-    <span class="n">_create_sysenv</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="n">binary_path</span><span class="o">=</span><span class="n">binary_path</span><span class="p">)</span>
+<div class="viewcode-block" id="create_job"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.create_job">[docs]</a><span class="k">def</span> <span class="nf">create_job</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">executable</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">mask_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+               <span class="n">sixdesk</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">SIXDESK_UTILS</span><span class="p">,</span> <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create environment and individual jobs/masks for SixDesk to send to HTC.</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        Need to contain all replacements for sixdeskenv and the mask.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_create_workspace</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="n">sixdesk</span><span class="o">=</span><span class="n">sixdesk</span><span class="p">,</span> <span class="n">ssh</span><span class="o">=</span><span class="n">ssh</span><span class="p">)</span>
+    <span class="n">_create_sysenv</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="n">binary_path</span><span class="o">=</span><span class="n">executable</span><span class="p">)</span>
     <span class="n">_create_sixdeskenv</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">_write_mask</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="n">mask_text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Workspace prepared.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="init_workspace"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.init_workspace">[docs]</a><span class="k">def</span> <span class="nf">init_workspace</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="init_workspace"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.init_workspace">[docs]</a><span class="k">def</span> <span class="nf">init_workspace</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">sixdesk</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">SIXDESK_UTILS</span><span class="p">,</span> <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Initializes the workspace with sixdeskenv and sysenv. &quot;&quot;&quot;</span>
     <span class="n">sixjobs_path</span> <span class="o">=</span> <span class="n">get_sixjobs_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
-    <span class="n">start_subprocess</span><span class="p">([</span><span class="n">SETENV_SH</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">sixjobs_path</span><span class="p">,</span> <span class="n">ssh</span><span class="o">=</span><span class="n">ssh</span><span class="p">)</span>
+    <span class="n">start_subprocess</span><span class="p">([</span><span class="n">sixdesk</span> <span class="o">/</span> <span class="n">SETENV_SH</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">sixjobs_path</span><span class="p">,</span> <span class="n">ssh</span><span class="o">=</span><span class="n">ssh</span><span class="p">)</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Workspace initialized.&quot;</span><span class="p">)</span></div>
 
 
@@ -197,10 +211,46 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">mad6t_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="set_max_materialize"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.set_max_materialize">[docs]</a><span class="k">def</span> <span class="nf">set_max_materialize</span><span class="p">(</span><span class="n">sixdesk</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">max_materialize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Adds the ``max_materialize`` option into the htcondor sixtrack</span>
+<span class="sd">    submission-file.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">max_materialize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting max_materialize for SixTrack to </span><span class="si">{</span><span class="n">max_materialize</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="n">sub_path</span> <span class="o">=</span> <span class="n">sixdesk</span> <span class="o">/</span> <span class="s2">&quot;utilities&quot;</span> <span class="o">/</span> <span class="s2">&quot;templates&quot;</span> <span class="o">/</span> <span class="s2">&quot;htcondor&quot;</span> <span class="o">/</span> <span class="s2">&quot;htcondor_run_six.sub&quot;</span>
+    <span class="n">sub_content</span> <span class="o">=</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
+
+    <span class="c1"># Remove whole max_materialize line if present</span>
+    <span class="k">if</span> <span class="n">max_materialize</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;max_materialize&quot;</span> <span class="ow">in</span> <span class="n">sub_content</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&#39;max_materialize&#39; already set. Removing.&quot;</span><span class="p">)</span>
+            <span class="n">sub_content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;max_materialize\s*=\s*\d+\s*&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">sub_content</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;max_materialize&#39; is already not present (as desired).&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Set/replace with number</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">max_materialize_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;max_materialize = </span><span class="si">{</span><span class="n">max_materialize</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;max_materialize&quot;</span> <span class="ow">in</span> <span class="n">sub_content</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;max_materialize already set. Replacing it with new number.&quot;</span><span class="p">)</span>
+            <span class="n">sub_content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;max_materialize\s*=\s*\d+&quot;</span><span class="p">,</span> <span class="n">max_materialize_str</span><span class="p">,</span> <span class="n">sub_content</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sub_content</span> <span class="o">=</span> <span class="n">sub_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">queue&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">max_materialize_str</span><span class="si">}</span><span class="se">\n</span><span class="s2">queue&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Write out</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sub_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">sub_content</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not write to </span><span class="si">{</span><span class="n">sub_path</span><span class="si">!s}</span><span class="s2">. `max_materialization` could not be set.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;Remove option or use a SixDesk with writing rights.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+
+
 <span class="c1"># Helper -----------------------------------------------------------------------</span>
 
 
-<span class="k">def</span> <span class="nf">_create_workspace</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_create_workspace</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">sixdesk</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">SIXDESK_UTILS</span><span class="p">,</span> <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Create workspace structure (with default files). &quot;&quot;&quot;</span>
     <span class="n">workspace_path</span> <span class="o">=</span> <span class="n">get_workspace_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
     <span class="n">scratch_path</span> <span class="o">=</span> <span class="n">get_scratch_path</span><span class="p">(</span><span class="n">basedir</span><span class="p">)</span>
@@ -224,7 +274,7 @@
 
     <span class="c1"># create environment with all necessary files</span>
     <span class="c1"># _start_subprocess([&#39;git&#39;, &#39;clone&#39;, GIT_REPO, basedir])</span>
-    <span class="n">start_subprocess</span><span class="p">([</span><span class="n">SETENV_SH</span><span class="p">,</span> <span class="s2">&quot;-N&quot;</span><span class="p">,</span> <span class="n">workspace_path</span><span class="o">.</span><span class="n">name</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">basedir</span><span class="p">,</span> <span class="n">ssh</span><span class="o">=</span><span class="n">ssh</span><span class="p">)</span>
+    <span class="n">start_subprocess</span><span class="p">([</span><span class="n">sixdesk</span> <span class="o">/</span> <span class="n">SETENV_SH</span><span class="p">,</span> <span class="s2">&quot;-N&quot;</span><span class="p">,</span> <span class="n">workspace_path</span><span class="o">.</span><span class="n">name</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">basedir</span><span class="p">,</span> <span class="n">ssh</span><span class="o">=</span><span class="n">ssh</span><span class="p">)</span>
 
     <span class="c1"># create autosix results folder.</span>
     <span class="c1"># Needs to be done after above command (as it crashes if folder exists)</span>
@@ -242,35 +292,17 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The following keys are required but missing </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-    <span class="n">sixenv_replace</span> <span class="o">=</span> <span class="n">SIXENV_DEFAULT</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">sixenv_replace</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">sixenv_replace</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-        <span class="nb">dict</span><span class="p">(</span>
-            <span class="n">JOBNAME</span><span class="o">=</span><span class="n">jobname</span><span class="p">,</span>
-            <span class="n">WORKSPACE</span><span class="o">=</span><span class="n">workspace_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">BASEDIR</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">basedir</span><span class="p">),</span>
-            <span class="n">SCRATCHDIR</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">scratch_path</span><span class="p">),</span>
-            <span class="n">TURNSPOWER</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sixenv_replace</span><span class="p">[</span><span class="s2">&quot;TURNS&quot;</span><span class="p">]),</span>
-        <span class="p">)</span>
+    <span class="n">sixenv_variables</span> <span class="o">=</span> <span class="n">SixDeskEnvironment</span><span class="p">(</span>
+        <span class="n">JOBNAME</span><span class="o">=</span><span class="n">jobname</span><span class="p">,</span>
+        <span class="n">WORKSPACE</span><span class="o">=</span><span class="n">workspace_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">BASEDIR</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">basedir</span><span class="p">),</span>
+        <span class="n">SCRATCHDIR</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">scratch_path</span><span class="p">),</span>
+        <span class="n">TURNSPOWER</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;TURNS&quot;</span><span class="p">]),</span>
+        <span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">SIXENV_REQUIRED</span> <span class="o">+</span> <span class="n">SIXENV_OPTIONAL</span><span class="p">},</span>
     <span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">sixenv_replace</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">SEED_KEYS</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">SEED_KEYS</span><span class="p">:</span>
-            <span class="n">sixenv_replace</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="c1"># the following checks are limits of SixDesk in 2020</span>
-    <span class="c1"># and might be fixed upstream in the future</span>
-    <span class="k">if</span> <span class="n">sixenv_replace</span><span class="p">[</span><span class="s2">&quot;AMPMAX&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">sixenv_replace</span><span class="p">[</span><span class="s2">&quot;AMPMIN&quot;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Given AMPMAX is smaller than AMPMIN.&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">sixenv_replace</span><span class="p">[</span><span class="s2">&quot;AMPMAX&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">sixenv_replace</span><span class="p">[</span><span class="s2">&quot;AMPMIN&quot;</span><span class="p">])</span> <span class="o">%</span> <span class="n">sixenv_replace</span><span class="p">[</span><span class="s2">&quot;AMPSTEP&quot;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The amplitude range need to be dividable by the amplitude steps!&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">sixenv_replace</span><span class="p">[</span><span class="s2">&quot;ANGLES&quot;</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The number of angles needs to be an uneven one.&quot;</span><span class="p">)</span>
-
     <span class="n">sixenv_text</span> <span class="o">=</span> <span class="n">SIXDESKENV_MASK</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
-    <span class="n">sixdeskenv_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">sixenv_text</span> <span class="o">%</span> <span class="n">sixenv_replace</span><span class="p">)</span>
+    <span class="n">sixdeskenv_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">sixenv_text</span> <span class="o">%</span> <span class="n">asdict</span><span class="p">(</span><span class="n">sixenv_variables</span><span class="p">))</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;sixdeskenv written.&quot;</span><span class="p">)</span>
 
 
@@ -290,7 +322,7 @@
 <span class="k">def</span> <span class="nf">_write_mask</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mask_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Fills mask with arguments and writes it out. &quot;&quot;&quot;</span>
     <span class="n">masks_path</span> <span class="o">=</span> <span class="n">get_masks_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
-    <span class="n">seed_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">SIXENV_DEFAULT</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">SEED_KEYS</span><span class="p">]</span>
+    <span class="n">seed_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">SixDeskEnvironment</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">SEED_KEYS</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">seed_range</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>

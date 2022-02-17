@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylhc_submitter.sixdesk_tools.post_process_da &mdash; pylhc_submitter 1.0.1 documentation</title>
+  <title>pylhc_submitter.sixdesk_tools.post_process_da &mdash; pylhc_submitter 1.1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <img src="../../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.0
+                1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -58,9 +58,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#stages">Stages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
 </ul>
@@ -106,7 +108,6 @@
 <span class="sd">as well as plotting of DA polar plots.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">sqlite3</span> <span class="k">as</span> <span class="nn">sql</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterable</span>
 
@@ -119,7 +120,6 @@
 <span class="kn">from</span> <span class="nn">tfs</span> <span class="kn">import</span> <span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">write_tfs</span>
 
 <span class="kn">from</span> <span class="nn">pylhc_submitter.constants.autosix</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">get_database_path</span><span class="p">,</span>
     <span class="n">get_tfs_da_path</span><span class="p">,</span>
     <span class="n">get_tfs_da_seed_stats_path</span><span class="p">,</span>
     <span class="n">get_tfs_da_angle_stats_path</span><span class="p">,</span>
@@ -138,7 +138,7 @@
     <span class="n">ALOST2</span><span class="p">,</span>
     <span class="n">AMP</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.sixdesk_tools.utils</span> <span class="kn">import</span> <span class="n">StageSkip</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.sixdesk_tools.extract_data_from_db</span> <span class="kn">import</span> <span class="n">extract_da_data</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -163,12 +163,8 @@
 <div class="viewcode-block" id="post_process_da"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.post_process_da">[docs]</a><span class="k">def</span> <span class="nf">post_process_da</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Post process the DA results into dataframes and DA plots. &quot;&quot;&quot;</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Post-Processing Sixdesk Results.&quot;</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">df_da</span><span class="p">,</span> <span class="n">df_angle</span><span class="p">,</span> <span class="n">df_seed</span> <span class="o">=</span> <span class="n">create_da_tfs</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
-        <span class="n">create_polar_plots</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="n">df_da</span><span class="p">,</span> <span class="n">df_angle</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Post Processing Failed.&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">StageSkip</span><span class="p">(</span><span class="s2">&quot;Post Processing failed!&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+    <span class="n">df_da</span><span class="p">,</span> <span class="n">df_angle</span><span class="p">,</span> <span class="n">df_seed</span> <span class="o">=</span> <span class="n">create_da_tfs</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
+    <span class="n">create_polar_plots</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="n">df_da</span><span class="p">,</span> <span class="n">df_angle</span><span class="p">)</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Post-Processing finished.&quot;</span><span class="p">)</span></div>
 
 
@@ -176,9 +172,14 @@
 
 
 <div class="viewcode-block" id="create_da_tfs"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.create_da_tfs">[docs]</a><span class="k">def</span> <span class="nf">create_da_tfs</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">TfsDataFrame</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot; Extracts data from db into dataframes, and writes and returns them.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Extracts data from db into dataframes, and writes and returns them.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        jobname (str): Name of the Job</span>
+<span class="sd">        basedir (Path): SixDesk Basefolder Location</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Gathering DA data into tfs-files.&quot;</span><span class="p">)</span>
-    <span class="n">df_da</span> <span class="o">=</span> <span class="n">extract_da_data_from_db</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
+    <span class="n">df_da</span> <span class="o">=</span> <span class="n">extract_da_data</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
     <span class="n">df_angle</span> <span class="o">=</span> <span class="n">_create_stats_df</span><span class="p">(</span><span class="n">df_da</span><span class="p">,</span> <span class="n">ANGLE</span><span class="p">)</span>
     <span class="n">df_seed</span> <span class="o">=</span> <span class="n">_create_stats_df</span><span class="p">(</span><span class="n">df_da</span><span class="p">,</span> <span class="n">SEED</span><span class="p">,</span> <span class="n">global_index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
@@ -186,26 +187,6 @@
     <span class="n">write_tfs</span><span class="p">(</span><span class="n">get_tfs_da_angle_stats_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">),</span> <span class="n">df_angle</span><span class="p">,</span> <span class="n">save_index</span><span class="o">=</span><span class="n">ANGLE</span><span class="p">)</span>
     <span class="n">write_tfs</span><span class="p">(</span><span class="n">get_tfs_da_seed_stats_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">),</span> <span class="n">df_seed</span><span class="p">,</span> <span class="n">save_index</span><span class="o">=</span><span class="n">SEED</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">df_da</span><span class="p">,</span> <span class="n">df_angle</span><span class="p">,</span> <span class="n">df_seed</span></div>
-
-
-<div class="viewcode-block" id="extract_da_data_from_db"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.extract_da_data_from_db">[docs]</a><span class="k">def</span> <span class="nf">extract_da_data_from_db</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TfsDataFrame</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; Extract data directly from the database. &quot;&quot;&quot;</span>
-    <span class="n">db_path</span> <span class="o">=</span> <span class="n">get_database_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
-    <span class="n">db</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
-    <span class="n">df_da</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span>
-        <span class="s2">&quot;SELECT seed, angle, alost1, alost2, Amin, Amax FROM da_post ORDER BY seed, angle&quot;</span><span class="p">,</span> <span class="n">db</span>
-    <span class="p">)</span>
-    <span class="n">df_da</span> <span class="o">=</span> <span class="n">df_da</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
-        <span class="n">columns</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">SEED</span><span class="p">,</span>
-            <span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="n">ANGLE</span><span class="p">,</span>
-            <span class="s2">&quot;alost1&quot;</span><span class="p">:</span> <span class="n">ALOST1</span><span class="p">,</span>
-            <span class="s2">&quot;alost2&quot;</span><span class="p">:</span> <span class="n">ALOST2</span><span class="p">,</span>
-            <span class="s2">&quot;Amin&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">MIN</span><span class="si">}{</span><span class="n">AMP</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Amax&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">MAX</span><span class="si">}{</span><span class="n">AMP</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">TfsDataFrame</span><span class="p">(</span><span class="n">df_da</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_create_stats_df</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">parameter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">global_index</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TfsDataFrame</span><span class="p">:</span>
@@ -270,7 +251,14 @@
 
 
 <div class="viewcode-block" id="create_polar_plots"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.create_polar_plots">[docs]</a><span class="k">def</span> <span class="nf">create_polar_plots</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">df_da</span><span class="p">:</span> <span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">df_angles</span><span class="p">:</span> <span class="n">TfsDataFrame</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Plotting loop over da-methods and wrapper so save plots. &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Plotting loop over da-methods and wrapper so save plots.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        jobname (str): Name of the Job</span>
+<span class="sd">        basedir (Path): SixDesk Basefolder Location</span>
+<span class="sd">        df_da (TfsDataFrame): Full DA analysis result.</span>
+<span class="sd">        df_angles (TfsDataFrame): Dataframe with the statistics (min, max, mean) per angle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating Polar Plots.&quot;</span><span class="p">)</span>
     <span class="n">outdir_path</span> <span class="o">=</span> <span class="n">get_autosix_results_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">da_col</span> <span class="ow">in</span> <span class="n">DA_COLUMNS</span><span class="p">:</span>
@@ -333,8 +321,8 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_thetamin</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_thetamax</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_rlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\sigma_</span><span class="si">{x}</span><span class="s2">~[\sigma_</span><span class="si">{nominal}</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\sigma_</span><span class="si">{y}</span><span class="s2">~[\sigma_</span><span class="si">{nominal}</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;DA$_</span><span class="si">{x}</span><span class="s2">~[\sigma_</span><span class="si">{nominal}</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;DA$_</span><span class="si">{y}</span><span class="s2">~[\sigma_</span><span class="si">{nominal}</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">angle_ticks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle_ticks</span><span class="p">))</span>

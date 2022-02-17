@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylhc_submitter.sixdesk_tools.utils &mdash; pylhc_submitter 1.0.1 documentation</title>
+  <title>pylhc_submitter.sixdesk_tools.utils &mdash; pylhc_submitter 1.1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <img src="../../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.0
+                1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -58,9 +58,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#stages">Stages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
 </ul>
@@ -105,15 +107,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.autosix</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">SIXDESKLOCKFILE</span><span class="p">,</span>
-    <span class="n">Stage</span><span class="p">,</span>
-    <span class="n">get_workspace_path</span><span class="p">,</span>
-    <span class="n">get_stagefile_path</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.autosix</span> <span class="kn">import</span> <span class="n">SIXDESKLOCKFILE</span><span class="p">,</span> <span class="n">get_workspace_path</span>
 <span class="kn">from</span> <span class="nn">pylhc_submitter.constants.external_paths</span> <span class="kn">import</span> <span class="n">SIXDESK_UTILS</span>
 <span class="kn">from</span> <span class="nn">pylhc_submitter.htc.mask</span> <span class="kn">import</span> <span class="n">find_named_variables_in_mask</span>
 
@@ -134,70 +130,6 @@
             <span class="s2">&quot;The following keys in the mask were not found for replacement: &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">not_in_dict</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span></div>
-
-
-<span class="c1"># Stages -----------------------------------------------------------------------</span>
-
-
-<div class="viewcode-block" id="StageSkip"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.StageSkip">[docs]</a><span class="k">class</span> <span class="nc">StageSkip</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="check_stage"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.check_stage">[docs]</a><span class="nd">@contextmanager</span>
-<span class="k">def</span> <span class="nf">check_stage</span><span class="p">(</span><span class="n">stage</span><span class="p">:</span> <span class="n">Stage</span><span class="p">,</span> <span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">max_stage</span><span class="p">:</span> <span class="n">Stage</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Wrapper for stage functions to add stage to stagefile. &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">should_run_stage</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="n">max_stage</span><span class="p">):</span>
-        <span class="k">yield</span> <span class="kc">False</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="kc">True</span>
-        <span class="k">except</span> <span class="n">StageSkip</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">stage_done</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="stage_done"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.stage_done">[docs]</a><span class="k">def</span> <span class="nf">stage_done</span><span class="p">(</span><span class="n">stage</span><span class="p">:</span> <span class="n">Stage</span><span class="p">,</span> <span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Append current stage name to stagefile. &quot;&quot;&quot;</span>
-    <span class="n">stage_file</span> <span class="o">=</span> <span class="n">get_stagefile_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">stage_file</span><span class="p">,</span> <span class="s2">&quot;a+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stage</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="should_run_stage"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.should_run_stage">[docs]</a><span class="k">def</span> <span class="nf">should_run_stage</span><span class="p">(</span><span class="n">stage</span><span class="p">:</span> <span class="n">Stage</span><span class="p">,</span> <span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">max_stage</span><span class="p">:</span> <span class="n">Stage</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Checks if the stage should be run. &quot;&quot;&quot;</span>
-    <span class="n">stage_file</span> <span class="o">=</span> <span class="n">get_stagefile_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">stage_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">stage</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stage </span><span class="si">{</span><span class="n">stage</span><span class="si">}</span><span class="s2"> not run because previous stage(s) missing.&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">stage_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">stage_file_txt</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">run_stages</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stage_file_txt</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
-
-    <span class="k">if</span> <span class="n">stage</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">run_stages</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stage </span><span class="si">{</span><span class="n">stage</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> has already been run. Skipping.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="k">if</span> <span class="n">stage</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span>
-
-    <span class="c1"># check if user requested a stop at a certain stage</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">max_stage</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">stage</span> <span class="o">&gt;</span> <span class="n">max_stage</span><span class="p">):</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stage </span><span class="si">{</span><span class="n">stage</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> would run after requested &quot;</span>
-                 <span class="sa">f</span><span class="s2">&quot;maximum stage </span><span class="si">{</span><span class="n">max_stage</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. Skipping.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="c1"># check if last run stage is also the stage before current stage in stage order</span>
-    <span class="k">if</span> <span class="n">run_stages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">Stage</span><span class="p">(</span><span class="n">stage</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span>
-
-    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stage </span><span class="si">{</span><span class="n">stage</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> not run because previous stage(s) missing.&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <span class="c1"># Locks ------------------------------------------------------------------------</span>
