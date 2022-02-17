@@ -7,7 +7,6 @@ da. Includes functions for extracting data from database
 as well as plotting of DA polar plots.
 """
 import logging
-import sqlite3 as sql
 from pathlib import Path
 from typing import Any, Tuple, Iterable
 
@@ -20,7 +19,6 @@ from scipy.interpolate import interp1d
 from tfs import TfsDataFrame, write_tfs
 
 from pylhc_submitter.constants.autosix import (
-    get_database_path,
     get_tfs_da_path,
     get_tfs_da_seed_stats_path,
     get_tfs_da_angle_stats_path,
@@ -39,7 +37,7 @@ from pylhc_submitter.constants.autosix import (
     ALOST2,
     AMP,
 )
-from pylhc_submitter.sixdesk_tools.utils import StageSkip
+from pylhc_submitter.sixdesk_tools.extract_data_from_db import extract_da_data
 
 LOG = logging.getLogger(__name__)
 
@@ -64,12 +62,8 @@ ALPHA_FILL_STD = 0.2
 def post_process_da(jobname: str, basedir: Path):
     """ Post process the DA results into dataframes and DA plots. """
     LOG.info("Post-Processing Sixdesk Results.")
-    try:
-        df_da, df_angle, df_seed = create_da_tfs(jobname, basedir)
-        create_polar_plots(jobname, basedir, df_da, df_angle)
-    except Exception as e:
-        LOG.exception("Post Processing Failed.")
-        raise StageSkip("Post Processing failed!") from e
+    df_da, df_angle, df_seed = create_da_tfs(jobname, basedir)
+    create_polar_plots(jobname, basedir, df_da, df_angle)
     LOG.info("Post-Processing finished.")
 
 
@@ -77,9 +71,14 @@ def post_process_da(jobname: str, basedir: Path):
 
 
 def create_da_tfs(jobname: str, basedir: Path) -> Tuple[TfsDataFrame, TfsDataFrame, TfsDataFrame]:
-    """ Extracts data from db into dataframes, and writes and returns them."""
+    """ Extracts data from db into dataframes, and writes and returns them.
+
+    Args:
+        jobname (str): Name of the Job
+        basedir (Path): SixDesk Basefolder Location
+    """
     LOG.info("Gathering DA data into tfs-files.")
-    df_da = extract_da_data_from_db(jobname, basedir)
+    df_da = extract_da_data(jobname, basedir)
     df_angle = _create_stats_df(df_da, ANGLE)
     df_seed = _create_stats_df(df_da, SEED, global_index=0)
 
@@ -87,26 +86,6 @@ def create_da_tfs(jobname: str, basedir: Path) -> Tuple[TfsDataFrame, TfsDataFra
     write_tfs(get_tfs_da_angle_stats_path(jobname, basedir), df_angle, save_index=ANGLE)
     write_tfs(get_tfs_da_seed_stats_path(jobname, basedir), df_seed, save_index=SEED)
     return df_da, df_angle, df_seed
-
-
-def extract_da_data_from_db(jobname: str, basedir: Path) -> TfsDataFrame:
-    """ Extract data directly from the database. """
-    db_path = get_database_path(jobname, basedir)
-    db = sql.connect(db_path)
-    df_da = pd.read_sql(
-        "SELECT seed, angle, alost1, alost2, Amin, Amax FROM da_post ORDER BY seed, angle", db
-    )
-    df_da = df_da.rename(
-        columns={
-            "seed": SEED,
-            "angle": ANGLE,
-            "alost1": ALOST1,
-            "alost2": ALOST2,
-            "Amin": f"{MIN}{AMP}",
-            "Amax": f"{MAX}{AMP}",
-        }
-    )
-    return TfsDataFrame(df_da)
 
 
 def _create_stats_df(df: pd.DataFrame, parameter: str, global_index: Any = None) -> TfsDataFrame:
@@ -171,7 +150,14 @@ def _create_stats_df(df: pd.DataFrame, parameter: str, global_index: Any = None)
 
 
 def create_polar_plots(jobname: str, basedir: Path, df_da: TfsDataFrame, df_angles: TfsDataFrame):
-    """ Plotting loop over da-methods and wrapper so save plots. """
+    """ Plotting loop over da-methods and wrapper so save plots.
+
+    Args:
+        jobname (str): Name of the Job
+        basedir (Path): SixDesk Basefolder Location
+        df_da (TfsDataFrame): Full DA analysis result.
+        df_angles (TfsDataFrame): Dataframe with the statistics (min, max, mean) per angle
+    """
     LOG.info("Creating Polar Plots.")
     outdir_path = get_autosix_results_path(jobname, basedir)
     for da_col in DA_COLUMNS:
@@ -234,8 +220,8 @@ def plot_polar(
     ax.set_thetamin(0)
     ax.set_thetamax(90)
     ax.set_rlim([0, None])
-    ax.set_xlabel(r"$\sigma_{x}~[\sigma_{nominal}]$", labelpad=15)
-    ax.set_ylabel(r"$\sigma_{y}~[\sigma_{nominal}]$", labelpad=20)
+    ax.set_xlabel(r"DA$_{x}~[\sigma_{nominal}]$", labelpad=15)
+    ax.set_ylabel(r"DA$_{y}~[\sigma_{nominal}]$", labelpad=20)
 
     if angle_ticks is not None:
         ax.set_xticks(np.deg2rad(angle_ticks))

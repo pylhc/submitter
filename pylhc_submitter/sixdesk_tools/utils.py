@@ -6,15 +6,9 @@ Helper Utilities for Autosix.
 """
 import logging
 import subprocess
-from contextlib import contextmanager
 from pathlib import Path
 
-from pylhc_submitter.constants.autosix import (
-    SIXDESKLOCKFILE,
-    Stage,
-    get_workspace_path,
-    get_stagefile_path,
-)
+from pylhc_submitter.constants.autosix import SIXDESKLOCKFILE, get_workspace_path
 from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
 from pylhc_submitter.htc.mask import find_named_variables_in_mask
 
@@ -35,70 +29,6 @@ def check_mask(mask_text: str, replace_args: dict):
             "The following keys in the mask were not found for replacement: "
             f"{str(not_in_dict).strip('{}')}"
         )
-
-
-# Stages -----------------------------------------------------------------------
-
-
-class StageSkip(Exception):
-    pass
-
-
-@contextmanager
-def check_stage(stage: Stage, jobname: str, basedir: Path, max_stage: Stage = None):
-    """ Wrapper for stage functions to add stage to stagefile. """
-    if not should_run_stage(stage, jobname, basedir, max_stage):
-        yield False
-    else:
-        try:
-            yield True
-        except StageSkip as e:
-            if str(e):
-                LOG.error(str(e))
-        else:
-            stage_done(stage, jobname, basedir)
-
-
-def stage_done(stage: Stage, jobname: str, basedir: Path):
-    """ Append current stage name to stagefile. """
-    stage_file = get_stagefile_path(jobname, basedir)
-    with open(stage_file, "a+") as f:
-        f.write(f"{stage.name}\n")
-
-
-def should_run_stage(stage: Stage, jobname: str, basedir: Path, max_stage: Stage = None):
-    """ Checks if the stage should be run. """
-    stage_file = get_stagefile_path(jobname, basedir)
-    if not stage_file.exists():
-        if stage.value == 0:
-            return True
-        else:
-            LOG.debug(f"Stage {stage} not run because previous stage(s) missing.")
-            return False
-
-    with open(stage_file, "r") as f:
-        stage_file_txt = f.read().split("\n")
-    run_stages = [line.strip() for line in stage_file_txt if line.strip()]
-
-    if stage.name in run_stages:
-        LOG.info(f"Stage {stage.name} has already been run. Skipping.")
-        return False
-
-    if stage.value == 0:
-        return True
-
-    # check if user requested a stop at a certain stage
-    if (max_stage is not None) and (stage > max_stage):
-        LOG.info(f"Stage {stage.name} would run after requested "
-                 f"maximum stage {max_stage.name}. Skipping.")
-        return False
-
-    # check if last run stage is also the stage before current stage in stage order
-    if run_stages[-1] == Stage(stage-1).name:
-        return True
-
-    LOG.debug(f"Stage {stage.name} not run because previous stage(s) missing.")
-    return False
 
 
 # Locks ------------------------------------------------------------------------

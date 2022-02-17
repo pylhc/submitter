@@ -1,27 +1,28 @@
 import logging
+import shutil
 from pathlib import Path
 from unittest.mock import patch
 
 import tfs
 
-from pylhc_submitter.sixdesk_tools.create_workspace import remove_twiss_fail_check
+from pylhc_submitter.sixdesk_tools.create_workspace import remove_twiss_fail_check, set_max_materialize
 from pylhc_submitter.sixdesk_tools.post_process_da import plot_polar, plt
-from pylhc_submitter.autosix import _generate_jobs, setup_and_run
+from pylhc_submitter.autosix import _generate_jobs, run_job
 from pylhc_submitter.constants.autosix import (
     get_masks_path, get_autosix_results_path, get_sixdeskenv_path,
-    get_sysenv_path, get_stagefile_path, ANGLE, Stage,
-    get_mad6t_mask_path, get_mad6t1_mask_path
+    get_sysenv_path, get_stagefile_path, ANGLE, get_mad6t_mask_path, get_mad6t1_mask_path, AutoSixEnvironment
 )
+from pylhc_submitter.sixdesk_tools.stages import STAGE_ORDER, CreateJob, InitializeWorkspace
 
-STAGE_NAMES = [s.name for s in Stage]
+STAGE_NAMES = list(STAGE_ORDER.keys())
 
 INPUTS = Path(__file__).parent.parent / 'inputs'
 DA_RESULTS_DIR = INPUTS / 'sixdesk_da_results'
 
 # log-texts to be changed if they change in `should_run_stage`
-ALREADY_RUN_LOG = "Stage {} has already been run."
-PREVIOUS_MISSING_LOG = "Stage {} not run because previous stage(s) missing."
-AFTER_MAXIMUM_LOG = "Stage {} would run after requested maximum stage {}."
+ALREADY_RUN_LOG = "Stage '{}' has already been run."
+PREVIOUS_MISSING_LOG = "Stage '{}' not run because previous stage(s) missing."
+AFTER_MAXIMUM_LOG = "Stage '{}' would run after requested maximum stage '{}'."
 
 
 def test_create_job_matrix(tmp_path):
@@ -42,17 +43,22 @@ def test_create_workspace(tmp_path):
 
     mock_create, mock_submit = _create_subprocess_mocks(jobname, tmp_path)
     with mock_create, mock_submit:
-        setup_and_run(jobname=jobname,
-                      basedir=tmp_path,
-                      mask_text="Just a mask %(PARAM1)s %(PARAM2)s %(BEAM)s",
-                      binary_path=Path('somethingcomplicated/pathomatic'),
-                      PARAM1=4,
-                      PARAM2="%SEEDRAN",
-                      BEAM=1,
-                      TURNS=10101,
-                      AMPMIN=2, AMPMAX=20, AMPSTEP=2,
-                      ANGLES=5,
-                      )
+        run_job(
+            jobname=jobname,
+            env=AutoSixEnvironment(
+                working_directory=tmp_path,
+                mask_text="Just a mask %(PARAM1)s %(PARAM2)s %(BEAM)s",
+                executable=Path('somethingcomplicated/pathomatic'),
+            ),
+            jobargs=dict(
+                PARAM1=4,
+                PARAM2="%SEEDRAN",
+                BEAM=1,
+                TURNS=10101,
+                AMPMIN=2, AMPMAX=20, AMPSTEP=2,
+                ANGLES=5,
+            )
+        )
 
         mask = next(get_masks_path(jobname, tmp_path).glob("*"))
         assert mask.exists()
@@ -91,23 +97,31 @@ def test_create_workspace_stop_init(tmp_path):
 
     mock_create, mock_submit = _create_subprocess_mocks(jobname, tmp_path)
     with mock_create, mock_submit:
-        setup_and_run(jobname=jobname,
-                      basedir=tmp_path,
-                      binary_path=Path('somethingcomplicated/pathomatic'),
-                      stop_workspace_init=True,
-                      mask_text="",
-                      TURNS=10101,
-                      AMPMIN=2, AMPMAX=20, AMPSTEP=2,
-                      ANGLES=5,
-                      FIRSTSEED=None, LASTSEED=None,
-                      )
+        run_job(
+            jobname=jobname,
+            env=AutoSixEnvironment(
+                working_directory=tmp_path,
+                mask_text="Just a mask %(PARAM1)s %(PARAM2)s %(BEAM)s",
+                executable=Path('somethingcomplicated/pathomatic'),
+                stop_workspace_init=True,
+            ),
+            jobargs=dict(
+                PARAM1=4,
+                PARAM2="%SEEDRAN",
+                BEAM=1,
+                TURNS=10101,
+                AMPMIN=2, AMPMAX=20, AMPSTEP=2,
+                ANGLES=5,
+                FIRSTSEED=None, LASTSEED=None,
+            )
+        )
 
         stagefile = get_stagefile_path(jobname, tmp_path)
         assert stagefile.exists()
 
         stagefile_text = stagefile.read_text()
-        assert Stage.create_job.name in stagefile_text
-        assert Stage.initialize_workspace.name not in stagefile_text
+        assert CreateJob.name in stagefile_text
+        assert InitializeWorkspace.name not in stagefile_text
 
 
 def test_skip_all_stages(tmp_path, caplog):
@@ -118,7 +132,14 @@ def test_skip_all_stages(tmp_path, caplog):
     stagefile.parent.mkdir(parents=True)
     stagefile.write_text("\n".join(STAGE_NAMES[:-1]))
     with caplog.at_level(logging.INFO):
-        setup_and_run(jobname, tmp_path)
+        run_job(
+            jobname=jobname,
+            env=AutoSixEnvironment(
+                mask_text="",
+                working_directory=tmp_path,
+            ),
+            jobargs=dict()
+        )
 
     assert all(ALREADY_RUN_LOG.format(s) in caplog.text for s in STAGE_NAMES[:-1])
     assert "All stages run." in caplog.text
@@ -128,15 +149,24 @@ def test_max_stage(tmp_path, caplog):
     """ Skips all stages, first because they had already 'run',
     the others because they come after `max_stage`. """
     jobname = "test_job"
-    run_stages = STAGE_NAMES[:-2]  # ends at `-3`
-    max_stage = STAGE_NAMES[-3]
-    after_max_stages = STAGE_NAMES[-2:]
+    stages = list(STAGE_ORDER.values())
+    run_stages = stages[:-2]  # ends at `-3`
+    max_stage = stages[-3]
+    after_max_stages = stages[-2:]
 
     stagefile = get_stagefile_path(jobname, tmp_path)
     stagefile.parent.mkdir(parents=True)
-    stagefile.write_text("\n".join(run_stages))
+    stagefile.write_text("\n".join([str(s) for s in run_stages]))
     with caplog.at_level(logging.INFO):
-        setup_and_run(jobname, tmp_path, max_stage=max_stage)
+        run_job(
+            jobname=jobname,
+            env=AutoSixEnvironment(
+                mask_text="",
+                working_directory=tmp_path,
+                max_stage=max_stage,
+            ),
+            jobargs=dict()
+        )
 
     assert all(ALREADY_RUN_LOG.format(s) in caplog.text for s in run_stages)
     assert all(AFTER_MAXIMUM_LOG.format(s, max_stage) in caplog.text for s in after_max_stages)
@@ -171,6 +201,32 @@ def test_twissfail_removal(tmp_path):
 
         assert all(l.startswith("#") for l in mad6t_lines[:-1])
         assert mad6t_lines[-1].startswith("if")
+
+
+def test_max_materialize_setter(tmp_path):
+    subfile_path = tmp_path / "utilities" / "templates" / "htcondor" / "htcondor_run_six.sub"
+    def check_max_materialize_is(value):
+        text = subfile_path.read_text()
+        if value == 0:
+            assert "max_materialize" not in text
+        else:
+            assert f"\nmax_materialize = {value}\n" in text
+
+    subfile_path.parent.mkdir(parents=True)
+    shutil.copy(INPUTS / "sixdesk" / "htcondor_run_six.sub", subfile_path)
+    check_max_materialize_is(0)
+
+    set_max_materialize(tmp_path, 10)
+    check_max_materialize_is(10)
+
+    set_max_materialize(tmp_path, 58394058)
+    check_max_materialize_is(58394058)
+
+    set_max_materialize(tmp_path, None)
+    check_max_materialize_is(58394058)
+
+    set_max_materialize(tmp_path, 0)
+    check_max_materialize_is(0)
 
 
 # Helper -----------------------------------------------------------------------

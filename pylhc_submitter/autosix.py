@@ -4,8 +4,12 @@ AutoSix
 
 ``AutoSix`` is a wrapper to automatically perform the necessary setup and steps needed for ``SixDesk`` use.
 
-The functionality is similar to the ``pylhc_submitter.job_submitter`` in that the inner product of a ``replace_dict`` is used to automatically create a set of job-directories to gather the data.
-To avoid conflicts, each of these job-directories is a ``SixDesk`` workspace, meaning there can be only one study per directory.
+The functionality is similar to the ``pylhc_submitter.job_submitter`` in that the inner product of a ``replace_dict``
+is used to automatically create a set of job-directories to gather the data.
+To avoid conflicts, each of these job-directories is a ``SixDesk`` workspace,
+meaning there can be only one study per directory.
+Beware that the ``max_materialize`` limit is set for each of these workspaces
+individually, not for all Jobs together (i.e. it should be <=MAX_USER_JOBS / NUMBER_OF_WORKSPACES).
 
 The ``replace_dict`` contains variables for your mask as well as variables for the SixDesk environment.
 See the description of ``replace_dict`` below.
@@ -14,34 +18,80 @@ In any other way, these *special* variables behave like normal variables and can
 They are also looped over in the same manner as any other variable (if given as a list).
 
 For additional information and guides, see the `AutoSix page
-<https://pylhc.github.io/packages/pylhcsubmitter/autosix/>`_ in the ``OMC`` documentation site.
+<https://pylhc.github.io/packages/pylhcsubmitter/autosix/>`_
+on the ``OMC`` documentation site.
+
+.. admonition:: Problems with *search.f90*
+    :class: warning
+
+    If you run into
+
+    .. code-block:: bash
+
+       ImportError: cannot import name 'search' from partially initialized module 'sixdeskdb'
+
+    that means that the :file:`SixDesk/utilities/externals/SixDeskDB/sixdeskdb/search.f90`
+    has not been compiled for your current python and OS version (indicated by XXX below).
+    There are two ways to do this:
+
+    **a)** Run
+
+    .. code-block:: bash
+
+        python -m numpy.f2py -c search.f90 -f search
+
+    with your desired python version
+    (a shortcut ``f2py`` might be available if you run in an activated venv).
+    Copy (or symlink) the resulting :file:`search.cpython-XXX.so` file into the
+    :file:`sixdeskdb` folder
+    (if it is not already there because you ran from that folder)
+
+    **b)** Run
+
+    .. code-block:: bash
+
+        python setup.py build_ext
+
+    on the :file:`setup.py` in :file:`SixDesk/utilities/externals/SixDeskDB`.
+    Then copy (or symlink) the resulting :file:`build/lib.XXX/sixdeskdb/search.cpython-XXX.so` into
+    the :file:`sixdeskdb` folder (the name needs to stay as it is).
+
 
 Arguments:
 
 *--Required--*
 
-- **mask** *(PathOrStr)*:
+- **mask** *(Path)*:
 
-    Program mask to use
+    Path to the program's mask to use.
 
 
 - **replace_dict** *(DictAsString)*:
 
     Dict with keys of the strings to be replaced in the mask (required) as
     well as the mask_sixdeskenv and mask_sysenv files in the sixdesk_tools
-    module. Required fields are TURNS, AMPMIN, AMPMAX, AMPSTEP,
-    ANGLES. Optional fields are RESUBMISSION, PLATFORM, LOGLEVEL,
-    FIRSTSEED, LASTSEED, ENERGY, NPAIRS, EMITTANCE, DIMENSIONS, WRITEBINS.
+    module. Required fields are TURNS, AMPMIN, AMPMAX, AMPSTEP, ANGLES.
+    Optional fields are RESUBMISSION, PLATFORM, LOGLEVEL, FIRSTSEED,
+    LASTSEED, RUNTYPE, NPAIRS, EMITTANCE, DIMENSIONS, WRITEBINS, ENERGY.
     These keys can also be used in the mask if needed. The values of this
     dict are lists of values to replace these or single entries.
 
 
-- **working_directory** *(PathOrStr)*:
+- **working_directory** *(Path)*:
 
-    Directory where data should be put
+    Directory where data should be put into.
 
 
 *--Optional--*
+
+- **apply_mad6t_hacks**:
+
+    Apply two hacks: Removes '<' in binary call and ignore the check for
+    'Twiss fail' in the submission file. This is hack needed in case this
+    check greps the wrong lines, e.g. in madx-comments. USE WITH CARE!!
+
+    action: ``store_true``
+
 
 - **da_turnstep** *(int)*:
 
@@ -52,48 +102,65 @@ Arguments:
 
 - **executable** *(PathOrStr)*:
 
-    Path to executable.
+    Path to executable or 'madx', 'python2', 'python3' to use the OMC
+    default paths on AFS.Defaults to the latest MADX-Binary on AFS.
 
     default: ``/afs/cern.ch/user/m/mad/bin/madx``
 
 
-- **apply_mad6t_hacks**:
-
-    Apply two hacks: Removes '<' in binary call and
-    ignore the check for 'Twiss fail' in the submission file.
-    This hack is needed in case this check greps the wrong lines,
-    e.g. in madx- comments. USE WITH CARE!!
-
-    action: ``store_true``
-
-
 - **jobid_mask** *(str)*:
 
-    Mask to name jobs from replace_dict
+    Mask-String to name jobs, with placeholders from the ``replace_dict``
+    keys.
+
+
+- **max_materialize** *(int)*:
+
+    Maximum jobs to be materialized in scheduler (per SixDesk Workspace!)..
+    Here: ``None`` leaves the settings as defined in the SixDesk
+    htcondor_run_six.sub template and ``0`` removes it from the template.
+    Warning: This setting modifies the template in the ``sixdesk_directory``
+    permanently. For more details see the htcondor API.
+
+
+- **max_stage** *(str)*:
+
+    Last stage to be run. All following stages are skipped.
+
+
+- **python2** *(PathOrStr)*:
+
+    Path to python to use with run_six.sh (python2 with requirements
+    installed). ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS
+    NEEDED! And it can't be an Anaconda Distribution. If ``None`` the
+    system's ``python`` is used (SixDesk internally).
+
+    default: ``None``
 
 
 - **python3** *(PathOrStr)*:
 
     Path to python to use with sixdb (python3 with requirements
-    installed).
+    installed).Defaults to the system's ``python3``.
 
     default: ``python3``
 
 
-- **python2** *(PathOrStr)*:
-
-    Path to python to use with run_six.sh (python2 with requirements installed).
-    ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS NEEDED!
-    And it can't be an Anaconda Distribution.
-
-    default: None (uses the first ``python`` in path)
-
-
 - **resubmit**:
 
-    Resubmits if needed.
+    Resubmits to HTCondor if needed (i.e. in case it finds errors with the
+    previous run).
 
     action: ``store_true``
+
+
+- **sixdesk_directory** *(Path)*:
+
+    Path to the directory of SixDesk. Defaults to the PRO-version on AFS.
+    If you are using your own SixDesk Environment and it does not run,
+    check the AutoSix doc.
+
+    default: ``/afs/cern.ch/project/sixtrack/SixDesk_utilities/pro``
 
 
 - **ssh** *(str)*:
@@ -112,10 +179,9 @@ Arguments:
 
 - **unlock**:
 
-    Forces unlocking of folders.
+    Forces unlocking of folders (if they have been locked by Sixdesk).
 
     action: ``store_true``
-
 
 
 :author: jdilly
@@ -124,20 +190,17 @@ Arguments:
 import itertools
 import logging
 from pathlib import Path
-from typing import Union
 
 import numpy as np
 import tfs
-from generic_parser import EntryPointParameters, entrypoint
+from generic_parser import EntryPointParameters, entrypoint, DotDict
 from generic_parser.entry_datatypes import DictAsString
 
 from pylhc_submitter.constants.autosix import (
-    Stage,
     HEADER_BASEDIR,
-    get_stagefile_path,
-    DEFAULTS,
     SIXENV_REQUIRED,
-    SIXENV_DEFAULT,
+    SIXENV_OPTIONAL,
+    AutoSixEnvironment,
 )
 from pylhc_submitter.htc.mask import generate_jobdf_index
 from pylhc_submitter.job_submitter import (
@@ -145,25 +208,12 @@ from pylhc_submitter.job_submitter import (
     COLUMN_JOBID,
 )
 from pylhc_submitter.sixdesk_tools.create_workspace import (
-    create_job,
-    remove_twiss_fail_check,
-    init_workspace,
-    fix_pythonfile_call
+    set_max_materialize
 )
-from pylhc_submitter.sixdesk_tools.post_process_da import post_process_da
-from pylhc_submitter.sixdesk_tools.submit import (
-    submit_mask,
-    submit_sixtrack,
-    check_sixtrack_input,
-    check_sixtrack_output,
-    sixdb_cmd,
-    sixdb_load,
-)
+from pylhc_submitter.sixdesk_tools.stages import Stage, STAGE_ORDER
 from pylhc_submitter.sixdesk_tools.utils import (
     is_locked,
     check_mask,
-    check_stage,
-    StageSkip
 )
 from pylhc_submitter.utils.iotools import (
     PathOrStr,
@@ -171,6 +221,7 @@ from pylhc_submitter.utils.iotools import (
     make_replace_entries_iterable,
     keys_to_path
 )
+from pylhc_submitter.utils.logging_tools import log_setup
 
 LOG = logging.getLogger(__name__)
 
@@ -179,15 +230,15 @@ def get_params():
     params = EntryPointParameters()
     params.add_parameter(
         name="mask",
-        type=PathOrStr,
+        type=Path,
         required=True,
-        help="Program mask to use",
+        help="Path to the program's mask to use.",
     )
     params.add_parameter(
         name="working_directory",
-        type=PathOrStr,
+        type=Path,
         required=True,
-        help="Directory where data should be put",
+        help="Directory where data should be put into.",
     )
     params.add_parameter(
         name="replace_dict",
@@ -196,7 +247,7 @@ def get_params():
             "as well as the mask_sixdeskenv and mask_sysenv files "
             "in the sixdesk_tools module. "
             f"Required fields are {', '.join(SIXENV_REQUIRED)}. "
-            f"Optional fields are {', '.join(SIXENV_DEFAULT.keys())}. "
+            f"Optional fields are {', '.join(SIXENV_OPTIONAL)}. "
             "These keys can also be used in the mask if needed. "
             "The values of this dict are lists of values to replace "
             "these or single entries."
@@ -205,28 +256,40 @@ def get_params():
         required=True,
     )
     params.add_parameter(
+        name="sixdesk_directory",
+        type=Path,
+        default=AutoSixEnvironment.sixdesk_directory,
+        help="Path to the directory of SixDesk. Defaults to the PRO-version on AFS."
+             " If you are using your own SixDesk Environment and it does not run, "
+             " check the AutoSix doc.",
+    )
+    params.add_parameter(
         name="executable",
-        default=DEFAULTS["executable"],
+        default=AutoSixEnvironment.executable,
         type=PathOrStr,
-        help="Path to executable.",
+        help="Path to executable or 'madx', 'python2', 'python3' "
+             "to use the OMC default paths on AFS."
+             "Defaults to the latest MADX-Binary on AFS.",
     )
     params.add_parameter(
         name="python2",
-        default=DEFAULTS["python2"],
+        default=AutoSixEnvironment.python2,
         type=PathOrStr,
         help=("Path to python to use with run_six.sh (python2 with requirements installed)."
               " ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS NEEDED!"
-              " And it can't be an Anaconda Distribution."),
+              " And it can't be an Anaconda Distribution."
+              " If ``None`` the system's ``python`` is used (SixDesk internally)."),
     )
     params.add_parameter(
         name="python3",
-        default=DEFAULTS["python3"],
+        default=AutoSixEnvironment.python3,
         type=PathOrStr,
-        help="Path to python to use with sixdb (python3 with requirements installed).",
+        help="Path to python to use with sixdb (python3 with requirements installed)."
+             "Defaults to the system's ``python3``.",
     )
     params.add_parameter(
         name="jobid_mask",
-        help="Mask to name jobs from replace_dict",
+        help="Mask-String to name jobs, with placeholders from the ``replace_dict`` keys.",
         type=str,
     )
     params.add_parameter(
@@ -236,13 +299,13 @@ def get_params():
     )
     params.add_parameter(
         name="unlock",
-        help="Forces unlocking of folders.",
+        help="Forces unlocking of folders (if they have been locked by Sixdesk).",
         action="store_true",
     )
     params.add_parameter(
         name="apply_mad6t_hacks",
         help=(
-            "Apply two hacks: Removes '<' in binary call and"
+            "Apply two hacks: Removes '<' in binary call and "
             "ignore the check for 'Twiss fail' in the submission file. "
             "This is hack needed in case this check greps the wrong lines, "
             "e.g. in madx-comments. USE WITH CARE!!"
@@ -259,19 +322,30 @@ def get_params():
     )
     params.add_parameter(
         name="resubmit",
-        help="Resubmits if needed.",
+        help="Resubmits to HTCondor if needed "
+             "(i.e. in case it finds errors with the previous run).",
         action="store_true",
     )
     params.add_parameter(
         name="da_turnstep",
         type=int,
         help="Step between turns used in DA-vs-Turns plot.",
-        default=DEFAULTS["da_turnstep"],
+        default=AutoSixEnvironment.da_turnstep,
     )
     params.add_parameter(
         name="max_stage",
         type=str,
         help="Last stage to be run. All following stages are skipped.",
+    )
+    params.add_parameter(
+        name="max_materialize",
+        type=int,
+        help="Maximum jobs to be materialized in scheduler (per SixDesk Workspace!). "
+             "Here: ``None`` leaves the settings as defined in the SixDesk "
+             "htcondor_run_six.sub template and ``0`` removes it from the "
+             "template. Warning: This setting modifies the template in the "
+             "``sixdesk_directory`` permanently. For more details see the "
+             "htcondor API.",
     )
     return params
 
@@ -280,216 +354,47 @@ def get_params():
 def main(opt):
     """ Loop to create jobs from replace dict product matrix. """
     LOG.info("Starting autosix.")
-    with open(opt.mask, "r") as mask_f:
-        mask = mask_f.read()
-    opt = _check_opts(mask, opt)
+    opt = _check_opts(opt)
     save_config(opt.working_directory, opt, "autosix")
 
-    jobdf = _generate_jobs(opt.working_directory, opt.jobid_mask, **opt.replace_dict)
-    for job_args in jobdf.iterrows():
-        setup_and_run(
-            jobname=job_args[0],
-            basedir=opt.working_directory,
-            # kwargs:
-            ssh=opt.ssh,
-            python2=opt.python2,
-            python3=opt.python3,
-            unlock=opt.unlock,
-            resubmit=opt.resubmit,
-            da_turnstep=opt.da_turnstep,
-            apply_mad6t_hacks=opt.apply_mad6t_hacks,
-            max_stage=opt.max_stage,
-            # kwargs passed only to create_jobs:
-            mask_text=mask,
-            binary_path=opt.executable,
-            stop_workspace_init=opt.stop_workspace_init,
-            **job_args[1],
-        )
+    jobdf = _generate_jobs(
+        opt.working_directory,
+        opt.pop('jobid_mask'),  # not needed anymore
+        **opt.pop('replace_dict')  # not needed anymore
+    )
+    env = AutoSixEnvironment(**opt)  # basically checks that everything is there
+
+    for jobname, jobargs in jobdf.iterrows():
+        run_job(jobname=jobname, jobargs=jobargs, env=env)
 
 
-def setup_and_run(jobname: str, basedir: Path, **kwargs):
+def run_job(jobname: str, jobargs: dict, env: AutoSixEnvironment):
     """Main submitting procedure for single job.
 
     Args:
         jobname (str): Name of the job/study
-        basedir (Path): Working directory
-
-    Keyword Args (optional):
-        unlock (bool): unlock folder
-        ssh (str): ssh-server to use
-        python (str): python binary to use for sixDB
-        resubmit(bool): Resubmit jobs if checks fail
-        da_turnstep (int): Step in turns for DA
-        ignore_twissfail_check (bool): Hack to ignore check for 'Twiss fail' after run
-        max_stage (str): Last stage to run
-
-    Keyword Args (needed for create jobs):
-        mask_text (str): Content of the mask to use.
-        binary_path (Path): path to binary to use in jobs
-        All Key=Values needed to fill the mask!
-        All Key=Values needed to fill the mask!
-
+        env (DotDict): The ensemble of autosix settings as an ``AutoSixEnvironment`` object.
+        jobargs(dict): All Key=Values needed to fill the mask!
     """
-    LOG.info(f"vv---------------- Job {jobname} -------------------vv")
-    unlock: bool = kwargs.pop("unlock", False)
-    ssh: str = kwargs.pop("ssh", None)
-    python2: Union[Path, str] = kwargs.pop("python2", DEFAULTS["python2"])
-    python3: Union[Path, str] = kwargs.pop("python3", DEFAULTS["python3"])
-    resubmit: bool = kwargs.pop("resubmit", False)
-    da_turnstep: int = kwargs.pop("da_turnstep", DEFAULTS["da_turnstep"])
-    apply_mad6t_hacks: bool = kwargs.pop("apply_mad6t_hacks", False)
-    stop_workspace_init: bool = kwargs.pop("stop_workspace_init", False)
-    max_stage: str = kwargs.pop("max_stage", None)
-    if max_stage is not None:
-        max_stage = Stage[max_stage]
-
-    if is_locked(jobname, basedir, unlock=unlock):
+    if is_locked(jobname, env.working_directory, unlock=env.unlock):
         LOG.info(f"{jobname} is locked. Try 'unlock' flag if this causes errors.")
 
-    with check_stage(Stage.create_job, jobname, basedir, max_stage) as check_ok:
-        """
-        create workspace
-        > cd $basedir
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/set_env.sh -N workspace-$jobname
-
-        write sixdeskenv, sysenv, filled mask (manual)
-
-        """
-        if check_ok:
-            create_job(jobname, basedir, ssh=ssh, **kwargs)
-
-    with check_stage(Stage.initialize_workspace, jobname, basedir, max_stage) as check_ok:
-        """
-        initialize workspace
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/set_env.sh -s
-
-        remove the twiss-fail check in sixtrack_input
-        (manual)
-        """
-        if check_ok:
-            if stop_workspace_init:
-                LOG.info(
-                    f"Workspace creation for job {jobname} interrupted."
-                    " Check directory to manually adapt ``sixdeskenv``"
-                    " and ``sysenv``. Remove 'stop_workspace_init' from input"
-                    " parameters or set to 'False' to continue run."
-                )
-                raise StageSkip()
-
-            init_workspace(jobname, basedir, ssh=ssh)
-            if apply_mad6t_hacks:
-                fix_pythonfile_call(jobname, basedir)  # removes "<" in call
-                remove_twiss_fail_check(jobname, basedir)  # removes 'grep twiss fail'
-
-    with check_stage(Stage.submit_mask, jobname, basedir, max_stage) as check_ok:
-        """
-        submit for input generation
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/mad6t.sh -s
-        """
-        if check_ok:
-            submit_mask(jobname, basedir, ssh=ssh)
-            return  # takes a while, so we interrupt here
-
-    with check_stage(Stage.check_input, jobname, basedir, max_stage) as check_ok:
-        """
-        Check if input files have been generated properly
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/mad6t.sh -c
-
-        If not, and resubmit is active
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/mad6t.sh -w
-        """
-        if check_ok:
-            check_sixtrack_input(jobname, basedir, ssh=ssh, resubmit=resubmit)
-
-    with check_stage(Stage.submit_sixtrack, jobname, basedir, max_stage) as check_ok:
-        """
-        Generate simulation files (-g) and check if runnable (-c) and submit (-s) (-g -c -s == -a).
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/run_six.sh -a
-        """
-        if check_ok:
-            submit_sixtrack(jobname, basedir, python=python2, ssh=ssh)
-            return  # takes even longer
-
-    with check_stage(Stage.check_sixtrack_output, jobname, basedir, max_stage) as check_ok:
-        """
-        Checks sixtrack output via run_status. If this fails even though all
-        jobs have finished on the scheduler, check the log-output (run_status
-        messages are logged to debug).
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/run_status
-        
-        If not, and resubmit is active
-        > cd $basedir/workspace-$jobname/sixjobs
-        > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/run_six.sh -i
-        """
-        if check_ok:
-            check_sixtrack_output(jobname, basedir, python=python2, ssh=ssh, resubmit=resubmit)
-
-    with check_stage(Stage.sixdb_load, jobname, basedir, max_stage) as check_ok:
-        """
-        Gather results into database via sixdb.
-        > cd $basedir/workspace-$jobname/sixjobs
-        > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb . load_dir
-        """
-        if check_ok:
-            sixdb_load(jobname, basedir, python=python3, ssh=ssh)
-
-    with check_stage(Stage.sixdb_cmd, jobname, basedir, max_stage) as check_ok:
-        """
-        Analysise results in database via sixdb.
-        > cd $basedir/workspace-$jobname/sixjobs
-        > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb $jobname da
-
-        when fixed:
-        > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb $jobname da_vs_turns -turnstep 100 -outfile
-        > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb $jobname plot_da_vs_turns
-        """
-        if check_ok:
-            sixdb_cmd(jobname, basedir, cmd=["da"], python=python3, ssh=ssh)
-
-            # da_vs_turns is broken at the moment (jdilly, 19.10.2020)
-            # sixdb_cmd(jobname, basedir, cmd=['da_vs_turns', '-turnstep', str(da_turnstep), '-outfile'],
-            #           python=python, ssh=ssh)
-            # sixdb_cmd(jobname, basedir, cmd=['plot_da_vs_turns'], python=python, ssh=ssh)
-
-    with check_stage(Stage.post_process, jobname, basedir, max_stage) as check_ok:
-        """
-        Extracts the analysed data in the database and writes them to three tfs files:
-
-        - All DA values
-        - Statistics over angles, listed per seed (+ Seed 0 as over seeds and angles)
-        - Statistics over seeds, listed per angle
-
-        The statistics over the seeds are then plotted in a polar plot.
-        All files are outputted to the ``sixjobs/autosix_output`` folder in the job directory.
-        """
-        if check_ok:
-            post_process_da(jobname, basedir)
-
-    with check_stage(Stage.final, jobname, basedir, max_stage) as check_ok:
-        """ Just info about finishing this script and where to check the stagefile. """
-        if check_ok:
-            stage_file = get_stagefile_path(jobname, basedir)
-            LOG.info(
-                f"All stages run. Check stagefile {str(stage_file)} "
-                "in case you want to rerun some stages."
-            )
-            raise StageSkip()
-
-    LOG.info(f"^^---------------- Job {jobname} -------------------^^")
+    Stage.run_all_stages(jobname, jobargs, env)
 
 
-# Helper for main --------------------------------------------------------------
+# Helper  ----------------------------------------------------------------------
 
 
-def _check_opts(mask_text, opt):
+def _check_opts(opt):
     opt = keys_to_path(opt, "mask", "working_directory", "executable")
-    check_mask(mask_text, opt.replace_dict)
+
+    opt.mask_text = opt.mask.read_text()
+    check_mask(opt.mask_text, opt.replace_dict)
+    del opt.mask
+
     opt.replace_dict = make_replace_entries_iterable(opt.replace_dict)
+    if opt.max_stage is not None and not isinstance(opt.max_stage, Stage):
+        opt.max_stage = STAGE_ORDER[opt.max_stage]
     return opt
 
 
