@@ -1,5 +1,9 @@
 # `pylhc-submitter` Changelog
 
+## Version 1.1.1
+
+- Uses `concat` instead of `append` to stack the DataFrames.
+
 ## Version 1.1.0
 
 This release adds some changes the `autosix` module:
