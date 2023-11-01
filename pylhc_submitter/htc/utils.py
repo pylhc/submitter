@@ -60,6 +60,7 @@ NOTIFICATIONS = ("always", "complete", "error", "never")
 
 COLUMN_SHELL_SCRIPT = "ShellScript"
 COLUMN_JOB_DIRECTORY = "JobDirectory"
+COLUMN_DEST_DIRECTORY = "DestDirectory"
 COLUMN_JOB_FILE = "JobFile"
 
 
@@ -159,6 +160,7 @@ def make_subfile(cwd: Path, job_df: DataFrame, **kwargs):
 def write_bash(
     job_df: DataFrame,
     output_dir: Path = None,
+    destination_dir: Path = None,
     executable: str = "madx",
     cmdline_arguments: dict = None,
     mask: Union[str, Path] = None,
@@ -196,7 +198,17 @@ def write_bash(
                 f.write(mask % dict(zip(replace_columns, job[replace_columns])))
             f.write(cmds)
             f.write("\n")
+
+            if destination_dir is not None:
+                if output_dir is not None:
+                    cp_command =  f'cp -r {output_dir} {job[COLUMN_DEST_DIRECTORY]}'
+                if is_eos_path(destination_dir):
+                    cp_command = f'eos {cp_command}'
+                    
+                f.write(f'{cp_command}\n')
+
         shell_scripts[idx] = bash_file_name
+
     job_df[COLUMN_SHELL_SCRIPT] = shell_scripts
     return job_df
 
@@ -243,6 +255,26 @@ def _maybe_put_in_quotes(key, value):
     if key.startswith("+"):
         return f'"{value}"'
     return value
+
+def is_eos_path(path):
+    is_eos = False
+    path = Path(path)
+    strip_path_parts = _strip_eos_uri(path).parts
+    if len(strip_path_parts) > 1 and strip_path_parts[1] == 'eos':
+        is_eos = True
+    return is_eos
+
+
+def _strip_eos_uri(path):
+    # EOS paths for HTCondor are given with URI, strip for direct writing
+    # root://eosuser.cern.ch//eos/user/a/anabramo/desktop_sync/banana.txt
+    path = Path(path)
+    parts = path.parts
+    outpath = path
+    if parts[0].endswith(':'):
+        # the first two parts are host info, e.g `file: //host/path`
+        outpath = Path('/', *parts[2:])
+    return outpath
 
 
 def is_mask_file(mask):

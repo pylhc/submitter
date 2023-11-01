@@ -99,10 +99,12 @@ from pylhc_submitter.htc.mask import (
 )
 from pylhc_submitter.htc.utils import (
     COLUMN_JOB_DIRECTORY,
+    COLUMN_DEST_DIRECTORY,
     COLUMN_SHELL_SCRIPT,
     EXECUTEABLEPATH,
     HTCONDOR_JOBLIMIT,
     JOBFLAVOURS,
+    _strip_eos_uri,
 )
 from pylhc_submitter.utils.environment_tools import on_windows
 from pylhc_submitter.utils.iotools import PathOrStr, save_config, make_replace_entries_iterable, keys_to_path
@@ -246,6 +248,11 @@ def get_params():
         default="Outputdata",
     )
     params.add_parameter(
+        name="output_destination",
+        help="Directory where to store the output of the jobs . (Can be on EOS)",
+        type=PathOrStr,
+    )
+    params.add_parameter(
         name="htc_arguments",
         help=(
             "Additional arguments for htcondor, as Dict-String. "
@@ -282,6 +289,7 @@ def main(opt):
         opt.jobid_mask,
         opt.replace_dict,
         opt.job_output_dir,
+        opt.output_destination,
         opt.append_jobs,
         opt.executable,
         opt.script_arguments,
@@ -298,6 +306,7 @@ def main(opt):
             job_df,
             opt.working_directory,
             opt.job_output_dir,
+            opt.output_destination,
             opt.jobflavour,
             opt.ssh,
             opt.dryrun,
@@ -316,6 +325,7 @@ def _create_jobs(
     jobid_mask,
     replace_dict,
     output_dir,
+    output_dest,
     append_jobs,
     executable,
     script_args,
@@ -354,7 +364,7 @@ def _create_jobs(
         data=values_grid,
     )
     job_df = tfs.concat([job_df, data_df], sort=False, how_headers='left')
-    job_df = _setup_folders(job_df, cwd)
+    job_df = _setup_folders(job_df, cwd, output_dest)
 
     if htcutils.is_mask_file(mask_path_or_string):
         LOG.debug("Creating all jobs from mask.")
@@ -367,12 +377,14 @@ def _create_jobs(
     job_df = htcutils.write_bash(
         job_df,
         output_dir,
+        destination_dir=output_dest,
         executable=executable,
         cmdline_arguments=script_args,
         mask=mask_path_or_string,
     )
 
     job_df[COLUMN_JOB_DIRECTORY] = job_df[COLUMN_JOB_DIRECTORY].apply(str)
+    job_df[COLUMN_DEST_DIRECTORY] = job_df[COLUMN_DEST_DIRECTORY].apply(str)
     tfs.write(str(cwd / JOBSUMMARY_FILE), job_df, save_index=COLUMN_JOBID)
     return job_df
 
@@ -398,6 +410,13 @@ def _drop_already_ran_jobs(
 
 def _run_local(job_df: tfs.TfsDataFrame, num_processes: int) -> None:
     LOG.info(f"Running {len(job_df.index)} jobs locally in {num_processes:d} processes.")
+    
+    # URI type EOS addresses won't work for copying files from local jobs
+    check_dest = job_df.iloc[0][COLUMN_DEST_DIRECTORY]
+    if not _strip_eos_uri(check_dest) == Path(check_dest):
+        LOG.warning("The output desitnation is likely specified as EOS URI,"
+                     "which will not work during a local run")
+        
     pool = multiprocessing.Pool(processes=num_processes)
     res = pool.map(_execute_shell, job_df.iterrows())
     if any(res):
@@ -409,6 +428,7 @@ def _run_htc(
     job_df: tfs.TfsDataFrame,
     cwd: str,
     output_dir: str,
+    dest_dir: str,
     flavour: str,
     ssh: str,
     dryrun: bool,
@@ -416,9 +436,19 @@ def _run_htc(
 ) -> None:
     LOG.info(f"Submitting {len(job_df.index)} jobs on htcondor, flavour '{flavour}'.")
     LOG.debug("Creating htcondor subfile.")
-    subfile = htcutils.make_subfile(
-        cwd, job_df, output_dir=output_dir, duration=flavour, **additional_htc_arguments
-    )
+
+    # If a different destination for the data is required
+    # is is handled through the job bash files, so remove it from
+    # HTConodor's file transfer specification
+    if dest_dir is None:
+        subfile = htcutils.make_subfile(
+            cwd, job_df, output_dir=output_dir, duration=flavour, **additional_htc_arguments
+        )
+    else:
+        subfile = htcutils.make_subfile(
+            cwd, job_df, duration=flavour, **additional_htc_arguments
+        )
+
     if not dryrun:
         LOG.debug("Submitting jobs to htcondor.")
         htcutils.submit_jobfile(subfile, ssh)
@@ -439,12 +469,24 @@ def _check_htcondor_presence() -> None:
         raise EnvironmentError("htcondor bindings are necessary to run this module.")
 
 
-def _setup_folders(job_df: tfs.TfsDataFrame, working_directory: PathOrStr) -> tfs.TfsDataFrame:
+def _setup_folders(job_df: tfs.TfsDataFrame, working_directory: PathOrStr, 
+                   destination_directory: PathOrStr = None) -> tfs.TfsDataFrame:
     def _return_job_dir(job_id):
         return working_directory / f"{JOBDIRECTORY_PREFIX}.{job_id}"
+    
+    def _return_dest_dir(job_id):
+        return destination_directory / f"{JOBDIRECTORY_PREFIX}.{job_id}"
 
     LOG.debug("Setting up folders: ")
     job_df[COLUMN_JOB_DIRECTORY] = [_return_job_dir(id_) for id_ in job_df.index]
+
+    if destination_directory is not None:
+        _custom_output_dest = True
+        job_df[COLUMN_DEST_DIRECTORY] = [_return_dest_dir(id_) for id_ in job_df.index]
+    else:
+        _custom_output_dest = False
+        job_df[COLUMN_DEST_DIRECTORY] = job_df[COLUMN_JOB_DIRECTORY]
+
 
     for job_dir in job_df[COLUMN_JOB_DIRECTORY]:
         try:
@@ -453,11 +495,30 @@ def _setup_folders(job_df: tfs.TfsDataFrame, working_directory: PathOrStr) -> tf
             LOG.debug(f"   failed '{job_dir}' (might already exist).")
         else:
             LOG.debug(f"   created '{job_dir}'.")
+
+    if _custom_output_dest:
+        strip_dest_dir = _strip_eos_uri(destination_directory)
+        strip_dest_dir.mkdir(parents=True, exist_ok=True)
+
+        # Make some symlinks for easy navigation
+        sym_submission = destination_directory / Path('SUBMISSION_DIR')
+        sym_submission.symlink_to(working_directory.resolve()) 
+        sym_destination = working_directory / Path('OUTPUT_DIR')
+        sym_destination.symlink_to(destination_directory.resolve())
+
+        for job_dest_dir in job_df[COLUMN_DEST_DIRECTORY]:
+            try:
+                _strip_eos_uri(job_dest_dir).mkdir()
+            except IOError:
+                LOG.debug(f"   failed '{job_dest_dir}' (might already exist).")
+            else:
+                LOG.debug(f"   created '{job_dest_dir}'.")
+
     return job_df
 
 
 def _job_was_successful(job_row, output_dir, files) -> bool:
-    output_dir = Path(job_row[COLUMN_JOB_DIRECTORY], output_dir)
+    output_dir = Path(job_row[COLUMN_DEST_DIRECTORY], output_dir)
     success = output_dir.is_dir() and any(output_dir.iterdir())
     if success and files is not None and len(files):
         for f in files:
@@ -496,6 +557,9 @@ def _check_opts(opt):
         opt["mask"] = Path(opt["mask"])
     else:
         mask = opt.mask
+
+    if "output_destination" in opt and opt["output_destination"] is not None:
+        opt["output_destination"] = Path(opt["output_destination"])
 
     # Replace dict ---
     dict_keys = set(opt.replace_dict.keys())
