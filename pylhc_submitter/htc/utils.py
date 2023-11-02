@@ -256,18 +256,16 @@ def _maybe_put_in_quotes(key, value):
         return f'"{value}"'
     return value
 
-def is_eos_path(path):
-    is_eos = False
-    path = Path(path)
-    strip_path_parts = _strip_eos_uri(path).parts
-    if len(strip_path_parts) > 1 and strip_path_parts[1] == 'eos':
-        is_eos = True
-    return is_eos
+
+def is_eos_path(path): 
+    path = Path(path) 
+    strip_path_parts = _strip_eos_uri(path).parts 
+    return len(strip_path_parts) > 1 and strip_path_parts[1] == 'eos'
 
 
 def _strip_eos_uri(path):
     # EOS paths for HTCondor are given with URI, strip for direct writing
-    # root://eosuser.cern.ch//eos/user/a/anabramo/desktop_sync/banana.txt
+    # root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt
     path = Path(path)
     parts = path.parts
     outpath = path
