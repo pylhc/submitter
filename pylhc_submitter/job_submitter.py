@@ -480,39 +480,31 @@ def _setup_folders(job_df: tfs.TfsDataFrame, working_directory: PathOrStr,
     LOG.debug("Setting up folders: ")
     job_df[COLUMN_JOB_DIRECTORY] = [_return_job_dir(id_) for id_ in job_df.index]
 
-    if destination_directory is not None:
-        _custom_output_dest = True
-        job_df[COLUMN_DEST_DIRECTORY] = [_return_dest_dir(id_) for id_ in job_df.index]
-    else:
-        _custom_output_dest = False
-        job_df[COLUMN_DEST_DIRECTORY] = job_df[COLUMN_JOB_DIRECTORY]
-
-
     for job_dir in job_df[COLUMN_JOB_DIRECTORY]:
-        try:
-            job_dir.mkdir()
-        except IOError:
-            LOG.debug(f"   failed '{job_dir}' (might already exist).")
-        else:
-            LOG.debug(f"   created '{job_dir}'.")
+        job_dir.mkdir(exist_ok=True)
+        LOG.debug(f"   created '{job_dir}'.")
 
-    if _custom_output_dest:
-        strip_dest_dir = _strip_eos_uri(destination_directory)
+    if destination_directory is None:
+        job_df[COLUMN_DEST_DIRECTORY] = job_df[COLUMN_JOB_DIRECTORY]
+    else:
+        job_df[COLUMN_DEST_DIRECTORY] = [_return_dest_dir(id_) for id_ in job_df.index]
+
+        strip_dest_dir: Path = _strip_eos_uri(destination_directory)
         strip_dest_dir.mkdir(parents=True, exist_ok=True)
 
-        # Make some symlinks for easy navigation
+        # Make some symlinks for easy navigation---
+        # Output directory -> Working Directory
         sym_submission = destination_directory / Path('SUBMISSION_DIR')
-        sym_submission.symlink_to(working_directory.resolve()) 
-        sym_destination = working_directory / Path('OUTPUT_DIR')
-        sym_destination.symlink_to(destination_directory.resolve())
+        sym_submission.symlink_to(working_directory.resolve(), target_is_directory=True)
 
+        # Working Directory -> Output Directory
+        sym_destination = working_directory / Path('OUTPUT_DIR')
+        sym_destination.symlink_to(destination_directory.resolve(), target_is_directory=True)
+
+        # Create output dirs per job ---
         for job_dest_dir in job_df[COLUMN_DEST_DIRECTORY]:
-            try:
-                _strip_eos_uri(job_dest_dir).mkdir()
-            except IOError:
-                LOG.debug(f"   failed '{job_dest_dir}' (might already exist).")
-            else:
-                LOG.debug(f"   created '{job_dest_dir}'.")
+            _strip_eos_uri(job_dest_dir).mkdir(exist_ok=True)
+            LOG.debug(f"   created '{job_dest_dir}'.")
 
     return job_df
 
