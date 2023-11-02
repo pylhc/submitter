@@ -14,7 +14,7 @@ A **Jobs.tfs** file is created in the working directory containing the Job Id, p
 and job directory for further post processing.
 
 For additional information and guides, see the `Job Submitter page
-<https://pylhc.github.io/packages/pylhcsubmitter/job_submitter/>`_ in the ``OMC`` documentation site.
+<https://pylhc.github.io/packages/pylhcsubmitter/job_submitter.html>`_ in the ``OMC`` documentation site.
 
 *--Required--*
 
