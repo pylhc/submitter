@@ -93,6 +93,7 @@ def test_not_on_linux(tmp_path):
     If this tests fails, this might mean, that htcondor bindings are finally 
     available for the other platforms. """
     setup = InputParameters(working_directory=tmp_path)
+    setup.create_mask()
     with pytest.raises(EnvironmentError) as e:
         job_submit(**asdict(setup))
     assert "htcondor bindings" in e.value.args[0]
@@ -110,8 +111,8 @@ def test_htc_submit():
 
     # Fix the kerberos ticket path. 
     # Do klist to find your ticket manually.
-    import os
-    os.environ["KRB5CCNAME"] = "/tmp/krb5cc_106029"
+    # import os
+    # os.environ["KRB5CCNAME"] = "/tmp/krb5cc_####"
 
     setup = InputParameters(working_directory=path)
     setup.create_mask()
