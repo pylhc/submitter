@@ -11,6 +11,6 @@ jobs:
   coverage:
       uses: pylhc/.github/.github/workflows/coverage.yml@master
       with:
-        src-dir: submitter
+        src-dir: pylhc_submitter
         pytest-options: -m "not cern_network"
       secrets: inherit
