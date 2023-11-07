@@ -15,34 +15,32 @@ job can be specified, standard is 8h.
 import logging
 import subprocess
 from pathlib import Path
-from typing import Union
+from typing import Any, Dict, List, Union
 
 from pandas import DataFrame
 
-from pylhc_submitter.utils.environment_tools import on_windows
+from pylhc_submitter.constants.job_submitter import (COLUMN_DEST_DIRECTORY, COLUMN_JOB_DIRECTORY,
+                                                     COLUMN_JOB_FILE, COLUMN_SHELL_SCRIPT,
+                                                     EXECUTEABLEPATH, NON_PARAMETER_COLUMNS)
+from pylhc_submitter.job_submitter_tools.iotools import is_eos_path
+from pylhc_submitter.job_submitter_tools.mask import is_mask_file
+from pylhc_submitter.utils.environment import on_windows
 
 try:
     import htcondor
 except ImportError:  # will be handled by job_submitter
     pass
 
-from pylhc_submitter.constants.external_paths import MADX_BIN, PYTHON2_BIN, PYTHON3_BIN
 
 LOG = logging.getLogger(__name__)
 
+# HTC Constants ################################################################
 
 SHEBANG = "#!/bin/bash"
 SUBFILE = "queuehtc.sub"
 BASH_FILENAME = "Job"
 
 HTCONDOR_JOBLIMIT = 100000
-
-EXECUTEABLEPATH = {
-    "madx": MADX_BIN,
-    "python3": PYTHON3_BIN,
-    "python2": PYTHON2_BIN,
-}
-
 
 CMD_SUBMIT = "condor_submit"
 JOBFLAVOURS = (
@@ -57,11 +55,6 @@ JOBFLAVOURS = (
 
 NOTIFICATIONS = ("always", "complete", "error", "never")
 
-
-COLUMN_SHELL_SCRIPT = "ShellScript"
-COLUMN_JOB_DIRECTORY = "JobDirectory"
-COLUMN_DEST_DIRECTORY = "DestDirectory"
-COLUMN_JOB_FILE = "JobFile"
 
 
 # Subprocess Methods ###########################################################
@@ -88,7 +81,7 @@ def submit_jobfile(jobfile: Path, ssh: str):
         LOG.info("Jobs successfully submitted.")
 
 
-def _start_subprocess(command):
+def _start_subprocess(command: List[str]):
     LOG.debug(f"Executing command '{command}'")
     process = subprocess.Popen(
         command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -116,6 +109,7 @@ def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs):
         notification (str): Notify under certain conditions. Defaults to ``error``.
         priority (int): Priority to order your jobs. Defaults to ``None``.
     """
+    # Pre-defined HTCondor arguments for our jobs
     submit_dict = {
         "MyId": "htcondor",
         "universe": "vanilla",
@@ -126,8 +120,9 @@ def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs):
         "on_exit_remove": "(ExitBySignal == False) && (ExitCode == 0)",
         "requirements": "Machine =!= LastRemoteHost",
     }
-    submit_dict.update(_map_kwargs(kwargs))
-
+    submit_dict.update(map_kwargs(kwargs))
+    
+    # Let the htcondor create the submit-file
     job = htcondor.Submit(submit_dict)
 
     # add the multiple bash files
@@ -160,49 +155,53 @@ def make_subfile(cwd: Path, job_df: DataFrame, **kwargs):
 def write_bash(
     job_df: DataFrame,
     output_dir: Path = None,
-    destination_dir: Path = None,
     executable: str = "madx",
     cmdline_arguments: dict = None,
     mask: Union[str, Path] = None,
 ) -> DataFrame:
-    """Write the bash-files to be called by ``HTCondor``."""
+    """
+    Write the bash-files to be called by ``HTCondor``, which in turn call the executable.
+    """
     if len(job_df.index) > HTCONDOR_JOBLIMIT:
         raise AttributeError("Submitting too many jobs for HTCONDOR")
 
-    cmds = ""
-    if cmdline_arguments is not None:
-        cmds = f" {' '.join([f'{param} {val}' for param, val in cmdline_arguments.items()])}"
-
-    if executable is None:
-        exec_path = ''
-    else:
-        exec_path = f"{str(EXECUTEABLEPATH.get(executable, executable))} "
+    exec_path = f"{str(EXECUTEABLEPATH.get(executable, executable))} " if executable else ''
+    cmds = f" {' '.join([f'{param} {val}' for param, val in cmdline_arguments.items()])}" if cmdline_arguments else ''
 
     shell_scripts = [None] * len(job_df.index)
     for idx, (jobid, job) in enumerate(job_df.iterrows()):
         job_dir = Path(job[COLUMN_JOB_DIRECTORY])
         bash_file_name = f"{BASH_FILENAME}.{jobid}.{'bat' if on_windows() else 'sh'}"
         jobfile = job_dir / bash_file_name
+
         LOG.debug(f"Writing bash-file {idx:d} '{jobfile}'.")
         with open(jobfile, "w") as f:
+            # Preparation ---
             if not on_windows():
-                f.write(f"{SHEBANG}\n") 
+                f.write(f"{SHEBANG}\n")
+   
             if output_dir is not None:
                 f.write(f"mkdir {str(output_dir)}\n")
+
+            # The actual job execution ---
             f.write(exec_path)
 
+            # Call the mask-file or the filled-template string
             if is_mask_file(mask):
                 f.write(str(job_dir / job[COLUMN_JOB_FILE]))
             else:
-                replace_columns = [column for column in job.index.tolist() if column not in [COLUMN_SHELL_SCRIPT, COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE]]
+                replace_columns = [column for column in job.index.tolist() if column not in NON_PARAMETER_COLUMNS]
                 f.write(mask % dict(zip(replace_columns, job[replace_columns])))
+
+            # Additional commands for the mask/string
             f.write(cmds)
             f.write("\n")
 
-            if destination_dir is not None:
-                if output_dir is not None:
-                    cp_command =  f'cp -r {output_dir} {job[COLUMN_DEST_DIRECTORY]}'
-                if is_eos_path(destination_dir):
+            # Manually copy output (if needed) ---
+            dest_dir = job.get(COLUMN_DEST_DIRECTORY) 
+            if output_dir and dest_dir and output_dir != dest_dir:
+                cp_command =  f'cp -r {output_dir} {dest_dir}'
+                if is_eos_path(dest_dir):
                     cp_command = f'eos {cp_command}'
                     
                 f.write(f'{cp_command}\n')
@@ -213,17 +212,14 @@ def write_bash(
     return job_df
 
 
-# Helper #######################################################################
-
-
-def _map_kwargs(add_dict):
+def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
     """
     Maps the kwargs for the job-file. Some arguments have pre-defined choices and defaults,
     the remaining ones are just passed on.
     """
     new = {}
 
-    # Predefined ones
+    # Predefined mappings 
     htc_map = {
         "duration": ("+JobFlavour", JOBFLAVOURS, "workday"),
         "output_dir": ("transfer_output_files", None, None),
@@ -251,38 +247,13 @@ def _map_kwargs(add_dict):
     return new
 
 
+# Helper #######################################################################
+
 def _maybe_put_in_quotes(key, value):
     if key.startswith("+"):
         return f'"{value}"'
     return value
 
-
-def is_eos_path(path): 
-    path = Path(path) 
-    strip_path_parts = _strip_eos_uri(path).parts 
-    return len(strip_path_parts) > 1 and strip_path_parts[1] == 'eos'
-
-
-def _strip_eos_uri(path):
-    # EOS paths for HTCondor are given with URI, strip for direct writing
-    # root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt
-    path = Path(path)
-    parts = path.parts
-    outpath = path
-    if parts[0].endswith(':'):
-        # the first two parts are host info, e.g `file: //host/path`
-        outpath = Path('/', *parts[2:])
-    return outpath
-
-
-def is_mask_file(mask):
-    try:
-        return Path(mask).is_file()
-    except OSError:
-        return False
-
-def is_mask_string(mask):
-    return not is_mask_file(mask)
 
 # Script Mode ##################################################################
 

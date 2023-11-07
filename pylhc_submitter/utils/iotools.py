@@ -4,15 +4,14 @@ IO-Tools
 
 Tools for input and output.
 """
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 from typing import Iterable
 
 from generic_parser.entry_datatypes import get_instance_faker_meta
 from generic_parser.entrypoint_parser import save_options_to_config
 
 from pylhc_submitter.constants.general import TIME
-
 
 # Output -----------------------------------------------------------------------
 

@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 from pylhc_submitter.job_submitter import main as job_submit
-from pylhc_submitter.utils.environment_tools import on_linux, on_windows
+from pylhc_submitter.utils.environment import on_linux, on_windows
 
 SUBFILE = "queuehtc.sub"
 
@@ -223,11 +223,8 @@ def _test_output(setup: InputParameters, post_run: bool = True):
             _check_output_content(setup.output_destination)
 
 
-
-
-
 def _generate_combinations(data: Dict[str, Sequence]) -> List[Dict[str, Any]]:
-    """ Creates all possible combinations of values in data as dictionaries. """
+    """ Creates all possible combinations of values in data as a list of dictionaries. """
     keys = list(data.keys())
     all_values = [data[key] for key in keys]
 

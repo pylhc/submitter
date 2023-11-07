@@ -202,7 +202,7 @@ from pylhc_submitter.constants.autosix import (
     SIXENV_OPTIONAL,
     AutoSixEnvironment,
 )
-from pylhc_submitter.htc.mask import generate_jobdf_index
+from pylhc_submitter.job_submitter_tools.mask import generate_jobdf_index
 from pylhc_submitter.job_submitter import (
     JOBSUMMARY_FILE,
     COLUMN_JOBID,
