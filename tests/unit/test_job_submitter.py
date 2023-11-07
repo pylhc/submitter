@@ -21,8 +21,113 @@ run_if_not_linux = pytest.mark.skipif(
 )
 
 
+@pytest.mark.parametrize("maskfile", [True, False])
+def test_job_creation_and_localrun(tmp_path, maskfile):
+    """ Tests that the jobs are created and can be run locally 
+    from mask-string and mask-file. """
+    setup = InputParameters(working_directory=tmp_path, run_local=True)
+    setup.create_mask(as_file=maskfile)
+    job_submit(**asdict(setup))
+    _test_output(setup)
+
+
+# def test_output_directory(tmp_path):
+#     """ Tests that the output is copied to the output destination. 
+#     As a by product it also tests that the jobs are created and can be run locally. """
+#     output_destination = tmp_path / "my_new_output" / "long_path"
+#     args, setup = _create_setup(tmp_path, mask_file=False, output_destination=output_destination)
+#     setup.update(run_local=True)
+#     job_submit(**setup)
+#     _test_output(args)
+
+
+@run_only_on_linux
+def test_job_creation_and_localrun_with_multiline_maskstring(tmp_path):
+    """ Tests that the jobs are created and can be run locally from a multiline mask-string. """
+    mask = "123\"\" \nsleep 0.1 \n/bin/bash -c  \"echo \"%(PARAM1)s.%(PARAM2)s"
+    setup = InputParameters(working_directory=tmp_path, run_local=True)
+    setup.create_mask(content=mask, as_file=False)
+    job_submit(**asdict(setup))
+    _test_output(setup)
+
+
+@run_only_on_linux
+@pytest.mark.parametrize("maskfile", [True, False])
+def test_job_creation_and_dryrun(tmp_path, maskfile):
+    """ Tests that the jobs are created as dry-run from mask-file and from mask-string. """
+    setup = InputParameters(working_directory=tmp_path, dryrun=True)
+    setup.create_mask(as_file=maskfile)
+    job_submit(**asdict(setup))
+    _test_subfile_content(setup)
+    _test_output(setup, post_run=False)
+
+
+@run_only_on_linux
+@pytest.mark.parametrize("maskfile", [True, False])
+def test_find_errorneous_percentage_signs(tmp_path, maskfile):
+    """ Tests that a key-error is raised on a mask-string with percentage signs, 
+    that are not part of the replacement parameters. """
+    mask = "%(PARAM1)s.%(PARAM2)d\nsome stuff # should be 5%\nsome % more % stuff."
+    setup = InputParameters(working_directory=tmp_path)
+    setup.create_mask(content=mask, as_file=maskfile)
+    with pytest.raises(KeyError) as e:
+        job_submit(**asdict(setup))
+    assert "problematic '%'" in e.value.args[0]
+
+
+@run_only_on_linux
+@pytest.mark.parametrize("maskfile", [True, False])
+def test_missing_keys(tmp_path, maskfile):
+    """ Tests that a key-error is raised on a mask-string with missing keys in the replacement dict. """
+    mask = "%(PARAM1)s.%(PARAM2)s.%(PARAM3)s"
+    setup = InputParameters(working_directory=tmp_path)
+    setup.create_mask(content=mask, as_file=maskfile)
+    with pytest.raises(KeyError) as e:
+        job_submit(**asdict(setup))
+    assert "PARAM3" in e.value.args[0]
+
+
+@run_if_not_linux
+def test_not_on_linux(tmp_path):
+    """ Test that an error is raised if htcondor bindings are not found.
+    If this tests fails, this might mean, that htcondor bindings are finally 
+    available for the other platforms. """
+    setup = InputParameters(working_directory=tmp_path)
+    with pytest.raises(EnvironmentError) as e:
+        job_submit(**asdict(setup))
+    assert "htcondor bindings" in e.value.args[0]
+
+
+@run_only_on_linux
+@pytest.mark.cern_network
+def test_htc_submit():
+    """ This test is here for local testing only. You need to adapt the path
+    and delete the results afterwards manually (so you can check them before."""
+    user = "jdilly"
+    path = Path("/", "afs", "cern.ch", "user", user[0], user, "htc_temp")
+    path.mkdir(exist_ok=True)
+
+
+    # Fix the kerberos ticket path. 
+    # Do klist to find your ticket manually.
+    import os
+    os.environ["KRB5CCNAME"] = "/tmp/krb5cc_106029"
+
+    setup = InputParameters(working_directory=path)
+    setup.create_mask()
+    # pre-run ---
+    # job_submit(**asdict(setup))
+    # _test_subfile_content(setup)
+    # _test_output(setup, post_run=False)
+    # post run ---
+    _test_output(setup, post_run=True)  
+
+
+# Helper -----------------------------------------------------------------------
+
 @dataclass
 class InputParameters:
+    """ job_submitter input parameters. """
     working_directory: Path
     executable: Optional[str] = None if on_windows() else "/bin/bash"
     script_extension: Optional[str] =".bat" if on_windows() else ".sh"
@@ -48,9 +153,8 @@ class InputParameters:
             mask_string = f'echo {content}> "{output_file!s}"'
         else:
             mask_string = f'echo "{content}" > "{output_file!s}"'
-            if as_file:
+            if not as_file:
                 mask_string = " ".join(['-c "', mask_string, '"'])
-        
         
         mask_string = f"{mask_string}\n"
         
@@ -63,110 +167,14 @@ class InputParameters:
             self.mask = mask_string
 
 
-
-@pytest.mark.parametrize("maskfile", [True, False])
-def test_job_creation_and_localrun(tmp_path, maskfile):
-    """ Tests that the jobs are created and can be run locally 
-    from mask-string and mask-file. """
-    setup = InputParameters(working_directory=tmp_path, run_local=True)
-    setup.create_mask(as_file=maskfile)
-    job_submit(**asdict(setup))
-    _test_output(setup)
-
-
-# def test_output_directory(tmp_path):
-#     """ Tests that the output is copied to the output destination. 
-#     As a by product it also tests that the jobs are created and can be run locally. """
-#     output_destination = tmp_path / "my_new_output" / "long_path"
-#     args, setup = _create_setup(tmp_path, mask_file=False, output_destination=output_destination)
-#     setup.update(run_local=True)
-#     job_submit(**setup)
-#     _test_output(args)
-
-
-# @run_only_on_linux
-# def test_job_creation_and_localrun_with_multiline_maskstring(tmp_path):
-#     """ Tests that the jobs are created and can be run locally from a multiline mask-string. """
-#     mask = "123\"\" \nsleep 0.1 \n/bin/bash -c  \"echo \"%(PARAM1)s.%(PARAM2)s"
-#     args, setup = _create_setup(tmp_path, mask_content=mask, mask_file=False)
-#     setup.update(run_local=True)
-#     job_submit(**setup)
-#     _test_output(args)
-
-
-# @run_only_on_linux
-# @pytest.mark.parametrize("maskfile", [True, False])
-# def test_job_creation_and_dryrun(tmp_path, maskfile):
-#     """ Tests that the jobs are created as dry-run from mask-file and from mask-string. """
-#     args, setup = _create_setup(tmp_path, mask_file=maskfile)
-#     setup.update(dryrun=True)
-#     job_submit(**setup)
-#     _test_subfile_content(setup)
-#     _test_output(args, post_run=False)
-
-
-# @run_only_on_linux
-# @pytest.mark.parametrize("maskfile", [True, False])
-# def test_find_errorneous_percentage_signs(tmp_path, maskfile):
-#     """ Tests that a key-error is raised on a mask-string with percentage signs, 
-#     that are not part of the replacement parameters. """
-#     mask = "%(PARAM1)s.%(PARAM2)d\nsome stuff # should be 5%\nsome % more % stuff."
-#     args, setup = _create_setup(tmp_path, mask_content=mask, mask_file=maskfile)
-#     with pytest.raises(KeyError) as e:
-#         job_submit(**setup)
-#     assert "problematic '%'" in e.value.args[0]
-
-
-# @run_only_on_linux
-# @pytest.mark.parametrize("maskfile", [True, False])
-# def test_missing_keys(tmp_path, maskfile):
-#     """ Tests that a key-error is raised on a mask-string with missing keys in the replacement dict. """
-#     mask = "%(PARAM1)s.%(PARAM2)s.%(PARAM3)s"
-#     args, setup = _create_setup(tmp_path, mask_content=mask, mask_file=maskfile)
-#     with pytest.raises(KeyError) as e:
-#         job_submit(**setup)
-#     assert "PARAM3" in e.value.args[0]
-
-
-# @run_if_not_linux
-# def test_not_on_linux(tmp_path):
-#     """ Test that an error is raised if htcondor bindings are not found.
-#     If this tests fails, this might mean, that htcondor bindings are finally 
-#     available for the other platforms. """
-#     args, setup = _create_setup(tmp_path)
-#     with pytest.raises(EnvironmentError) as e:
-#         job_submit(**setup)
-#     assert "htcondor bindings" in e.value.args[0]
-
-
-# @run_only_on_linux
-# @pytest.mark.cern_network
-# def test_htc_submit():
-#     """ This test is here for local testing only. You need to adapt the path
-#     and delete the results afterwards manually (so you can check them before."""
-#     user = "jdilly"
-#     path = Path("/", "afs", "cern.ch", "user", user[0], user, "htc_temp")
-#     path.mkdir(exist_ok=True)
-#     args, setup = _create_setup(path)
-
-#     job_submit(**setup)
-#     _test_subfile_content(setup)
-#     _test_output(args, post_run=False)
-#     # _test_output(args, post_run=True)  # you can use this if you like after htcondor is done
-
-
-# Helper -----------------------------------------------------------------------
-
-
-
 def _test_subfile_content(setup: InputParameters):
     """ Checks some of the content of the subfile (queuehtc.sub). """
     subfile = setup.working_directory / SUBFILE
     assert subfile.exists()
     with subfile.open("r") as sfile:
         filecontents = dict(line.rstrip().split(" = ") for line in sfile if " = " in line)
-        assert filecontents["MY.JobFlavour"].strip('"') == setup["jobflavour"]  # flavour is saved with "" in .sub, and read in with them
-        assert filecontents["transfer_output_files"] == setup["job_output_dir"]
+        assert filecontents["MY.JobFlavour"].strip('"') == setup.jobflavour  # flavour is saved with "" in .sub, and read in with them
+        assert filecontents["transfer_output_files"] == setup.job_output_dir
         for key in setup.htc_arguments.keys():
             assert filecontents[key] == setup.htc_arguments[key]
 
@@ -175,6 +183,7 @@ def _test_output(setup: InputParameters, post_run: bool = True):
     """ Checks the validity of the output.  """
 
     combinations = _generate_combinations(setup.replace_dict)
+    assert len(combinations)
     assert len(combinations) == np.prod([len(v) for v in setup.replace_dict.values()])
     
     for combination_instance in combinations:
