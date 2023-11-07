@@ -31,14 +31,17 @@ def test_job_creation_and_localrun(tmp_path, maskfile):
     _test_output(setup)
 
 
-# def test_output_directory(tmp_path):
-#     """ Tests that the output is copied to the output destination. 
-#     As a by product it also tests that the jobs are created and can be run locally. """
-#     output_destination = tmp_path / "my_new_output" / "long_path"
-#     args, setup = _create_setup(tmp_path, mask_file=False, output_destination=output_destination)
-#     setup.update(run_local=True)
-#     job_submit(**setup)
-#     _test_output(args)
+def test_output_directory(tmp_path):
+    """ Tests that the output is copied to the output destination. 
+    As a by product it also tests that the jobs are created and can be run locally. """
+    setup = InputParameters(
+        working_directory=tmp_path, 
+        run_local=True,
+        output_destination=tmp_path / "my_new_output" / "long_path",
+    )
+    setup.create_mask()
+    job_submit(**asdict(setup))
+    _test_output(setup)
 
 
 @run_only_on_linux
@@ -104,24 +107,25 @@ def test_not_on_linux(tmp_path):
 def test_htc_submit():
     """ This test is here for local testing only. You need to adapt the path
     and delete the results afterwards manually (so you can check them before."""
-    user = "jdilly"
-    path = Path("/", "afs", "cern.ch", "user", user[0], user, "htc_temp")
-    path.mkdir(exist_ok=True)
-
-
     # Fix the kerberos ticket path. 
     # Do klist to find your ticket manually.
     # import os
     # os.environ["KRB5CCNAME"] = "/tmp/krb5cc_####"
 
+    user = "jdilly"
+    path = Path("/", "afs", "cern.ch", "user", user[0], user, "htc_temp")
+    path.mkdir(exist_ok=True)
+
     setup = InputParameters(working_directory=path)
     setup.create_mask()
+
     # pre-run ---
-    # job_submit(**asdict(setup))
-    # _test_subfile_content(setup)
-    # _test_output(setup, post_run=False)
+    job_submit(**asdict(setup))
+    _test_subfile_content(setup)
+    _test_output(setup, post_run=False)
+
     # post run ---
-    _test_output(setup, post_run=True)  
+    # _test_output(setup, post_run=True)  
 
 
 # Helper -----------------------------------------------------------------------
@@ -190,22 +194,37 @@ def _test_output(setup: InputParameters, post_run: bool = True):
     for combination_instance in combinations:
         current_id = setup.jobid_mask % combination_instance
         job_name = f"Job.{current_id}"
-        job_dir_path = setup.working_directory / job_name
-        out_dir_path = job_dir_path / setup.job_output_dir
-        out_file_path = out_dir_path / setup.check_files[0]
-
-        assert job_dir_path.exists()
-        assert job_dir_path.is_dir()
+        
         if isinstance(setup.mask, Path):
-            assert (job_dir_path / setup.mask.name).with_suffix(setup.script_extension).exists()
-        # assert out_dir_path.exists()  # does not seem to be pre-created anymore (jdilly 2021-05-04)
-        if post_run:
-            assert out_dir_path.is_dir()
-            assert out_file_path.exists()
-            assert out_file_path.is_file()
+            assert (setup.working_directory / job_name / setup.mask.name).with_suffix(setup.script_extension).exists()
 
-            with out_file_path.open("r") as f:
-                assert f.read().strip("\n") == current_id
+        def _check_output_content(dir_path: Path):
+                # Check if the code created the folder structure ---
+                job_path = dir_path / job_name
+                
+                assert job_path.exists()
+                assert job_path.is_dir()
+
+                if post_run:  # Check if the jobs created the files ---
+                    out_dir_path = job_path / setup.job_output_dir
+                    out_file_path = out_dir_path / setup.check_files[0]
+                    
+                    assert out_dir_path.is_dir()
+                    assert out_file_path.exists()
+                    assert out_file_path.is_file()
+
+                    with out_file_path.open("r") as f:
+                        assert f.read().strip("\n") == current_id
+
+        # Check local working directory ---
+        _check_output_content(setup.working_directory)
+
+        if setup.output_destination is not None:
+            # Check copy at output destination ---
+            _check_output_content(setup.output_destination)
+
+
+
 
 
 def _generate_combinations(data: Dict[str, Sequence]) -> List[Dict[str, Any]]:
