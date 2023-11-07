@@ -1,11 +1,10 @@
 import itertools
-from dataclasses import astuple, dataclass, field, fields, asdict
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 import numpy as np
 import pytest
-from generic_parser import DotDict
 
 from pylhc_submitter.job_submitter import main as job_submit
 from pylhc_submitter.utils.environment_tools import on_linux, on_windows
