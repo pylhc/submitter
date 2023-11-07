@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=58fbf978"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -26,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html">
-            <img src="_static/omc_logo.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -43,6 +47,8 @@
               <p class="caption" role="heading"><span class="caption-text">Submitter</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="entrypoints/autosix.html">AutoSix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entrypoints/autosix.html#pylhc_submitter.autosix.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="entrypoints/autosix.html#pylhc_submitter.autosix.run_job"><code class="docutils literal notranslate"><span class="pre">run_job()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="entrypoints/job_submitter.html">Job Submitter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
@@ -51,26 +57,89 @@
 <li class="toctree-l2"><a class="reference internal" href="modules/constants.html#constants-general">Constants: General</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/constants.html#constants-external-paths">Constants: External Paths</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/constants.html#constants-autosix">Constants: Autosix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/constants.html#pylhc_submitter.constants.autosix.AutoSixEnvironment"><code class="docutils literal notranslate"><span class="pre">AutoSixEnvironment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/constants.html#pylhc_submitter.constants.autosix.SetDynamically"><code class="docutils literal notranslate"><span class="pre">SetDynamically</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/constants.html#pylhc_submitter.constants.autosix.SixDeskEnvironment"><code class="docutils literal notranslate"><span class="pre">SixDeskEnvironment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/constants.html#pylhc_submitter.constants.autosix.StageSkip"><code class="docutils literal notranslate"><span class="pre">StageSkip</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/constants.html#pylhc_submitter.constants.autosix.StageStop"><code class="docutils literal notranslate"><span class="pre">StageStop</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/htc.html">HTCondor Tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/htc.html#htcondor-utilities">HTCondor Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/htc.html#pylhc_submitter.htc.utils.create_multijob_for_bashfiles"><code class="docutils literal notranslate"><span class="pre">create_multijob_for_bashfiles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/htc.html#pylhc_submitter.htc.utils.create_subfile_from_job"><code class="docutils literal notranslate"><span class="pre">create_subfile_from_job()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/htc.html#pylhc_submitter.htc.utils.make_subfile"><code class="docutils literal notranslate"><span class="pre">make_subfile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/htc.html#pylhc_submitter.htc.utils.submit_jobfile"><code class="docutils literal notranslate"><span class="pre">submit_jobfile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/htc.html#pylhc_submitter.htc.utils.write_bash"><code class="docutils literal notranslate"><span class="pre">write_bash()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/htc.html#mask-resolver">Mask Resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/htc.html#pylhc_submitter.htc.mask.check_percentage_signs_in_mask"><code class="docutils literal notranslate"><span class="pre">check_percentage_signs_in_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/htc.html#pylhc_submitter.htc.mask.create_jobs_from_mask"><code class="docutils literal notranslate"><span class="pre">create_jobs_from_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/htc.html#pylhc_submitter.htc.mask.generate_jobdf_index"><code class="docutils literal notranslate"><span class="pre">generate_jobdf_index()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#stages">Stages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckInput"><code class="docutils literal notranslate"><span class="pre">CheckInput</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckSixtrackOutput"><code class="docutils literal notranslate"><span class="pre">CheckSixtrackOutput</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CreateJob"><code class="docutils literal notranslate"><span class="pre">CreateJob</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Final"><code class="docutils literal notranslate"><span class="pre">Final</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.InitializeWorkspace"><code class="docutils literal notranslate"><span class="pre">InitializeWorkspace</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.PostProcess"><code class="docutils literal notranslate"><span class="pre">PostProcess</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbCmd"><code class="docutils literal notranslate"><span class="pre">SixdbCmd</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbLoad"><code class="docutils literal notranslate"><span class="pre">SixdbLoad</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Stage"><code class="docutils literal notranslate"><span class="pre">Stage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.StageMeta"><code class="docutils literal notranslate"><span class="pre">StageMeta</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitMask"><code class="docutils literal notranslate"><span class="pre">SubmitMask</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitSixtrack"><code class="docutils literal notranslate"><span class="pre">SubmitSixtrack</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.create_job"><code class="docutils literal notranslate"><span class="pre">create_job()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.fix_pythonfile_call"><code class="docutils literal notranslate"><span class="pre">fix_pythonfile_call()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.init_workspace"><code class="docutils literal notranslate"><span class="pre">init_workspace()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.remove_twiss_fail_check"><code class="docutils literal notranslate"><span class="pre">remove_twiss_fail_check()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.set_max_materialize"><code class="docutils literal notranslate"><span class="pre">set_max_materialize()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.check_sixtrack_input"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_input()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.check_sixtrack_output"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_output()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.sixdb_cmd"><code class="docutils literal notranslate"><span class="pre">sixdb_cmd()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.sixdb_load"><code class="docutils literal notranslate"><span class="pre">sixdb_load()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.submit_mask"><code class="docutils literal notranslate"><span class="pre">submit_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.submit_sixtrack"><code class="docutils literal notranslate"><span class="pre">submit_sixtrack()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.create_da_tfs"><code class="docutils literal notranslate"><span class="pre">create_da_tfs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.create_polar_plots"><code class="docutils literal notranslate"><span class="pre">create_polar_plots()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.plot_polar"><code class="docutils literal notranslate"><span class="pre">plot_polar()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.post_process_da"><code class="docutils literal notranslate"><span class="pre">post_process_da()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.extract_data_from_db.extract_da_data"><code class="docutils literal notranslate"><span class="pre">extract_da_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.extract_data_from_db.extract_meta_data"><code class="docutils literal notranslate"><span class="pre">extract_meta_data()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.check_mask"><code class="docutils literal notranslate"><span class="pre">check_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.is_locked"><code class="docutils literal notranslate"><span class="pre">is_locked()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_last_stage"><code class="docutils literal notranslate"><span class="pre">check_last_stage()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_sixtrack_output_data"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_output_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_stages_for_setup"><code class="docutils literal notranslate"><span class="pre">check_stages_for_setup()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.find_obviously_failed_sixtrack_submissions"><code class="docutils literal notranslate"><span class="pre">find_obviously_failed_sixtrack_submissions()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.for_all_jobs"><code class="docutils literal notranslate"><span class="pre">for_all_jobs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_all_jobs_in_base"><code class="docutils literal notranslate"><span class="pre">get_all_jobs_in_base()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_first_dir"><code class="docutils literal notranslate"><span class="pre">get_first_dir()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_last_stage"><code class="docutils literal notranslate"><span class="pre">get_last_stage()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.reset_stages"><code class="docutils literal notranslate"><span class="pre">reset_stages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.set_stages"><code class="docutils literal notranslate"><span class="pre">set_stages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.set_stages_for_setup"><code class="docutils literal notranslate"><span class="pre">set_stages_for_setup()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.skip_stages"><code class="docutils literal notranslate"><span class="pre">skip_stages()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/utils.html">Utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/utils.html#io-tools">IO-Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/utils.html#pylhc_submitter.utils.iotools.PathOrStr"><code class="docutils literal notranslate"><span class="pre">PathOrStr</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/utils.html#pylhc_submitter.utils.iotools.convert_paths_in_dict_to_strings"><code class="docutils literal notranslate"><span class="pre">convert_paths_in_dict_to_strings()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/utils.html#pylhc_submitter.utils.iotools.escape_percentage_signs"><code class="docutils literal notranslate"><span class="pre">escape_percentage_signs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/utils.html#pylhc_submitter.utils.iotools.keys_to_path"><code class="docutils literal notranslate"><span class="pre">keys_to_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/utils.html#pylhc_submitter.utils.iotools.make_replace_entries_iterable"><code class="docutils literal notranslate"><span class="pre">make_replace_entries_iterable()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/utils.html#pylhc_submitter.utils.iotools.save_config"><code class="docutils literal notranslate"><span class="pre">save_config()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/utils.html#logging-tools">Logging Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/utils.html#pylhc_submitter.utils.logging_tools.log_setup"><code class="docutils literal notranslate"><span class="pre">log_setup()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -88,8 +157,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Index</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Index</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>

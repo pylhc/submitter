@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HTCondor Tools &mdash; pylhc_submitter 1.1.1 documentation</title>
@@ -12,11 +12,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=58fbf978"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,15 +29,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html">
-            <img src="../_static/omc_logo.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -46,6 +50,8 @@
               <p class="caption" role="heading"><span class="caption-text">Submitter</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../entrypoints/autosix.html">AutoSix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../entrypoints/autosix.html#pylhc_submitter.autosix.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../entrypoints/autosix.html#pylhc_submitter.autosix.run_job"><code class="docutils literal notranslate"><span class="pre">run_job()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../entrypoints/job_submitter.html">Job Submitter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
@@ -54,26 +60,89 @@
 <li class="toctree-l2"><a class="reference internal" href="constants.html#constants-general">Constants: General</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constants.html#constants-external-paths">Constants: External Paths</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constants.html#constants-autosix">Constants: Autosix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#pylhc_submitter.constants.autosix.AutoSixEnvironment"><code class="docutils literal notranslate"><span class="pre">AutoSixEnvironment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#pylhc_submitter.constants.autosix.SetDynamically"><code class="docutils literal notranslate"><span class="pre">SetDynamically</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#pylhc_submitter.constants.autosix.SixDeskEnvironment"><code class="docutils literal notranslate"><span class="pre">SixDeskEnvironment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#pylhc_submitter.constants.autosix.StageSkip"><code class="docutils literal notranslate"><span class="pre">StageSkip</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#pylhc_submitter.constants.autosix.StageStop"><code class="docutils literal notranslate"><span class="pre">StageStop</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">HTCondor Tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#htcondor-utilities">HTCondor Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pylhc_submitter.htc.utils.create_multijob_for_bashfiles"><code class="docutils literal notranslate"><span class="pre">create_multijob_for_bashfiles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pylhc_submitter.htc.utils.create_subfile_from_job"><code class="docutils literal notranslate"><span class="pre">create_subfile_from_job()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pylhc_submitter.htc.utils.make_subfile"><code class="docutils literal notranslate"><span class="pre">make_subfile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pylhc_submitter.htc.utils.submit_jobfile"><code class="docutils literal notranslate"><span class="pre">submit_jobfile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pylhc_submitter.htc.utils.write_bash"><code class="docutils literal notranslate"><span class="pre">write_bash()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mask-resolver">Mask Resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pylhc_submitter.htc.mask.check_percentage_signs_in_mask"><code class="docutils literal notranslate"><span class="pre">check_percentage_signs_in_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pylhc_submitter.htc.mask.create_jobs_from_mask"><code class="docutils literal notranslate"><span class="pre">create_jobs_from_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pylhc_submitter.htc.mask.generate_jobdf_index"><code class="docutils literal notranslate"><span class="pre">generate_jobdf_index()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sixdesk_tools.html">Sixdesk Tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#stages">Stages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckInput"><code class="docutils literal notranslate"><span class="pre">CheckInput</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckSixtrackOutput"><code class="docutils literal notranslate"><span class="pre">CheckSixtrackOutput</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CreateJob"><code class="docutils literal notranslate"><span class="pre">CreateJob</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Final"><code class="docutils literal notranslate"><span class="pre">Final</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.InitializeWorkspace"><code class="docutils literal notranslate"><span class="pre">InitializeWorkspace</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.PostProcess"><code class="docutils literal notranslate"><span class="pre">PostProcess</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbCmd"><code class="docutils literal notranslate"><span class="pre">SixdbCmd</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbLoad"><code class="docutils literal notranslate"><span class="pre">SixdbLoad</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Stage"><code class="docutils literal notranslate"><span class="pre">Stage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.StageMeta"><code class="docutils literal notranslate"><span class="pre">StageMeta</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitMask"><code class="docutils literal notranslate"><span class="pre">SubmitMask</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitSixtrack"><code class="docutils literal notranslate"><span class="pre">SubmitSixtrack</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.create_job"><code class="docutils literal notranslate"><span class="pre">create_job()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.fix_pythonfile_call"><code class="docutils literal notranslate"><span class="pre">fix_pythonfile_call()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.init_workspace"><code class="docutils literal notranslate"><span class="pre">init_workspace()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.remove_twiss_fail_check"><code class="docutils literal notranslate"><span class="pre">remove_twiss_fail_check()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.set_max_materialize"><code class="docutils literal notranslate"><span class="pre">set_max_materialize()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.check_sixtrack_input"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_input()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.check_sixtrack_output"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_output()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.sixdb_cmd"><code class="docutils literal notranslate"><span class="pre">sixdb_cmd()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.sixdb_load"><code class="docutils literal notranslate"><span class="pre">sixdb_load()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.submit_mask"><code class="docutils literal notranslate"><span class="pre">submit_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.submit_sixtrack"><code class="docutils literal notranslate"><span class="pre">submit_sixtrack()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.create_da_tfs"><code class="docutils literal notranslate"><span class="pre">create_da_tfs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.create_polar_plots"><code class="docutils literal notranslate"><span class="pre">create_polar_plots()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.plot_polar"><code class="docutils literal notranslate"><span class="pre">plot_polar()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.post_process_da"><code class="docutils literal notranslate"><span class="pre">post_process_da()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.extract_data_from_db.extract_da_data"><code class="docutils literal notranslate"><span class="pre">extract_da_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.extract_data_from_db.extract_meta_data"><code class="docutils literal notranslate"><span class="pre">extract_meta_data()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.check_mask"><code class="docutils literal notranslate"><span class="pre">check_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.is_locked"><code class="docutils literal notranslate"><span class="pre">is_locked()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_last_stage"><code class="docutils literal notranslate"><span class="pre">check_last_stage()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_sixtrack_output_data"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_output_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_stages_for_setup"><code class="docutils literal notranslate"><span class="pre">check_stages_for_setup()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.find_obviously_failed_sixtrack_submissions"><code class="docutils literal notranslate"><span class="pre">find_obviously_failed_sixtrack_submissions()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.for_all_jobs"><code class="docutils literal notranslate"><span class="pre">for_all_jobs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_all_jobs_in_base"><code class="docutils literal notranslate"><span class="pre">get_all_jobs_in_base()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_first_dir"><code class="docutils literal notranslate"><span class="pre">get_first_dir()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_last_stage"><code class="docutils literal notranslate"><span class="pre">get_last_stage()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.reset_stages"><code class="docutils literal notranslate"><span class="pre">reset_stages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.set_stages"><code class="docutils literal notranslate"><span class="pre">set_stages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.set_stages_for_setup"><code class="docutils literal notranslate"><span class="pre">set_stages_for_setup()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.skip_stages"><code class="docutils literal notranslate"><span class="pre">skip_stages()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#io-tools">IO-Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#pylhc_submitter.utils.iotools.PathOrStr"><code class="docutils literal notranslate"><span class="pre">PathOrStr</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#pylhc_submitter.utils.iotools.convert_paths_in_dict_to_strings"><code class="docutils literal notranslate"><span class="pre">convert_paths_in_dict_to_strings()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#pylhc_submitter.utils.iotools.escape_percentage_signs"><code class="docutils literal notranslate"><span class="pre">escape_percentage_signs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#pylhc_submitter.utils.iotools.keys_to_path"><code class="docutils literal notranslate"><span class="pre">keys_to_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#pylhc_submitter.utils.iotools.make_replace_entries_iterable"><code class="docutils literal notranslate"><span class="pre">make_replace_entries_iterable()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#pylhc_submitter.utils.iotools.save_config"><code class="docutils literal notranslate"><span class="pre">save_config()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#logging-tools">Logging Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#pylhc_submitter.utils.logging_tools.log_setup"><code class="docutils literal notranslate"><span class="pre">log_setup()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -91,8 +160,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>HTCondor Tools</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">HTCondor Tools</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/modules/htc.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -103,9 +172,9 @@
            <div itemprop="articleBody">
              
   <section id="module-pylhc_submitter.htc.utils">
-<span id="htcondor-tools"></span><h1>HTCondor Tools<a class="headerlink" href="#module-pylhc_submitter.htc.utils" title="Permalink to this heading"></a></h1>
+<span id="htcondor-tools"></span><h1>HTCondor Tools<a class="headerlink" href="#module-pylhc_submitter.htc.utils" title="Link to this heading"></a></h1>
 <section id="htcondor-utilities">
-<h2>HTCondor Utilities<a class="headerlink" href="#htcondor-utilities" title="Permalink to this heading"></a></h2>
+<h2>HTCondor Utilities<a class="headerlink" href="#htcondor-utilities" title="Link to this heading"></a></h2>
 <p>This module provides functionality to create HTCondor jobs and submit them to <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">write_bash</span></code> creates bash scripts executing either a python or madx script.
 Takes as input <cite>Dataframe</cite>, job type, and optional additional commandline arguments for the script.
@@ -113,12 +182,13 @@ A shell script is created in each job directory in the dataframe.</p>
 <p><code class="docutils literal notranslate"><span class="pre">make_subfile</span></code> takes the job dataframe and creates the <strong>.sub</strong> files required for submissions to
 <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code>. The <strong>.sub</strong> file will be put in the working directory. The maximum runtime of one
 job can be specified, standard is 8h.</p>
+</section>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylhc_submitter.htc.utils.create_multijob_for_bashfiles">
-<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.utils.</span></span><span class="sig-name descname"><span class="pre">create_multijob_for_bashfiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/utils.html#create_multijob_for_bashfiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.utils.create_multijob_for_bashfiles" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.utils.</span></span><span class="sig-name descname"><span class="pre">create_multijob_for_bashfiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/utils.html#create_multijob_for_bashfiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.utils.create_multijob_for_bashfiles" title="Link to this definition"></a></dt>
 <dd><p>Function to create an <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code> job assuming n_files bash-files.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Keyword Arguments</dt>
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>output_dir</strong> (<em>str</em>) -- output directory that will be transferred. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>duration</strong> (<em>str</em>) -- max duration of the job. Needs to be one of the <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code> Jobflavours.
@@ -134,43 +204,43 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">workday
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylhc_submitter.htc.utils.create_subfile_from_job">
-<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.utils.</span></span><span class="sig-name descname"><span class="pre">create_subfile_from_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/utils.html#create_subfile_from_job"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.utils.create_subfile_from_job" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.utils.</span></span><span class="sig-name descname"><span class="pre">create_subfile_from_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/utils.html#create_subfile_from_job"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.utils.create_subfile_from_job" title="Link to this definition"></a></dt>
 <dd><p>Write file to submit to <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylhc_submitter.htc.utils.make_subfile">
-<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.utils.</span></span><span class="sig-name descname"><span class="pre">make_subfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/utils.html#make_subfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.utils.make_subfile" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.utils.</span></span><span class="sig-name descname"><span class="pre">make_subfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/utils.html#make_subfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.utils.make_subfile" title="Link to this definition"></a></dt>
 <dd><p>Creates submit-file for <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code>.
 For kwargs, see <code class="docutils literal notranslate"><span class="pre">create_multijob_for_bashfiles</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylhc_submitter.htc.utils.submit_jobfile">
-<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.utils.</span></span><span class="sig-name descname"><span class="pre">submit_jobfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/utils.html#submit_jobfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.utils.submit_jobfile" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.utils.</span></span><span class="sig-name descname"><span class="pre">submit_jobfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/utils.html#submit_jobfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.utils.submit_jobfile" title="Link to this definition"></a></dt>
 <dd><p>Submit subfile to <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code> via subprocess.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylhc_submitter.htc.utils.write_bash">
-<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.utils.</span></span><span class="sig-name descname"><span class="pre">write_bash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'madx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmdline_arguments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/pylhc_submitter/htc/utils.html#write_bash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.utils.write_bash" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.utils.</span></span><span class="sig-name descname"><span class="pre">write_bash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'madx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmdline_arguments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/pylhc_submitter/htc/utils.html#write_bash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.utils.write_bash" title="Link to this definition"></a></dt>
 <dd><p>Write the bash-files to be called by <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code>.</p>
 </dd></dl>
 
-</section>
-<span class="target" id="module-pylhc_submitter.htc.mask"></span><section id="mask-resolver">
-<h2>Mask Resolver<a class="headerlink" href="#mask-resolver" title="Permalink to this heading"></a></h2>
+<section id="mask-resolver">
+<span id="module-pylhc_submitter.htc.mask"></span><h2>Mask Resolver<a class="headerlink" href="#mask-resolver" title="Link to this heading"></a></h2>
 <p>This module provides functionality to resolve and write script masks for <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code> jobs
 submission.</p>
+</section>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylhc_submitter.htc.mask.check_percentage_signs_in_mask">
-<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.mask.</span></span><span class="sig-name descname"><span class="pre">check_percentage_signs_in_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/mask.html#check_percentage_signs_in_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.mask.check_percentage_signs_in_mask" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.mask.</span></span><span class="sig-name descname"><span class="pre">check_percentage_signs_in_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/mask.html#check_percentage_signs_in_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.mask.check_percentage_signs_in_mask" title="Link to this definition"></a></dt>
 <dd><p>Checks for ‘%’ in the mask, that are not replacement variables.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylhc_submitter.htc.mask.create_jobs_from_mask">
-<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.mask.</span></span><span class="sig-name descname"><span class="pre">create_jobs_from_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_ext</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/pylhc_submitter/htc/mask.html#create_jobs_from_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.mask.create_jobs_from_mask" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.mask.</span></span><span class="sig-name descname"><span class="pre">create_jobs_from_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_ext</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../_modules/pylhc_submitter/htc/mask.html#create_jobs_from_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.mask.create_jobs_from_mask" title="Link to this definition"></a></dt>
 <dd><p>Takes path to mask file, list of parameter to be replaced and pandas dataframe containg per job
 the job directory where processed mask is to be put, and columns containing the parameter values
 with column named like replace parameters. Job directories have to be created beforehand.
@@ -178,7 +248,7 @@ Processed (madx) mask has the same filename as mask but with the given file exte
 Input Dataframe is returned with additional column containing path to the processed script
 files.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>job_df</strong> (<em>pd.DataFrame</em>) -- Job parameters as defined in description.</p></li>
 <li><p><strong>maskfile</strong> -- <cite>Path</cite> object to the mask file.</p></li>
@@ -186,7 +256,7 @@ files.</p>
 <li><p><strong>file_ext</strong> -- file extention to use (defaults to <strong>madx</strong>).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The provided <code class="docutils literal notranslate"><span class="pre">job_df</span></code> but with added path to the scripts.</p>
 </dd>
 </dl>
@@ -194,11 +264,10 @@ files.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylhc_submitter.htc.mask.generate_jobdf_index">
-<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.mask.</span></span><span class="sig-name descname"><span class="pre">generate_jobdf_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jobid_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/mask.html#generate_jobdf_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.mask.generate_jobdf_index" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.htc.mask.</span></span><span class="sig-name descname"><span class="pre">generate_jobdf_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jobid_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/htc/mask.html#generate_jobdf_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pylhc_submitter.htc.mask.generate_jobdf_index" title="Link to this definition"></a></dt>
 <dd><p>Generates index for jobdf from mask for job_id naming.</p>
 </dd></dl>
 
-</section>
 </section>
 
 

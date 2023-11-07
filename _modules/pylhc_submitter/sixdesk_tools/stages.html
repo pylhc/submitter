@@ -11,11 +11,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=58fbf978"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html">
-            <img src="../../../_static/omc_logo.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -43,6 +47,8 @@
               <p class="caption" role="heading"><span class="caption-text">Submitter</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/autosix.html">AutoSix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/autosix.html#pylhc_submitter.autosix.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/autosix.html#pylhc_submitter.autosix.run_job"><code class="docutils literal notranslate"><span class="pre">run_job()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/job_submitter.html">Job Submitter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
@@ -51,26 +57,89 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#constants-general">Constants: General</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#constants-external-paths">Constants: External Paths</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#constants-autosix">Constants: Autosix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.AutoSixEnvironment"><code class="docutils literal notranslate"><span class="pre">AutoSixEnvironment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.SetDynamically"><code class="docutils literal notranslate"><span class="pre">SetDynamically</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.SixDeskEnvironment"><code class="docutils literal notranslate"><span class="pre">SixDeskEnvironment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.StageSkip"><code class="docutils literal notranslate"><span class="pre">StageSkip</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.StageStop"><code class="docutils literal notranslate"><span class="pre">StageStop</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/htc.html">HTCondor Tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/htc.html#htcondor-utilities">HTCondor Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/htc.html#pylhc_submitter.htc.utils.create_multijob_for_bashfiles"><code class="docutils literal notranslate"><span class="pre">create_multijob_for_bashfiles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/htc.html#pylhc_submitter.htc.utils.create_subfile_from_job"><code class="docutils literal notranslate"><span class="pre">create_subfile_from_job()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/htc.html#pylhc_submitter.htc.utils.make_subfile"><code class="docutils literal notranslate"><span class="pre">make_subfile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/htc.html#pylhc_submitter.htc.utils.submit_jobfile"><code class="docutils literal notranslate"><span class="pre">submit_jobfile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/htc.html#pylhc_submitter.htc.utils.write_bash"><code class="docutils literal notranslate"><span class="pre">write_bash()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/htc.html#mask-resolver">Mask Resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/htc.html#pylhc_submitter.htc.mask.check_percentage_signs_in_mask"><code class="docutils literal notranslate"><span class="pre">check_percentage_signs_in_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/htc.html#pylhc_submitter.htc.mask.create_jobs_from_mask"><code class="docutils literal notranslate"><span class="pre">create_jobs_from_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/htc.html#pylhc_submitter.htc.mask.generate_jobdf_index"><code class="docutils literal notranslate"><span class="pre">generate_jobdf_index()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#stages">Stages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckInput"><code class="docutils literal notranslate"><span class="pre">CheckInput</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckSixtrackOutput"><code class="docutils literal notranslate"><span class="pre">CheckSixtrackOutput</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CreateJob"><code class="docutils literal notranslate"><span class="pre">CreateJob</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Final"><code class="docutils literal notranslate"><span class="pre">Final</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.InitializeWorkspace"><code class="docutils literal notranslate"><span class="pre">InitializeWorkspace</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.PostProcess"><code class="docutils literal notranslate"><span class="pre">PostProcess</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbCmd"><code class="docutils literal notranslate"><span class="pre">SixdbCmd</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbLoad"><code class="docutils literal notranslate"><span class="pre">SixdbLoad</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Stage"><code class="docutils literal notranslate"><span class="pre">Stage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.StageMeta"><code class="docutils literal notranslate"><span class="pre">StageMeta</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitMask"><code class="docutils literal notranslate"><span class="pre">SubmitMask</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitSixtrack"><code class="docutils literal notranslate"><span class="pre">SubmitSixtrack</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.create_job"><code class="docutils literal notranslate"><span class="pre">create_job()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.fix_pythonfile_call"><code class="docutils literal notranslate"><span class="pre">fix_pythonfile_call()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.init_workspace"><code class="docutils literal notranslate"><span class="pre">init_workspace()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.remove_twiss_fail_check"><code class="docutils literal notranslate"><span class="pre">remove_twiss_fail_check()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.set_max_materialize"><code class="docutils literal notranslate"><span class="pre">set_max_materialize()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.check_sixtrack_input"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_input()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.check_sixtrack_output"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_output()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.sixdb_cmd"><code class="docutils literal notranslate"><span class="pre">sixdb_cmd()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.sixdb_load"><code class="docutils literal notranslate"><span class="pre">sixdb_load()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.submit_mask"><code class="docutils literal notranslate"><span class="pre">submit_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.submit_sixtrack"><code class="docutils literal notranslate"><span class="pre">submit_sixtrack()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.create_da_tfs"><code class="docutils literal notranslate"><span class="pre">create_da_tfs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.create_polar_plots"><code class="docutils literal notranslate"><span class="pre">create_polar_plots()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.plot_polar"><code class="docutils literal notranslate"><span class="pre">plot_polar()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.post_process_da"><code class="docutils literal notranslate"><span class="pre">post_process_da()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.extract_data_from_db.extract_da_data"><code class="docutils literal notranslate"><span class="pre">extract_da_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.extract_data_from_db.extract_meta_data"><code class="docutils literal notranslate"><span class="pre">extract_meta_data()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.check_mask"><code class="docutils literal notranslate"><span class="pre">check_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.is_locked"><code class="docutils literal notranslate"><span class="pre">is_locked()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_last_stage"><code class="docutils literal notranslate"><span class="pre">check_last_stage()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_sixtrack_output_data"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_output_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_stages_for_setup"><code class="docutils literal notranslate"><span class="pre">check_stages_for_setup()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.find_obviously_failed_sixtrack_submissions"><code class="docutils literal notranslate"><span class="pre">find_obviously_failed_sixtrack_submissions()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.for_all_jobs"><code class="docutils literal notranslate"><span class="pre">for_all_jobs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_all_jobs_in_base"><code class="docutils literal notranslate"><span class="pre">get_all_jobs_in_base()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_first_dir"><code class="docutils literal notranslate"><span class="pre">get_first_dir()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_last_stage"><code class="docutils literal notranslate"><span class="pre">get_last_stage()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.reset_stages"><code class="docutils literal notranslate"><span class="pre">reset_stages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.set_stages"><code class="docutils literal notranslate"><span class="pre">set_stages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.set_stages_for_setup"><code class="docutils literal notranslate"><span class="pre">set_stages_for_setup()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.skip_stages"><code class="docutils literal notranslate"><span class="pre">skip_stages()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules/utils.html">Utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#io-tools">IO-Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#pylhc_submitter.utils.iotools.PathOrStr"><code class="docutils literal notranslate"><span class="pre">PathOrStr</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#pylhc_submitter.utils.iotools.convert_paths_in_dict_to_strings"><code class="docutils literal notranslate"><span class="pre">convert_paths_in_dict_to_strings()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#pylhc_submitter.utils.iotools.escape_percentage_signs"><code class="docutils literal notranslate"><span class="pre">escape_percentage_signs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#pylhc_submitter.utils.iotools.keys_to_path"><code class="docutils literal notranslate"><span class="pre">keys_to_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#pylhc_submitter.utils.iotools.make_replace_entries_iterable"><code class="docutils literal notranslate"><span class="pre">make_replace_entries_iterable()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#pylhc_submitter.utils.iotools.save_config"><code class="docutils literal notranslate"><span class="pre">save_config()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#logging-tools">Logging Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#pylhc_submitter.utils.logging_tools.log_setup"><code class="docutils literal notranslate"><span class="pre">log_setup()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -88,9 +157,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>pylhc_submitter.sixdesk_tools.stages</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pylhc_submitter.sixdesk_tools.stages</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -141,8 +210,10 @@
 <span class="p">})</span>
 
 
-<div class="viewcode-block" id="StageMeta"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.StageMeta">[docs]</a><span class="k">class</span> <span class="nc">StageMeta</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Dynamically generate name and value from STAGE_ORDER &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="StageMeta">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.StageMeta">[docs]</a>
+<span class="k">class</span> <span class="nc">StageMeta</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Dynamically generate name and value from STAGE_ORDER &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># convert CamelCase to snake_case (https://stackoverflow.com/a/1176023/5609590)</span>
@@ -209,12 +280,15 @@
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">cls</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">name</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="Stage"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Stage">[docs]</a><span class="k">class</span> <span class="nc">Stage</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">StageMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Abstract Base Class for all Stages. Also provides the basic methods.</span>
+
+<div class="viewcode-block" id="Stage">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Stage">[docs]</a>
+<span class="k">class</span> <span class="nc">Stage</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">StageMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Abstract Base Class for all Stages. Also provides the basic methods.</span>
 <span class="sd">    The stages themselves only need to implement the _run() method. &quot;&quot;&quot;</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">run_all_stages</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">jobargs</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Run all stages in order. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Run all stages in order. &quot;&quot;&quot;</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;vv---------------- Job </span><span class="si">{</span><span class="n">jobname</span><span class="si">}</span><span class="s2"> -------------------vv&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">stage_name</span><span class="p">,</span> <span class="n">stage_class</span> <span class="ow">in</span> <span class="n">STAGE_ORDER</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">stage</span> <span class="o">=</span> <span class="n">stage_class</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">jobargs</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span>
@@ -268,7 +342,7 @@
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">should_run_stage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Checks if the stage should be run. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Checks if the stage should be run. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -300,12 +374,12 @@
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">stage_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Append current stage name to stagefile. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Append current stage name to stagefile. &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stage_file</span><span class="p">,</span> <span class="s2">&quot;a+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Run the Stage. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Run the Stage. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_run_stage</span><span class="p">():</span>
             <span class="k">return</span>
 
@@ -332,6 +406,7 @@
         <span class="k">pass</span></div>
 
 
+
 <span class="c1"># Actual Stages ----------------------------------------------------------------</span>
 <span class="c1"># These Stages should actually have the function they call implemented directly</span>
 <span class="c1"># and should be defined in the modules directly. But I like that you can read</span>
@@ -339,8 +414,10 @@
 <span class="c1"># one would do this manually (which can be very helpful for fixing broken jobs).</span>
 <span class="c1"># - jdilly 2020-08-04</span>
 
-<div class="viewcode-block" id="CreateJob"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CreateJob">[docs]</a><span class="k">class</span> <span class="nc">CreateJob</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CreateJob">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CreateJob">[docs]</a>
+<span class="k">class</span> <span class="nc">CreateJob</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    create workspace</span>
 <span class="sd">    &gt; cd $basedir</span>
 <span class="sd">    &gt; /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/set_env.sh -N workspace-$jobname</span>
@@ -356,8 +433,11 @@
                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">jobargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="InitializeWorkspace"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.InitializeWorkspace">[docs]</a><span class="k">class</span> <span class="nc">InitializeWorkspace</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="InitializeWorkspace">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.InitializeWorkspace">[docs]</a>
+<span class="k">class</span> <span class="nc">InitializeWorkspace</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    initialize workspace</span>
 <span class="sd">    &gt; cd $basedir/workspace-$jobname/sixjobs</span>
 <span class="sd">    &gt; /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/set_env.sh -s</span>
@@ -383,8 +463,11 @@
             <span class="n">remove_twiss_fail_check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jobname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">)</span>  <span class="c1"># removes &#39;grep twiss fail&#39;</span></div>
 
 
-<div class="viewcode-block" id="SubmitMask"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitMask">[docs]</a><span class="k">class</span> <span class="nc">SubmitMask</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SubmitMask">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitMask">[docs]</a>
+<span class="k">class</span> <span class="nc">SubmitMask</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    submit for input generation</span>
 <span class="sd">    &gt; cd $basedir/workspace-$jobname/sixjobs</span>
 <span class="sd">    &gt; /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/mad6t.sh -s</span>
@@ -396,8 +479,11 @@
         <span class="k">raise</span> <span class="n">StageStop</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="CheckInput"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckInput">[docs]</a><span class="k">class</span> <span class="nc">CheckInput</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CheckInput">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckInput">[docs]</a>
+<span class="k">class</span> <span class="nc">CheckInput</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if input files have been generated properly</span>
 <span class="sd">    &gt; cd $basedir/workspace-$jobname/sixjobs</span>
 <span class="sd">    &gt; /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/mad6t.sh -c</span>
@@ -412,8 +498,11 @@
                              <span class="n">resubmit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">resubmit</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SubmitSixtrack"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitSixtrack">[docs]</a><span class="k">class</span> <span class="nc">SubmitSixtrack</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SubmitSixtrack">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitSixtrack">[docs]</a>
+<span class="k">class</span> <span class="nc">SubmitSixtrack</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate simulation files (-g) and check if runnable (-c) and submit (-s) (-g -c -s == -a).</span>
 <span class="sd">    &gt; cd $basedir/workspace-$jobname/sixjobs</span>
 <span class="sd">    &gt; /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/run_six.sh -a</span>
@@ -432,8 +521,11 @@
         <span class="k">raise</span> <span class="n">StageStop</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="CheckSixtrackOutput"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckSixtrackOutput">[docs]</a><span class="k">class</span> <span class="nc">CheckSixtrackOutput</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CheckSixtrackOutput">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckSixtrackOutput">[docs]</a>
+<span class="k">class</span> <span class="nc">CheckSixtrackOutput</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks sixtrack output via run_status. If this fails even though all</span>
 <span class="sd">    jobs have finished on the scheduler, check the log-output (run_status</span>
 <span class="sd">    messages are logged to debug).</span>
@@ -452,8 +544,11 @@
                               <span class="n">resubmit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">resubmit</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SixdbLoad"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbLoad">[docs]</a><span class="k">class</span> <span class="nc">SixdbLoad</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SixdbLoad">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbLoad">[docs]</a>
+<span class="k">class</span> <span class="nc">SixdbLoad</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gather results into database via sixdb.</span>
 <span class="sd">    &gt; cd $basedir/workspace-$jobname/sixjobs</span>
 <span class="sd">    &gt; python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb . load_dir</span>
@@ -465,8 +560,11 @@
                    <span class="n">python</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">python3</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SixdbCmd"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbCmd">[docs]</a><span class="k">class</span> <span class="nc">SixdbCmd</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SixdbCmd">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbCmd">[docs]</a>
+<span class="k">class</span> <span class="nc">SixdbCmd</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Analysise results in database via sixdb.</span>
 <span class="sd">    &gt; cd $basedir/workspace-$jobname/sixjobs</span>
 <span class="sd">    &gt; python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb $jobname da</span>
@@ -482,14 +580,17 @@
                   <span class="n">cmd</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;da&quot;</span><span class="p">],</span>
                   <span class="n">python</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">python3</span><span class="p">)</span></div>
 
+
         <span class="c1"># da_vs_turns is broken at the moment (jdilly, 19.10.2020)</span>
         <span class="c1"># sixdb_cmd(jobname, basedir, cmd=[&#39;da_vs_turns&#39;, &#39;-turnstep&#39;, str(da_turnstep), &#39;-outfile&#39;],</span>
         <span class="c1">#           python=python, ssh=ssh)</span>
         <span class="c1"># sixdb_cmd(jobname, basedir, cmd=[&#39;plot_da_vs_turns&#39;], python=python, ssh=ssh)</span>
 
 
-<div class="viewcode-block" id="PostProcess"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.PostProcess">[docs]</a><span class="k">class</span> <span class="nc">PostProcess</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="PostProcess">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.PostProcess">[docs]</a>
+<span class="k">class</span> <span class="nc">PostProcess</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extracts the analysed data in the database and writes them to three tfs files:</span>
 
 <span class="sd">    - All DA values</span>
@@ -503,8 +604,11 @@
         <span class="n">post_process_da</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jobname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Final"><a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Final">[docs]</a><span class="k">class</span> <span class="nc">Final</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Just info about finishing this script and where to check the stagefile. &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Final">
+<a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Final">[docs]</a>
+<span class="k">class</span> <span class="nc">Final</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Just info about finishing this script and where to check the stagefile. &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">stage_file</span> <span class="o">=</span> <span class="n">get_stagefile_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jobname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">)</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -512,6 +616,7 @@
             <span class="s2">&quot;in case you want to rerun some stages.&quot;</span>
         <span class="p">)</span>
         <span class="k">raise</span> <span class="n">StageSkip</span><span class="p">()</span></div>
+
 </pre></div>
 
            </div>
