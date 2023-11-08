@@ -251,10 +251,12 @@ def write_bash(
             # Manually copy output (if needed) ---
             dest_dir = job.get(COLUMN_DEST_DIRECTORY) 
             if output_dir and dest_dir and output_dir != dest_dir:
-                # Note: only eos-cp needs `/` at the end of dirs, but should not hurt in any case
-                cp_command =  f'cp -r {_str_ending_with_slash(output_dir)} {_str_ending_with_slash(dest_dir)}'  
                 if is_eos_uri(dest_dir):
-                    cp_command = f'eos {cp_command}'
+                    # Note: eos-cp needs `/` at the end of both, source and target, dirs...
+                    cp_command =  f'eos cp -r {_str_ending_with_slash(output_dir)} {_str_ending_with_slash(dest_dir)}'  
+                else:
+                    # ...but '/' at the end of source dir copies only the content on macOS.
+                    cp_command =  f'cp -r {output_dir} {_str_ending_with_slash(dest_dir)}'  
                     
                 f.write(f'{cp_command}\n')
 

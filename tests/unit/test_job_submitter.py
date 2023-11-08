@@ -88,7 +88,7 @@ def test_find_errorneous_percentage_signs(tmp_path, maskfile):
     setup.create_mask(content=mask, as_file=maskfile)
     with pytest.raises(KeyError) as e:
         job_submit(**asdict(setup))
-    assert "problematic '%'" in e.value.args[0]
+    assert "problematic '%'" in str(e)
 
 
 @run_only_on_linux
@@ -100,7 +100,7 @@ def test_missing_keys(tmp_path, maskfile):
     setup.create_mask(content=mask, as_file=maskfile)
     with pytest.raises(KeyError) as e:
         job_submit(**asdict(setup))
-    assert "PARAM3" in e.value.args[0]
+    assert "PARAM3" in str(e)
 
 
 @run_if_not_linux
@@ -112,7 +112,7 @@ def test_not_on_linux(tmp_path):
     setup.create_mask()
     with pytest.raises(EnvironmentError) as e:
         job_submit(**asdict(setup))
-    assert "htcondor bindings" in e.value.args[0]
+    assert "htcondor bindings" in str(e)
 
 
 def test_eos_uri():
@@ -134,9 +134,8 @@ def test_htc_submit(uri: bool):
     You need to adapt the path and delete the results afterwards manually."""
     # Fix the kerberos ticket path. 
     # Do klist to find your ticket manually.
-    import os
+    # import os
     # os.environ["KRB5CCNAME"] = "/tmp/krb5cc_####"
-    os.environ["KRB5CCNAME"] = "/tmp/krb5cc_106029"
 
     tmp_name = "htc_temp"
     if uri:
@@ -158,7 +157,7 @@ def test_htc_submit(uri: bool):
     setup.create_mask()
 
     prerun = True
-    prerun = False  # Manually switch here after running.
+    # prerun = False  # Manually switch here after running.
     if prerun:
         job_submit(**asdict(setup))
         _test_subfile_content(setup)
