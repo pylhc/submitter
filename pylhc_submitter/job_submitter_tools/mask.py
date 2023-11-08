@@ -8,7 +8,7 @@ submission.
 import logging
 import re
 from pathlib import Path
-from typing import Sequence
+from typing import Iterable, List, Sequence, Set, Union
 
 import pandas as pd
 from numpy.typing import ArrayLike
@@ -53,11 +53,12 @@ def create_job_scripts_from_mask(
     return job_df
 
 
-def find_named_variables_in_mask(mask: str):
+def find_named_variables_in_mask(mask: str) -> Set[str]:
+    """ Find all variable-names in the mask. """
     return set(re.findall(r"%\((\w+)\)", mask))
 
 
-def check_percentage_signs_in_mask(mask: str):
+def check_percentage_signs_in_mask(mask: str) -> None:
     """ Checks for '%' in the mask, that are not replacement variables. """
     cleaned_mask = re.sub(r"%\((\w+)\)", "", mask)
     n_signs = cleaned_mask.count("%")
@@ -72,7 +73,8 @@ def check_percentage_signs_in_mask(mask: str):
     raise KeyError(f"{n_signs} problematic '%' signs found in template. Please remove.")
 
 
-def generate_jobdf_index(old_df: pd.DataFrame, jobid_mask: str, keys: Sequence[str], values: ArrayLike):
+def generate_jobdf_index(old_df: pd.DataFrame, jobid_mask: str, keys: Sequence[str], values: ArrayLike
+    ) -> Union[List[str], Iterable[int]]:
     """ Generates index for jobdf from mask for job_id naming. 
     
     Args:
@@ -80,6 +82,9 @@ def generate_jobdf_index(old_df: pd.DataFrame, jobid_mask: str, keys: Sequence[s
         jobid_mask (str): Mask for naming the jobs.
         keys (Sequence[str]): Keys to be replaced in the mask.
         values (np.array_like): Values-Grid to be replaced in the mask.
+    
+    Returns:
+        List[str]: Index for jobdf, either list of strings (the filled jobid_masks) or integer-range.
     """
     if not jobid_mask:
         # Use integer-range as index, if no mask is given

@@ -9,6 +9,8 @@ Constants Definitions
 .. automodule:: pylhc_submitter.constants.external_paths
     :members:
 
+.. automodule:: pylhc_submitter.constants.job_submitter
+    :members:
 
 .. automodule:: pylhc_submitter.constants.autosix
     :members:

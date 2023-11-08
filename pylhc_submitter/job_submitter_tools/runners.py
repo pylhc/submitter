@@ -10,6 +10,7 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
+import pandas as pd
 
 import tfs
 
@@ -24,6 +25,7 @@ LOG = logging.getLogger(__name__)
 
 @dataclass
 class RunnerOpts:
+    """ Options for running the submission. """
     working_directory: Path           # Path to the working directory (e.g. afs)
     jobflavour: Optional[str] = None  # HTCondor job flavour (lengths of the job)
     output_dir: Optional[str] = None  # Name of the output directory, where jobs store data
@@ -41,7 +43,6 @@ def run_jobs(job_df: tfs.TfsDataFrame, opt: RunnerOpts) -> None:
         job_df (tfs.TfsDataFrame): DataFrame containing all the job-information 
         opt (RunnerOpts): Parameters for the runner 
     """
-
     if opt.run_local: 
         run_local(job_df, opt)
     else:
@@ -102,7 +103,15 @@ def run_htc(job_df: tfs.TfsDataFrame, opt: RunnerOpts) -> None:
 
 # Helper #######################################################################
 
-def _execute_shell(df_row) -> int:
+def _execute_shell(df_row: pd.Series) -> int:
+    """ Execute the shell script. 
+    
+    Args:
+        df_row (pd.Series): row in the job-dataframe
+    
+    Returns:
+        int: return code of the process
+    """
     _, column = df_row
     cmd = [] if on_windows() else ["sh"]
 

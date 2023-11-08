@@ -331,8 +331,8 @@ def main(opt):
 
     job_df, dropped_jobs = create_jobs(creation_opt)
 
-
     run_jobs(job_df, runner_opt)
+
     print_stats(job_df.index, dropped_jobs)
 
 
@@ -383,7 +383,7 @@ def check_opts(opt):
     
     # Create new classes
     opt.output_dir = opt.job_output_dir  # renaming
-    
+
     creation = CreationOpts(**{f.name: opt[f.name] for f in fields(CreationOpts)})
     runner = RunnerOpts(**{f.name: opt[f.name] for f in fields(RunnerOpts)})
     runner.output_dir = None if opt.output_destination else opt.output_dir

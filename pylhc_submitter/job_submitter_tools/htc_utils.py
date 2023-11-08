@@ -29,7 +29,9 @@ from pylhc_submitter.utils.environment import on_windows
 try:
     import htcondor
 except ImportError:  # will be handled by job_submitter
-    pass
+    class htcondor:
+        """Dummy HTCondor module. To satisfy the typing. """
+        Submit: Any = None
 
 
 LOG = logging.getLogger(__name__)
@@ -60,17 +62,33 @@ NOTIFICATIONS = ("always", "complete", "error", "never")
 # Subprocess Methods ###########################################################
 
 
-def create_subfile_from_job(cwd: Path, job: str):
-    """Write file to submit to ``HTCondor``."""
+def create_subfile_from_job(cwd: Path, submission: Union[str, htcondor.Submit]) -> Path:
+    """
+    Write file to submit to ``HTCondor``.
+    
+    Args:
+        cwd (Path): working directory
+        submission (str, htcondor.Submit): HTCondor submission definition (i.e. content of the file)
+
+    Returns:
+        Path: path to sub-file
+
+    """
     subfile = cwd / SUBFILE
     LOG.debug(f"Writing sub-file '{str(subfile)}'.")
     with subfile.open("w") as f:
-        f.write(str(job))
+        f.write(str(submission))
     return subfile
 
 
-def submit_jobfile(jobfile: Path, ssh: str):
-    """Submit subfile to ``HTCondor`` via subprocess."""
+def submit_jobfile(jobfile: Path, ssh: str) -> None:
+    """Submit subfile to ``HTCondor`` via subprocess.
+    
+    Args:
+        jobfile (Path): path to sub-file
+        ssh (str): ssh target
+
+    """
     proc_args = [CMD_SUBMIT, jobfile]
     if ssh:
         proc_args = ["ssh", ssh] + proc_args
@@ -81,7 +99,16 @@ def submit_jobfile(jobfile: Path, ssh: str):
         LOG.info("Jobs successfully submitted.")
 
 
-def _start_subprocess(command: List[str]):
+def _start_subprocess(command: List[str]) -> int:
+    """ Start subprocess and log output. 
+    
+    Args:
+        command (List[str]): command to execute
+
+    Returns:
+        int: return code of the process
+    
+    """
     LOG.debug(f"Executing command '{command}'")
     process = subprocess.Popen(
         command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -96,9 +123,10 @@ def _start_subprocess(command: List[str]):
 # Job Creation #################################################################
 
 
-def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs):
+def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs) -> str:
     """
-    Function to create an ``HTCondor`` job assuming n_files bash-files.
+    Function to create an ``HTCondor`` submission content for all job-scripts, 
+    i.e. bash-files, in the job_df.
 
     Keyword Args:
         output_dir (str): output directory that will be transferred. Defaults to ``None``.
@@ -108,6 +136,9 @@ def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs):
         retries (int): maximum amount of retries. Default to ``3``.
         notification (str): Notify under certain conditions. Defaults to ``error``.
         priority (int): Priority to order your jobs. Defaults to ``None``.
+
+    Returns:
+        str: HTCondor submission definition.
     """
     # Pre-defined HTCondor arguments for our jobs
     submit_dict = {
@@ -123,7 +154,7 @@ def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs):
     submit_dict.update(map_kwargs(kwargs))
     
     # Let the htcondor create the submit-file
-    job = htcondor.Submit(submit_dict)
+    submission = htcondor.Submit(submit_dict)
 
     # add the multiple bash files
     scripts = [
@@ -133,20 +164,27 @@ def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs):
     args = [",".join(parts) for parts in zip(scripts, job_df[COLUMN_JOB_DIRECTORY])]
     queueArgs = ["queue executable, initialdir from (", *args, ")"]
 
-    # ugly but job.setQArgs doesn't take string containing \n
-    # job.setQArgs("\n".join(queueArgs))
-    job = str(job) + "\n".join(queueArgs)
-    LOG.debug(f"Created HTCondor subfile with content: \n{job}")
-    return job
+    # ugly but submission.setQArgs doesn't take string containing '\n':
+    # submission.setQArgs("\n".join(queueArgs))  # doesn't work
+    submission = str(submission) + "\n".join(queueArgs)
+    LOG.debug(f"Created HTCondor subfile with content: \n{submission}")
+    return submission
 
 
 # Main functions ###############################################################
 
 
-def make_subfile(cwd: Path, job_df: DataFrame, **kwargs):
+def make_subfile(cwd: Path, job_df: DataFrame, **kwargs) -> Path:
     """
     Creates submit-file for ``HTCondor``.
     For kwargs, see ``create_multijob_for_bashfiles``.
+
+    Args:
+        cwd (Path): working directory
+        job_df (DataFrame): DataFrame containing all the job-information
+
+    Returns:
+        Path: path to the submit-file
     """
     job = create_multijob_for_bashfiles(job_df, **kwargs)
     return create_subfile_from_job(cwd, job)
@@ -161,6 +199,19 @@ def write_bash(
 ) -> DataFrame:
     """
     Write the bash-files to be called by ``HTCondor``, which in turn call the executable.
+    Takes as input `Dataframe`, job type, and optional additional commandline arguments for the script.
+    A shell script is created in each job directory in the dataframe.
+
+    Args:
+        job_df (DataFrame): DataFrame containing all the job-information
+        output_dir (str): output directory that will be transferred. Defaults to ``None``.
+        executable (str): name of the executable. Defaults to ``madx``.
+        cmdline_arguments (dict): additional commandline arguments for the executable
+        mask (Union[str, Path]): string or path to the mask-file. Defaults to ``None``.
+
+    Returns:
+        DataFrame: The provided ``job_df`` but with added path to the scripts.
+
     """
     if len(job_df.index) > HTCONDOR_JOBLIMIT:
         raise AttributeError("Submitting too many jobs for HTCONDOR")
@@ -214,8 +265,15 @@ def write_bash(
 
 def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Maps the kwargs for the job-file. Some arguments have pre-defined choices and defaults,
-    the remaining ones are just passed on.
+    Maps the kwargs for the job-file. 
+    Some arguments have pre-defined choices and defaults, the remaining ones are just passed on.
+
+    Args:
+        add_dict (Dict[str, Any]): additional kwargs to add to the defaults.
+
+    Returns:
+        Dict[str, Any]: The mapped kwargs.
+
     """
     new = {}
 
@@ -249,7 +307,8 @@ def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
 
 # Helper #######################################################################
 
-def _maybe_put_in_quotes(key, value):
+def _maybe_put_in_quotes(key: str, value: Any) -> Any:
+    """ Put value in quoted strings if key starts with '+' """
     if key.startswith("+"):
         return f'"{value}"'
     return value

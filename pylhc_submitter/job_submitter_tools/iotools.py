@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Sequence, Tuple, Union
 
 import numpy as np
+import pandas as pd
 import tfs
 
 from pylhc_submitter.constants.job_submitter import (COLUMN_DEST_DIRECTORY, COLUMN_JOB_DIRECTORY,
@@ -25,25 +26,41 @@ LOG = logging.getLogger(__name__)
 
 @dataclass
 class CreationOpts:
-    working_directory: Path
-    mask: Union[Path, str]
-    jobid_mask: str
-    replace_dict: Dict[str, Any]
-    output_dir: Path
-    output_destination: Path
-    append_jobs: bool
-    resume_jobs: bool
-    executable: str
-    check_files: Sequence[str]
-    script_arguments: Dict[str, Any]
-    script_extension: str
+    """ Options for creating jobs. """
+    working_directory: Path         # Path to working directory (afs)
+    mask: Union[Path, str]          # Path to mask file or mask-string
+    jobid_mask: str                 # Mask for jobid
+    replace_dict: Dict[str, Any]    # Replace-dict
+    output_dir: Path                # Path to local output directory
+    output_destination: Path        # Path to remote output directory (e.g. eos)
+    append_jobs: bool               # Append jobs to existing jobs
+    resume_jobs: bool               # Resume jobs that have already run/failed/got interrupted
+    executable: str                 # Name of executable to call the script (from mask)
+    check_files: Sequence[str]      # List of output files to check for success
+    script_arguments: Dict[str, Any]  # Arguments to pass to script
+    script_extension: str           # Extension of the script to run
 
     def should_drop_jobs(self) -> bool:
+        """ Check if jobs should be dropped after creating the whole parameter space, 
+        e.g. because they already exist. """
         return self.append_jobs or self.resume_jobs
 
 
 
 def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
+    """Main function to prepare all the jobs and folder structure.
+    This greates the value-grid based on the replace-dict and
+    checks for existing jobs (if so desired).
+    A job-dataframe is created - and written out - containing all the information and
+    its values are used to generate the job-scripts.
+    It also creates bash-scripts to call the executable for the job-scripts. 
+
+    Args:
+        opt (CreationOpts): Options for creating jobs 
+
+    Returns:
+        tfs.TfsDataFrame: The job-dataframe containing information for all jobs. 
+    """
     LOG.debug("Creating Jobs.")
 
     # Generate product of replace-dict and compare to existing jobs  ---
@@ -112,6 +129,20 @@ def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
 
 def create_folders(job_df: tfs.TfsDataFrame, working_directory: Path, 
                    destination_directory: Path = None) -> tfs.TfsDataFrame:
+    """Create the folder-structure in the given working directory and the 
+    destination directory if given.
+    This creates a folder per job in which then the job-scripts and bash-scripts
+    can be stored later.
+
+    Args:
+        job_df (tfs.TfsDataFrame): DataFrame containing all the job-information
+        working_directory (Path): Path to the working directory
+        destination_directory (Path, optional): Path to the destination directory, 
+        i.e. the directory to copy the outputs to manually. Defaults to None.
+
+    Returns:
+        tfs.TfsDataFrame: The job-dataframe again, but with the added paths to the job-dirs.
+    """
     LOG.debug("Setting up folders: ")
     
     jobname = f"{JOBDIRECTORY_PREFIX}.{{0}}"
@@ -151,8 +182,10 @@ def is_eos_path(path: Union[Path, str]) -> bool:
 
 
 def strip_eos_uri(path: Union[Path, str]) -> Path:
-    # EOS paths for HTCondor can be given as URI. Strip for direct writing.
-    # E.g.: root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt
+    """ Strip EOS path information from a path.
+    EOS paths for HTCondor can be given as URI. Strip for direct writing.
+    E.g.: root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt
+    """
     path = Path(path)
     parts = path.parts
     outpath = path
@@ -162,7 +195,7 @@ def strip_eos_uri(path: Union[Path, str]) -> Path:
     return outpath
 
 
-def print_stats(new_jobs, finished_jobs):
+def print_stats(new_jobs: Sequence[str], finished_jobs: Sequence[str]):
     """Print some quick statistics."""
     text = [
         "\n------------- QUICK STATS ----------------"
@@ -227,7 +260,14 @@ def _drop_already_run_jobs(
     return job_df, finished_jobs
 
 
-def _job_was_successful(job_row, output_dir, files) -> bool:
+def _job_was_successful(job_row: pd.Series, output_dir: str, files: Sequence[str]) -> bool:
+    """ Determines if the job was successful. 
+    
+    Args:
+        job_row (pd.Series): row from the job_df
+        output_dir (str): Name of the (local) output directory
+        files (List[str]): list of files that should have been generated
+    """
     job_dir = job_row.get(COLUMN_DEST_DIRECTORY) or job_row[COLUMN_JOB_DIRECTORY]
     output_dir = Path(job_dir, output_dir)
     success = output_dir.is_dir() and any(output_dir.iterdir())
