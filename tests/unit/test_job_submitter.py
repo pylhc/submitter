@@ -115,6 +115,7 @@ def test_not_on_linux(tmp_path):
     assert "htcondor bindings" in str(e)
 
 
+pytest.mark.skipif(on_windows(), reason="Paths are not split on '/' on Windows.")
 def test_eos_uri():
     """ Unit-test for the EOS-URI parsing. (OH LOOK! An actual unit test!)"""
     server = "root://eosuser.cern.ch/"
