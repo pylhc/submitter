@@ -10,7 +10,7 @@ from pathlib import Path
 
 from pylhc_submitter.constants.autosix import SIXDESKLOCKFILE, get_workspace_path
 from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
-from pylhc_submitter.job_submitter_tools.mask import find_named_variables_in_mask
+from pylhc_submitter.submitter.mask import find_named_variables_in_mask
 
 LOG = logging.getLogger(__name__)
 

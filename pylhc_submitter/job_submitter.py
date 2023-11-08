@@ -159,11 +159,11 @@ from generic_parser.entry_datatypes import DictAsString
 from generic_parser.tools import print_dict_tree
 
 from pylhc_submitter.constants.job_submitter import EXECUTEABLEPATH, SCRIPT_EXTENSIONS
-from pylhc_submitter.job_submitter_tools.htc_utils import JOBFLAVOURS
-from pylhc_submitter.job_submitter_tools.iotools import CreationOpts, create_jobs, print_stats
-from pylhc_submitter.job_submitter_tools.mask import (check_percentage_signs_in_mask,
+from pylhc_submitter.submitter.htc_utils import JOBFLAVOURS
+from pylhc_submitter.submitter.iotools import CreationOpts, create_jobs, is_eos_uri, print_stats
+from pylhc_submitter.submitter.mask import (check_percentage_signs_in_mask,
                                                       find_named_variables_in_mask, is_mask_file)
-from pylhc_submitter.job_submitter_tools.runners import RunnerOpts, run_jobs
+from pylhc_submitter.submitter.runners import RunnerOpts, run_jobs
 from pylhc_submitter.utils.iotools import (PathOrStr, keys_to_path, make_replace_entries_iterable,
                                            save_config)
 from pylhc_submitter.utils.logging_tools import log_setup
@@ -343,7 +343,7 @@ def check_opts(opt):
         raise ValueError("Select either Resume jobs or Append jobs")
 
     # Paths ---
-    opt = keys_to_path(opt, "working_directory", "executable", "output_destination")
+    opt = keys_to_path(opt, "working_directory", "executable")
 
     if str(opt.executable) in EXECUTEABLEPATH.keys():
         opt.executable = str(opt.executable)
@@ -353,6 +353,12 @@ def check_opts(opt):
         opt.mask = Path(opt.mask)
     else:
         mask_content = opt.mask
+    
+    if is_eos_uri(opt.output_destination) and not ("://" in opt.output_destination and "//eos" in opt.output_destination):
+        raise ValueError(
+            "The 'output_destination' is an EOS-URI but missing '://' or '//eos' (double slashes?). "
+        )
+        
 
     # Replace dict ---
     dict_keys = set(opt.replace_dict.keys())

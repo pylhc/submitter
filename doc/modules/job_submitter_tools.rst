@@ -1,15 +1,15 @@
 HTCondor Tools
 **************************
 
-.. automodule:: pylhc_submitter.job_submitter_tools.htc_utils
+.. automodule:: pylhc_submitter.submitter.htc_utils
     :members:
 
 
-.. automodule:: pylhc_submitter.job_submitter_tools.iotools
+.. automodule:: pylhc_submitter.submitter.iotools
     :members:
 
-.. automodule:: pylhc_submitter.job_submitter_tools.mask
+.. automodule:: pylhc_submitter.submitter.mask
     :members:
 
-.. automodule:: pylhc_submitter.job_submitter_tools.runners
+.. automodule:: pylhc_submitter.submitter.runners
     :members:

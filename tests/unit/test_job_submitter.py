@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 
 from pylhc_submitter.job_submitter import main as job_submit
+from pylhc_submitter.submitter.iotools import get_server_from_uri, is_eos_uri, uri_to_path
 from pylhc_submitter.utils.environment import on_linux, on_windows
 
 SUBFILE = "queuehtc.sub"
@@ -41,6 +42,19 @@ def test_output_directory(tmp_path):
     setup.create_mask()
     job_submit(**asdict(setup))
     _test_output(setup)
+
+
+def test_wrong_uri(tmp_path):
+    """ Tests that wrong URI's are identified. """
+    setup = InputParameters(
+        working_directory=tmp_path, 
+        run_local=True,
+        output_destination="root:/eosuser.cern.ch/eos/my_new_output",
+    )
+    setup.create_mask()
+    with pytest.raises(ValueError) as e:
+        job_submit(**asdict(setup))
+    assert "EOS-URI" in str(e)
 
 
 @run_only_on_linux
@@ -101,30 +115,56 @@ def test_not_on_linux(tmp_path):
     assert "htcondor bindings" in e.value.args[0]
 
 
+def test_eos_uri():
+    """ Unit-test for the EOS-URI parsing. (OH LOOK! An actual unit test!)"""
+    server = "root://eosuser.cern.ch/"
+    path = "/eos/user/m/mmustermann/"
+    uri = f"{server}{path}"
+    assert is_eos_uri(uri)
+    assert not is_eos_uri(path)
+    assert uri_to_path(uri) == Path(path)
+    assert get_server_from_uri(uri) == server
+
+
 @run_only_on_linux
 @pytest.mark.cern_network
-def test_htc_submit():
-    """ This test is here for local testing only. You need to adapt the path
-    and delete the results afterwards manually (so you can check them before."""
+@pytest.mark.parametrize("uri", [True, False])
+def test_htc_submit(uri: bool):
+    """ This test is here for local testing only. 
+    You need to adapt the path and delete the results afterwards manually."""
     # Fix the kerberos ticket path. 
     # Do klist to find your ticket manually.
-    # import os
+    import os
     # os.environ["KRB5CCNAME"] = "/tmp/krb5cc_####"
+    os.environ["KRB5CCNAME"] = "/tmp/krb5cc_106029"
+
+    tmp_name = "htc_temp"
+    if uri:
+        tmp_name = f"{tmp_name}_uri"
 
     user = "jdilly"
-    path = Path("/", "afs", "cern.ch", "user", user[0], user, "htc_temp")
+    path = Path("/", "afs", "cern.ch", "user", user[0], user, tmp_name)
     path.mkdir(exist_ok=True)
 
-    setup = InputParameters(working_directory=path)
+    dest = f"/eos/user/{user[0]}/{user}/{tmp_name}"
+    if uri:
+        dest = f"root://eosuser.cern.ch/{dest}"
+
+    setup = InputParameters(
+        working_directory=path, 
+        output_destination=dest, 
+        # dryrun=True
+    )
     setup.create_mask()
 
-    # pre-run ---
-    job_submit(**asdict(setup))
-    _test_subfile_content(setup)
-    _test_output(setup, post_run=False)
-
-    # post run ---
-    # _test_output(setup, post_run=True)  
+    prerun = True
+    prerun = False  # Manually switch here after running.
+    if prerun:
+        job_submit(**asdict(setup))
+        _test_subfile_content(setup)
+        _test_output(setup, post_run=False)
+    else:
+        _test_output(setup, post_run=True)  
 
 
 # Helper -----------------------------------------------------------------------
@@ -178,7 +218,11 @@ def _test_subfile_content(setup: InputParameters):
     with subfile.open("r") as sfile:
         filecontents = dict(line.rstrip().split(" = ") for line in sfile if " = " in line)
         assert filecontents["MY.JobFlavour"].strip('"') == setup.jobflavour  # flavour is saved with "" in .sub, and read in with them
-        assert filecontents["transfer_output_files"] == setup.job_output_dir
+        if setup.output_destination is None:
+            assert filecontents["transfer_output_files"] == setup.job_output_dir
+        else:
+            assert "transfer_output_files" not in filecontents
+
         for key in setup.htc_arguments.keys():
             assert filecontents[key] == setup.htc_arguments[key]
 
@@ -197,14 +241,14 @@ def _test_output(setup: InputParameters, post_run: bool = True):
         if isinstance(setup.mask, Path):
             assert (setup.working_directory / job_name / setup.mask.name).with_suffix(setup.script_extension).exists()
 
-        def _check_output_content(dir_path: Path):
+        def _check_output_content(dir_path: Path, check_output: bool = True):
                 # Check if the code created the folder structure ---
-                job_path = dir_path / job_name
+                job_path = uri_to_path(dir_path) / job_name
                 
                 assert job_path.exists()
                 assert job_path.is_dir()
 
-                if post_run:  # Check if the jobs created the files ---
+                if check_output:  # Check if the jobs created the files ---
                     out_dir_path = job_path / setup.job_output_dir
                     out_file_path = out_dir_path / setup.check_files[0]
                     
@@ -216,11 +260,11 @@ def _test_output(setup: InputParameters, post_run: bool = True):
                         assert f.read().strip("\n") == current_id
 
         # Check local working directory ---
-        _check_output_content(setup.working_directory)
+        _check_output_content(setup.working_directory, check_output=post_run and setup.output_destination is None)
 
         if setup.output_destination is not None:
             # Check copy at output destination ---
-            _check_output_content(setup.output_destination)
+            _check_output_content(setup.output_destination, check_output=post_run)
 
 
 def _generate_combinations(data: Dict[str, Sequence]) -> List[Dict[str, Any]]:
