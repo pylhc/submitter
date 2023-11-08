@@ -48,9 +48,9 @@ html:
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
 josch:
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) /home/jdilly/Software/Documentation/submitter-doc
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) ../../Documentation/submitter-doc
 	@echo
-	@echo "Build finished. The HTML pages are in /home/jdilly/Software/Documentation/submitter-doc."
+	@echo "Build finished. The HTML pages are in ../../Documentation/submitter-doc."
 
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
