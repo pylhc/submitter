@@ -160,12 +160,14 @@ def create_folders(job_df: tfs.TfsDataFrame, working_directory: Path,
 
         # Make some symlinks for easy navigation---
         # Output directory -> Working Directory
-        sym_submission = destination_directory / Path('SUBMISSION_DIR')
+        sym_submission = strip_dest_dir / Path('SUBMISSION_DIR')
+        sym_submission.unlink(missing_ok=True)
         sym_submission.symlink_to(working_directory.resolve(), target_is_directory=True)
 
         # Working Directory -> Output Directory
         sym_destination = working_directory / Path('OUTPUT_DIR')
-        sym_destination.symlink_to(destination_directory.resolve(), target_is_directory=True)
+        sym_destination.unlink(missing_ok=True)
+        sym_destination.symlink_to(strip_dest_dir.resolve(), target_is_directory=True)
 
         # Create output dirs per job ---
         for job_dest_dir in job_df[COLUMN_DEST_DIRECTORY]:
@@ -175,10 +177,21 @@ def create_folders(job_df: tfs.TfsDataFrame, working_directory: Path,
     return job_df
 
 
-def is_eos_path(path: Union[Path, str]) -> bool:
-    """ Check if the given path leads to EOS."""
-    strip_path_parts = strip_eos_uri(path).parts 
-    return len(strip_path_parts) > 1 and strip_path_parts[1] == 'eos'
+def is_eos_uri(path: Union[Path, str, None]) -> bool:
+    """ Check if the given path is an EOS-URI as `eos cp` only works with those.
+    E.g.: root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt
+    """
+    if path is None:
+        return False
+
+    parts = Path(path).parts 
+    return (
+        len(parts) >= 3  # at least root:, server, path
+        and
+        parts[0].endswith(':')
+        and
+        parts[2] == 'eos'
+    )
 
 
 def strip_eos_uri(path: Union[Path, str]) -> Path:
@@ -188,11 +201,10 @@ def strip_eos_uri(path: Union[Path, str]) -> Path:
     """
     path = Path(path)
     parts = path.parts
-    outpath = path
     if parts[0].endswith(':'):
         # the first two parts are host info, e.g `file: //host/path`
-        outpath = Path('/', *parts[2:])
-    return outpath
+        return Path('/', *parts[2:])
+    return path 
 
 
 def print_stats(new_jobs: Sequence[str], finished_jobs: Sequence[str]):

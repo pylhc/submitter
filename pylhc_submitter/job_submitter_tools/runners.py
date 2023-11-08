@@ -10,14 +10,14 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
-import pandas as pd
 
+import pandas as pd
 import tfs
 
 from pylhc_submitter.constants.job_submitter import (COLUMN_DEST_DIRECTORY, COLUMN_JOB_DIRECTORY,
                                                      COLUMN_SHELL_SCRIPT)
 from pylhc_submitter.job_submitter_tools import htc_utils
-from pylhc_submitter.job_submitter_tools.iotools import strip_eos_uri
+from pylhc_submitter.job_submitter_tools.iotools import is_eos_uri
 from pylhc_submitter.utils.environment import on_windows
 
 LOG = logging.getLogger(__name__)
@@ -61,12 +61,6 @@ def run_local(job_df: tfs.TfsDataFrame, opt: RunnerOpts) -> None:
         return
 
     LOG.info(f"Running {len(job_df.index)} jobs locally in {opt.num_processes:d} processes.")
-    
-    # URI type EOS addresses won't work for copying files from local jobs
-    check_dest = job_df.get(COLUMN_DEST_DIRECTORY)
-    if check_dest is not None and strip_eos_uri(check_dest.iloc[0]) != Path(check_dest.iloc[0]):
-        LOG.warning("The output destination is likely specified as EOS URI,"
-                     "which will not work during a local run")
         
     pool = multiprocessing.Pool(processes=opt.num_processes)
     res = pool.map(_execute_shell, job_df.iterrows())

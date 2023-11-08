@@ -22,7 +22,7 @@ from pandas import DataFrame
 from pylhc_submitter.constants.job_submitter import (COLUMN_DEST_DIRECTORY, COLUMN_JOB_DIRECTORY,
                                                      COLUMN_JOB_FILE, COLUMN_SHELL_SCRIPT,
                                                      EXECUTEABLEPATH, NON_PARAMETER_COLUMNS)
-from pylhc_submitter.job_submitter_tools.iotools import is_eos_path
+from pylhc_submitter.job_submitter_tools.iotools import is_eos_uri
 from pylhc_submitter.job_submitter_tools.mask import is_mask_file
 from pylhc_submitter.utils.environment import on_windows
 
@@ -252,7 +252,7 @@ def write_bash(
             dest_dir = job.get(COLUMN_DEST_DIRECTORY) 
             if output_dir and dest_dir and output_dir != dest_dir:
                 cp_command =  f'cp -r {output_dir} {dest_dir}'
-                if is_eos_path(dest_dir):
+                if is_eos_uri(dest_dir):
                     cp_command = f'eos {cp_command}'
                     
                 f.write(f'{cp_command}\n')
@@ -278,7 +278,7 @@ def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
     new = {}
 
     # Predefined mappings 
-    htc_map = {
+    htc_map = { # name: mapped_name, choices, default
         "duration": ("+JobFlavour", JOBFLAVOURS, "workday"),
         "output_dir": ("transfer_output_files", None, None),
         "accounting_group": ("+AccountingGroup", None, None),
@@ -289,14 +289,14 @@ def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
         try:
             value = add_dict.pop(key)
         except KeyError:
-            if default is not None:
-                new[mapped] = default
+            value = default  # could be `None`
         else:
             if choices is not None and value not in choices:
                 raise TypeError(
                     f"{key} needs to be one of '{str(choices).strip('[]')}' but "
                     f"instead was '{value}'"
                 )
+        if value is not None:
             new[mapped] = _maybe_put_in_quotes(mapped, value)
 
     # Pass-Through Arguments
