@@ -31,10 +31,20 @@ if str(TOPLEVEL_DIR) not in sys.path:
     sys.path.insert(0, str(TOPLEVEL_DIR))
 
 
+def about_package(init_posixpath: pathlib.Path) -> dict:
+    """
+    Return package information defined with dunders in __init__.py as a dictionary, when
+    provided with a PosixPath to the __init__.py file.
+    """
+    about_text: str = init_posixpath.read_text()
+    return {
+        entry.split(" = ")[0]: entry.split(" = ")[1].strip('"')
+        for entry in about_text.strip().split("\n")
+        if entry.startswith("__")
+    }
 
-ABOUT_PYLHC_SUBMITTER: dict = {}
-with ABOUT_FILE.open("r") as f:
-    exec(f.read(), ABOUT_PYLHC_SUBMITTER)
+
+ABOUT_PYLHC_SUBMITTER = about_package(ABOUT_FILE)
 
 
 # -- General configuration ------------------------------------------------

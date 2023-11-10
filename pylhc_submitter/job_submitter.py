@@ -110,7 +110,8 @@ For additional information and guides, see the `Job Submitter page
 
 - **output_destination** *(PathOrStr)*:
 
-    Directory where to store the output of the jobs . (Can be on EOS)
+    Directory to copy the output of the jobs to, sorted into folders per job.
+    Can be on EOS, preferrably via EOS-URI format ('root://eosuser.cern.ch//eos/...').
 
 
 - **resume_jobs**:
@@ -295,7 +296,8 @@ def get_params():
     )
     params.add_parameter(
         name="output_destination",
-        help="Directory where to store the output of the jobs . (Can be on EOS)",
+        help="Directory to copy the output of the jobs to, sorted into folders per job. "
+             "Can be on EOS, preferrably via EOS-URI format ('root://eosuser.cern.ch//eos/...').",
         type=PathOrStr,
     )
     params.add_parameter(
