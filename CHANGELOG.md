@@ -2,16 +2,16 @@
 
 ## Version 2.0.0
 
-- General code cleanup/refactoring/documentation.
- - partly breaks backward compatibility, if individual methods of the `job_submitter`-functionality have been used.
- - does not affect any setups simply calling the `main()` function of `job_submitter.py` or calling the `job_submitter` as a module.
- - Apart from some fixed imports, following the new structure, the `autosix` module has been untouched. 
+- General code cleanup/refactoring/documentation:
+  - Partly breaks backward compatibility, if individual methods of the `job_submitter`-functionality have been used.
+  - Does not affect any setups simply calling the `main()` function of `job_submitter.py` or calling the `job_submitter` as a module.
+  - Apart from some fixed imports, following the new structure, the `autosix` module has been untouched. 
 
 
 - New Feature of `job_submitter`:
   - `output_destination` input parameter, which sets an output directory in which the folder-stucture 
-  for the jobs will be replicated and the job's `job_output_dir` will be copied into "manually" at the end of the job, 
-  instead of having the directory transferred back to the `working directory` by htcondor.
+    for the jobs will be replicated and the job's `job_output_dir` will be copied into "manually" at the end of the job, 
+    instead of having the directory transferred back to the `working directory` by htcondor.
 
 ## Version 1.1.1
 
