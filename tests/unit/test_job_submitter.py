@@ -44,7 +44,7 @@ def test_output_directory(tmp_path):
     _test_output(setup)
 
 
-def test_wrong_uri(tmp_path):
+def test_detects_wrong_uri(tmp_path):
     """ Tests that wrong URI's are identified. """
     setup = InputParameters(
         working_directory=tmp_path, 
@@ -104,7 +104,7 @@ def test_missing_keys(tmp_path, maskfile):
 
 
 @run_if_not_linux
-def test_not_on_linux(tmp_path):
+def test_htcondor_bindings_not_found_on_nonlinux_os(tmp_path):
     """ Test that an error is raised if htcondor bindings are not found.
     If this tests fails, this might mean, that htcondor bindings are finally 
     available for the other platforms. """
@@ -116,7 +116,7 @@ def test_not_on_linux(tmp_path):
 
 
 @pytest.mark.skipif(on_windows(), reason="Paths are not split on '/' on Windows.")
-def test_eos_uri():
+def test_eos_uri_manipulation_functions():
     """ Unit-test for the EOS-URI parsing. (OH LOOK! An actual unit test!)"""
     server = "root://eosuser.cern.ch/"
     path = "/eos/user/m/mmustermann/"
@@ -129,16 +129,36 @@ def test_eos_uri():
 
 @run_only_on_linux
 @pytest.mark.cern_network
-@pytest.mark.parametrize("uri", [True, False])
-def test_htc_submit(uri: bool):
-    """ This test is here for local testing only. 
-    You need to adapt the path and delete the results afterwards manually."""
-    # Fix the kerberos ticket path. 
-    # Do klist to find your ticket manually.
+@pytest.mark.parametrize("destination", [True, False])
+@pytest.mark.parametrize("uri", [False, True])
+def test_htc_submit(destination: bool, uri: bool):
+    """ This test is here for manual testing.
+    It runs 3 scenarios and each submits 6 jobs to HTCondor.
+    This means you need to be in the cern-network on a machine with afs and eos access
+    and htcondor installed.
+    You need to adapt the path to your user-name and delete the results afterwards manually.
+
+    Scenarios:
+        a) destination = False: Transfer output data back to afs
+        b) destination = True, uri = False: Copy output data to EOS (via eos path)
+        c) destination = True, uri = True: Copy output data to EOS (via eos uri)
+
+    Run this test twice, manually changing `prerun` from "True" to "False" after the jobs are finished.
+     -  `prerun = True`: create the folder structures and submit the jobs.
+     -  `prerun = False`: check that the output data is present.
+    """
+    if uri and not destination:
+        return  # only need to run one of those
+
+    # Fix the kerberos ticket path, in case kerberos doesn't find it.
+    # Do a `klist` in terminal to find your ticket manually and adapt the path.
     # import os
     # os.environ["KRB5CCNAME"] = "/tmp/krb5cc_####"
 
     tmp_name = "htc_temp"
+    if destination:
+        tmp_name = f"{tmp_name}_dest"
+
     if uri:
         tmp_name = f"{tmp_name}_uri"
 
@@ -146,9 +166,11 @@ def test_htc_submit(uri: bool):
     path = Path("/", "afs", "cern.ch", "user", user[0], user, tmp_name)
     path.mkdir(exist_ok=True)
 
-    dest = f"/eos/user/{user[0]}/{user}/{tmp_name}"
-    if uri:
-        dest = f"root://eosuser.cern.ch/{dest}"
+    dest = None
+    if destination:
+        dest = f"/eos/user/{user[0]}/{user}/{tmp_name}"
+        if uri:
+            dest = f"root://eosuser.cern.ch/{dest}"
 
     setup = InputParameters(
         working_directory=path, 
@@ -158,7 +180,7 @@ def test_htc_submit(uri: bool):
     setup.create_mask()
 
     prerun = True
-    # prerun = False  # Manually switch here after running.
+    # prerun = False  # !! Manually switch here after jobs finished.
     if prerun:
         job_submit(**asdict(setup))
         _test_subfile_content(setup)
