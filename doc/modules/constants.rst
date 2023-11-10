@@ -15,6 +15,10 @@ Constants Definitions
     :members:
     :noindex:
 
+.. automodule:: pylhc_submitter.constants.htcondor
+    :members:
+    :noindex:
+
 .. automodule:: pylhc_submitter.constants.autosix
     :members:
     :noindex:
