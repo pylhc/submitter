@@ -147,31 +147,37 @@ def test_htc_submit(destination: bool, uri: bool):
      -  `prerun = True`: create the folder structures and submit the jobs.
      -  `prerun = False`: check that the output data is present.
     """
-    if uri and not destination:
-        return  # only need to run one of those
-
-    # Fix the kerberos ticket path, in case kerberos doesn't find it.
-    # Do a `klist` in terminal to find your ticket manually and adapt the path.
+    # MANUAL THINGS TO CHANGE ##############################################
+    user = "mmustermann"   # set your username
+    tmp_name = "htc_temp"  # name for the temporary folder (will be created)
+    prerun = True
+    # prerun = False       # switch here after jobs finished.
+    
+    # Uncomment to fix the kerberos ticket, in case htcondor doesn't find it.
+    # Do a `klist` in terminal and adapt the path.
     # import os
     # os.environ["KRB5CCNAME"] = "/tmp/krb5cc_####"
+    ########################################################################
+    if uri and not destination:
+        return  # only need to run one when destination is not set
 
-    tmp_name = "htc_temp"
+    # set working_directory
     if destination:
         tmp_name = f"{tmp_name}_dest"
+        if uri:
+            tmp_name = f"{tmp_name}_uri"
 
-    if uri:
-        tmp_name = f"{tmp_name}_uri"
-
-    user = "jdilly"
     path = Path("/", "afs", "cern.ch", "user", user[0], user, tmp_name)
     path.mkdir(exist_ok=True)
 
+    # set output_destination
     dest = None
     if destination:
         dest = f"/eos/user/{user[0]}/{user}/{tmp_name}"
         if uri:
             dest = f"root://eosuser.cern.ch/{dest}"
 
+    # create setup
     setup = InputParameters(
         working_directory=path, 
         output_destination=dest, 
@@ -179,13 +185,13 @@ def test_htc_submit(destination: bool, uri: bool):
     )
     setup.create_mask()
 
-    prerun = True
-    # prerun = False  # !! Manually switch here after jobs finished.
     if prerun:
+        # submit jobs
         job_submit(**asdict(setup))
         _test_subfile_content(setup)
         _test_output(setup, post_run=False)
     else:
+        # check output
         _test_output(setup, post_run=True)  
 
 
