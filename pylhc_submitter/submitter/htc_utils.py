@@ -19,6 +19,8 @@ from typing import Any, Dict, List, Union
 
 from pandas import DataFrame
 
+from pylhc_submitter.constants.htcondor import (BASH_FILENAME, CMD_SUBMIT, HTCONDOR_JOBLIMIT,
+                                                JOBFLAVOURS, NOTIFICATIONS, SHEBANG, SUBFILE)
 from pylhc_submitter.constants.job_submitter import (COLUMN_DEST_DIRECTORY, COLUMN_JOB_DIRECTORY,
                                                      COLUMN_JOB_FILE, COLUMN_SHELL_SCRIPT,
                                                      EXECUTEABLEPATH, NON_PARAMETER_COLUMNS)
@@ -35,28 +37,6 @@ except ImportError:  # will be handled by job_submitter
 
 
 LOG = logging.getLogger(__name__)
-
-# HTC Constants ################################################################
-
-SHEBANG = "#!/bin/bash"
-SUBFILE = "queuehtc.sub"
-BASH_FILENAME = "Job"
-
-HTCONDOR_JOBLIMIT = 100000
-
-CMD_SUBMIT = "condor_submit"
-JOBFLAVOURS = (
-    "espresso",  # 20 min
-    "microcentury",  # 1 h
-    "longlunch",  # 2 h
-    "workday",  # 8 h
-    "tomorrow",  # 1 d
-    "testmatch",  # 3 d
-    "nextweek",  # 1 w
-)
-
-NOTIFICATIONS = ("always", "complete", "error", "never")
-
 
 
 # Subprocess Methods ###########################################################

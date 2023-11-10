@@ -1,6 +1,6 @@
 """
-Constants: General
-------------------
+General
+-------
 
 General constants to help with consistency.
 """

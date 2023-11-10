@@ -1,7 +1,7 @@
 
 """
-Constants: Job Submitter
-----------------------------------
+Job Submitter
+-------------
 
 Collections of constants and paths used in the job-submitter.
 """

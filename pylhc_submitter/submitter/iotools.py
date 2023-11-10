@@ -14,12 +14,13 @@ import numpy as np
 import pandas as pd
 import tfs
 
+from pylhc_submitter.constants.htcondor import HTCONDOR_JOBLIMIT
 from pylhc_submitter.constants.job_submitter import (COLUMN_DEST_DIRECTORY, COLUMN_JOB_DIRECTORY,
                                                      COLUMN_JOBID, JOBDIRECTORY_PREFIX,
                                                      JOBSUMMARY_FILE, SCRIPT_EXTENSIONS)
 from pylhc_submitter.submitter import htc_utils
-from pylhc_submitter.submitter.mask import (create_job_scripts_from_mask,
-                                                      generate_jobdf_index, is_mask_file)
+from pylhc_submitter.submitter.mask import (create_job_scripts_from_mask, generate_jobdf_index,
+                                            is_mask_file)
 
 LOG = logging.getLogger(__name__)
 
@@ -75,7 +76,7 @@ def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
     if njobs == 0:
         raise ValueError(f"No (new) jobs found!")
 
-    if njobs > htc_utils.HTCONDOR_JOBLIMIT:
+    if njobs > HTCONDOR_JOBLIMIT:
         LOG.warning(
             f"You are attempting to submit an important number of jobs ({njobs})."
             "This can be a high stress on your system, make sure you know what you are doing."
