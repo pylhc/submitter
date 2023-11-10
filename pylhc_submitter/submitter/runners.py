@@ -97,7 +97,7 @@ def run_htc(job_df: tfs.TfsDataFrame, opt: RunnerOpts) -> None:
 
 # Helper #######################################################################
 
-def _execute_shell(df_row: Tuple(Any, pd.Series)) -> int:
+def _execute_shell(df_row: Tuple[Any, pd.Series]) -> int:
     """ Execute the shell script. 
     
     Args:

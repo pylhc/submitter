@@ -24,7 +24,7 @@ from pylhc_submitter.constants.htcondor import (BASH_FILENAME, CMD_SUBMIT, HTCON
 from pylhc_submitter.constants.job_submitter import (COLUMN_DEST_DIRECTORY, COLUMN_JOB_DIRECTORY,
                                                      COLUMN_JOB_FILE, COLUMN_SHELL_SCRIPT,
                                                      EXECUTEABLEPATH, NON_PARAMETER_COLUMNS)
-from pylhc_submitter.submitter.iotools import is_eos_uri
+from pylhc_submitter.submitter import iotools
 from pylhc_submitter.submitter.mask import is_mask_file
 from pylhc_submitter.utils.environment import on_windows
 
@@ -227,7 +227,7 @@ def write_bash(
             # Manually copy output (if needed) ---
             dest_dir = job.get(COLUMN_DEST_DIRECTORY) 
             if output_dir and dest_dir and output_dir != dest_dir:
-                if is_eos_uri(dest_dir):
+                if iotools.is_eos_uri(dest_dir):
                     # Note: eos-cp needs `/` at the end of both, source and target, dirs...
                     cp_command =  f'eos cp -r {_str_ending_with_slash(output_dir)} {_str_ending_with_slash(dest_dir)}'  
                 else:
