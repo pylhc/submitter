@@ -9,7 +9,7 @@ import multiprocessing
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 import pandas as pd
 import tfs
@@ -97,11 +97,12 @@ def run_htc(job_df: tfs.TfsDataFrame, opt: RunnerOpts) -> None:
 
 # Helper #######################################################################
 
-def _execute_shell(df_row: pd.Series) -> int:
+def _execute_shell(df_row: Tuple(Any, pd.Series)) -> int:
     """ Execute the shell script. 
     
     Args:
-        df_row (pd.Series): row in the job-dataframe
+        df_row (Tuple[Any, pd.Series]): Row in the job-dataframe as coming from `iterrows()`, 
+                                        i.e. a tuple of (index, series)
     
     Returns:
         int: return code of the process

@@ -52,7 +52,6 @@ def create_subfile_from_job(cwd: Path, submission: Union[str, htcondor.Submit]) 
 
     Returns:
         Path: path to sub-file
-
     """
     subfile = cwd / SUBFILE
     LOG.debug(f"Writing sub-file '{str(subfile)}'.")
@@ -67,7 +66,6 @@ def submit_jobfile(jobfile: Path, ssh: str) -> None:
     Args:
         jobfile (Path): path to sub-file
         ssh (str): ssh target
-
     """
     proc_args = [CMD_SUBMIT, jobfile]
     if ssh:
@@ -87,7 +85,6 @@ def _start_subprocess(command: List[str]) -> int:
 
     Returns:
         int: return code of the process
-    
     """
     LOG.debug(f"Executing command '{command}'")
     process = subprocess.Popen(
@@ -191,7 +188,6 @@ def write_bash(
 
     Returns:
         DataFrame: The provided ``job_df`` but with added path to the scripts.
-
     """
     if len(job_df.index) > HTCONDOR_JOBLIMIT:
         raise AttributeError("Submitting too many jobs for HTCONDOR")
@@ -256,7 +252,6 @@ def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
 
     Returns:
         Dict[str, Any]: The mapped kwargs.
-
     """
     new = {}
 
