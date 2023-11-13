@@ -1,6 +1,6 @@
 """
-Constants: External Paths
--------------------------
+External Paths
+--------------
 
 Specific constants relating to external paths to be used,
 to help with consistency.

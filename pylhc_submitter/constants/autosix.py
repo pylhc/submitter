@@ -1,6 +1,6 @@
 """
-Constants: Autosix
-----------------------------------
+Autosix
+-------
 
 Collections of constants and paths used in autosix.
 

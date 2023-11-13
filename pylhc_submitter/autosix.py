@@ -193,34 +193,17 @@ from pathlib import Path
 
 import numpy as np
 import tfs
-from generic_parser import EntryPointParameters, entrypoint, DotDict
+from generic_parser import EntryPointParameters, entrypoint
 from generic_parser.entry_datatypes import DictAsString
 
-from pylhc_submitter.constants.autosix import (
-    HEADER_BASEDIR,
-    SIXENV_REQUIRED,
-    SIXENV_OPTIONAL,
-    AutoSixEnvironment,
-)
-from pylhc_submitter.htc.mask import generate_jobdf_index
-from pylhc_submitter.job_submitter import (
-    JOBSUMMARY_FILE,
-    COLUMN_JOBID,
-)
-from pylhc_submitter.sixdesk_tools.create_workspace import (
-    set_max_materialize
-)
-from pylhc_submitter.sixdesk_tools.stages import Stage, STAGE_ORDER
-from pylhc_submitter.sixdesk_tools.utils import (
-    is_locked,
-    check_mask,
-)
-from pylhc_submitter.utils.iotools import (
-    PathOrStr,
-    save_config,
-    make_replace_entries_iterable,
-    keys_to_path
-)
+from pylhc_submitter.constants.autosix import (HEADER_BASEDIR, SIXENV_OPTIONAL, SIXENV_REQUIRED,
+                                               AutoSixEnvironment)
+from pylhc_submitter.constants.job_submitter import COLUMN_JOBID, JOBSUMMARY_FILE
+from pylhc_submitter.submitter.mask import generate_jobdf_index
+from pylhc_submitter.sixdesk_tools.stages import STAGE_ORDER, Stage
+from pylhc_submitter.sixdesk_tools.utils import check_mask, is_locked
+from pylhc_submitter.utils.iotools import (PathOrStr, keys_to_path, make_replace_entries_iterable,
+                                           save_config)
 from pylhc_submitter.utils.logging_tools import log_setup
 
 LOG = logging.getLogger(__name__)

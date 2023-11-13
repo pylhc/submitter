@@ -14,124 +14,173 @@ A **Jobs.tfs** file is created in the working directory containing the Job Id, p
 and job directory for further post processing.
 
 For additional information and guides, see the `Job Submitter page
-<https://pylhc.github.io/packages/pylhcsubmitter/job_submitter/>`_ in the ``OMC`` documentation site.
+<https://pylhc.github.io/packages/pylhcsubmitter/job_submitter.html>`_ in the ``OMC`` documentation site.
+
 
 *--Required--*
 
-- **mask** *(str)*: Program mask to use
+- **mask** *(PathOrStr)*:
 
-- **replace_dict** *(DictAsString)*: Dict containing the str to replace as
-  keys and values a list of parameters to replace
+    Program mask to use
 
-- **working_directory** *(str)*: Directory where data should be put
+
+- **replace_dict** *(DictAsString)*:
+
+    Dict containing the str to replace as keys and values a list of
+    parameters to replace
+
+
+- **working_directory** *(PathOrStr)*:
+
+    Directory where data should be put
 
 
 *--Optional--*
 
-- **append_jobs**: Flag to rerun job with finer/wider grid,
-  already existing points will not be reexecuted.
+- **append_jobs**:
 
-  Action: ``store_true``
-- **check_files** *(str)*: List of files/file-name-masks expected to be in the
-  'job_output_dir' after a successful job (for appending/resuming). Uses the 'glob'
-  function, so unix-wildcards (*) are allowed. If not given, only the presence of the folder itself is checked.
-- **dryrun**: Flag to only prepare folders and scripts,
-  but does not start/submit jobs.
-  Together with `resume_jobs` this can be use to check which jobs succeeded and which failed.
+    Flag to rerun job with finer/wider grid, already existing points will
+    not be reexecuted.
 
-  Action: ``store_true``
-- **executable** *(str)*: Path to executable or job-type (of ['madx', 'python3', 'python2']) to use.
-
-- **htc_arguments** *(DictAsString)*: Additional arguments for htcondor, as Dict-String.
-  For AccountingGroup please use 'accounting_group'. 'max_retries' and 'notification' have defaults (if not given).
-  Others are just passed on.
-
-  Default: ``{}``
-- **job_output_dir** *(str)*: The name of the output dir of the job. (Make sure your script puts its data there!)
-
-  Default: ``Outputdata``
-- **jobflavour** *(str)*: Jobflavour to give rough estimate of runtime of one job
-
-  Choices: ``('espresso', 'microcentury', 'longlunch', 'workday', 'tomorrow', 'testmatch', 'nextweek')``
-  Default: ``workday``
-- **jobid_mask** *(str)*: Mask to name jobs from replace_dict
-
-- **num_processes** *(int)*: Number of processes to be used if run locally
-
-  Default: ``4``
-- **resume_jobs**: Only do jobs that did not work.
-
-  Action: ``store_true``
-- **run_local**: Flag to run the jobs on the local machine. Not suggested.
-
-  Action: ``store_true``
-- **script_arguments** *(DictAsString)*: Additional arguments to pass to the script,
-  as dict in key-value pairs ('--' need to be included in the keys).
-
-  Default: ``{}``
-- **script_extension** *(str)*: New extension for the scripts created from the masks.
-  This is inferred automatically for ['madx', 'python3', 'python2']. Otherwise not changed.
-
-- **ssh** *(str)*: Run htcondor from this machine via ssh (needs access to the `working_directory`)
+    action: ``store_true``
 
 
-:author: mihofer, jdilly, fesoubel
+- **check_files** *(str)*:
+
+    List of files/file-name-masks expected to be in the 'job_output_dir'
+    after a successful job (for appending/resuming). Uses the 'glob'
+    function, so unix-wildcards (*) are allowed. If not given, only the
+    presence of the folder itself is checked.
+
+
+- **dryrun**:
+
+    Flag to only prepare folders and scripts, but does not start/submit
+    jobs. Together with `resume_jobs` this can be use to check which jobs
+    succeeded and which failed.
+
+    action: ``store_true``
+
+
+- **executable** *(PathOrStr)*:
+
+    Path to executable or job-type (of ['madx', 'python3', 'python2']) to
+    use.
+
+    default: ``madx``
+
+
+- **htc_arguments** *(DictAsString)*:
+
+    Additional arguments for htcondor, as Dict-String. For AccountingGroup
+    please use 'accounting_group'. 'max_retries' and 'notification' have
+    defaults (if not given). Others are just passed on.
+
+    default: ``{}``
+
+
+- **job_output_dir** *(str)*:
+
+    The name of the output dir of the job. (Make sure your script puts its
+    data there!)
+
+    default: ``Outputdata``
+
+
+- **jobflavour** *(str)*:
+
+    Jobflavour to give rough estimate of runtime of one job
+
+    choices: ``('espresso', 'microcentury', 'longlunch', 'workday', 'tomorrow', 'testmatch', 'nextweek')``
+
+    default: ``workday``
+
+
+- **jobid_mask** *(str)*:
+
+    Mask to name jobs from replace_dict
+
+
+- **num_processes** *(int)*:
+
+    Number of processes to be used if run locally
+
+    default: ``4``
+
+
+- **output_destination** *(PathOrStr)*:
+
+    Directory to copy the output of the jobs to, sorted into folders per job.
+    Can be on EOS, preferrably via EOS-URI format ('root://eosuser.cern.ch//eos/...').
+
+
+- **resume_jobs**:
+
+    Only do jobs that did not work.
+
+    action: ``store_true``
+
+
+- **run_local**:
+
+    Flag to run the jobs on the local machine. Not suggested.
+
+    action: ``store_true``
+
+
+- **script_arguments** *(DictAsString)*:
+
+    Additional arguments to pass to the script, as dict in key-value pairs
+    ('--' need to be included in the keys).
+
+    default: ``{}``
+
+
+- **script_extension** *(str)*:
+
+    New extension for the scripts created from the masks. This is inferred
+    automatically for ['madx', 'python3', 'python2']. Otherwise not
+    changed.
+
+
+- **ssh** *(str)*:
+
+    Run htcondor from this machine via ssh (needs access to the
+    `working_directory`)
+
+
 """
-import itertools
 import logging
-import multiprocessing
-import subprocess
 import sys
+from dataclasses import fields
 from pathlib import Path
 
-import numpy as np
-import tfs
 from generic_parser import EntryPointParameters, entrypoint
 from generic_parser.entry_datatypes import DictAsString
 from generic_parser.tools import print_dict_tree
 
-import pylhc_submitter.htc.utils as htcutils
-from pylhc_submitter.htc.mask import (
-    check_percentage_signs_in_mask,
-    create_jobs_from_mask,
-    find_named_variables_in_mask,
-    generate_jobdf_index,
-)
-from pylhc_submitter.htc.utils import (
-    COLUMN_JOB_DIRECTORY,
-    COLUMN_SHELL_SCRIPT,
-    EXECUTEABLEPATH,
-    HTCONDOR_JOBLIMIT,
-    JOBFLAVOURS,
-)
-from pylhc_submitter.utils.environment_tools import on_windows
-from pylhc_submitter.utils.iotools import PathOrStr, save_config, make_replace_entries_iterable, keys_to_path
+from pylhc_submitter.constants.htcondor import JOBFLAVOURS
+from pylhc_submitter.constants.job_submitter import EXECUTEABLEPATH, SCRIPT_EXTENSIONS
+from pylhc_submitter.submitter.iotools import CreationOpts, create_jobs, is_eos_uri, print_stats
+from pylhc_submitter.submitter.mask import (check_percentage_signs_in_mask,
+                                            find_named_variables_in_mask, is_mask_file)
+from pylhc_submitter.submitter.runners import RunnerOpts, run_jobs
+from pylhc_submitter.utils.iotools import (PathOrStr, keys_to_path, make_replace_entries_iterable,
+                                           save_config)
 from pylhc_submitter.utils.logging_tools import log_setup
-
-JOBSUMMARY_FILE = "Jobs.tfs"
-JOBDIRECTORY_PREFIX = "Job"
-COLUMN_JOBID = "JobId"
-CONFIG_FILE = "config.ini"
-
-SCRIPT_EXTENSIONS = {
-    "madx": ".madx",
-    "python3": ".py",
-    "python2": ".py",
-}
 
 LOG = logging.getLogger(__name__)
 
 
 try:
     import htcondor
-    HAS_HTCONDOR = True
 except ImportError:
     platform = "macOS" if sys.platform == "darwin" else "windows"
     LOG.warning(
         f"htcondor python bindings are linux-only. You can still use job_submitter on {platform}, "
         "but only for local runs."
     )
-    HAS_HTCONDOR = False
+    htcondor = None
 
 
 def get_params():
@@ -246,6 +295,12 @@ def get_params():
         default="Outputdata",
     )
     params.add_parameter(
+        name="output_destination",
+        help="Directory to copy the output of the jobs to, sorted into folders per job. "
+             "Can be on EOS, preferrably via EOS-URI format ('root://eosuser.cern.ch//eos/...').",
+        type=PathOrStr,
+    )
+    params.add_parameter(
         name="htc_arguments",
         help=(
             "Additional arguments for htcondor, as Dict-String. "
@@ -273,214 +328,18 @@ def main(opt):
     else:
         LOG.info("Starting Job-submitter.")
 
-    opt = _check_opts(opt)
-    save_config(opt.working_directory, opt, "job_submitter")
+    save_config(Path(opt.working_directory), opt, "job_submitter")
+    creation_opt, runner_opt = check_opts(opt)
 
-    job_df = _create_jobs(
-        opt.working_directory,
-        opt.mask,
-        opt.jobid_mask,
-        opt.replace_dict,
-        opt.job_output_dir,
-        opt.append_jobs,
-        opt.executable,
-        opt.script_arguments,
-        opt.script_extension,
-    )
-    job_df, dropped_jobs = _drop_already_ran_jobs(
-        job_df, opt.resume_jobs or opt.append_jobs, opt.job_output_dir, opt.check_files
-    )
+    job_df, dropped_jobs = create_jobs(creation_opt)
 
-    if opt.run_local and not opt.dryrun:
-        _run_local(job_df, opt.num_processes)
-    else:
-        _run_htc(
-            job_df,
-            opt.working_directory,
-            opt.job_output_dir,
-            opt.jobflavour,
-            opt.ssh,
-            opt.dryrun,
-            opt.htc_arguments,
-        )
-    if opt.dryrun:
-        _print_stats(job_df.index, dropped_jobs)
+    run_jobs(job_df, runner_opt)
+
+    print_stats(job_df.index, dropped_jobs)
 
 
-# Main Functions ---------------------------------------------------------------
-
-
-def _create_jobs(
-    cwd,
-    mask_path_or_string,
-    jobid_mask,
-    replace_dict,
-    output_dir,
-    append_jobs,
-    executable,
-    script_args,
-    script_extension,
-) -> tfs.TfsDataFrame:
-    LOG.debug("Creating Jobs.")
-    values_grid = np.array(list(itertools.product(*replace_dict.values())), dtype=object)
-
-    if append_jobs:
-        jobfile_path = cwd / JOBSUMMARY_FILE
-        try:
-            job_df = tfs.read(str(jobfile_path.absolute()), index=COLUMN_JOBID)
-        except FileNotFoundError as filerror:
-            raise FileNotFoundError(
-                "Cannot append jobs, as no previous jobfile was found at " f"'{jobfile_path}'"
-            ) from filerror
-        mask = [elem not in job_df[replace_dict.keys()].values for elem in values_grid]
-        njobs = mask.count(True)
-        values_grid = values_grid[mask]
-    else:
-        njobs = len(values_grid)
-        job_df = tfs.TfsDataFrame()
-
-    if njobs == 0:
-        raise ValueError(f"No (new) jobs found!")
-    if njobs > HTCONDOR_JOBLIMIT:
-        LOG.warning(
-            f"You are attempting to submit an important number of jobs ({njobs})."
-            "This can be a high stress on your system, make sure you know what you are doing."
-        )
-
-    LOG.debug(f"Initial number of jobs: {njobs:d}")
-    data_df = tfs.TfsDataFrame(
-        index=generate_jobdf_index(job_df, jobid_mask, replace_dict.keys(), values_grid),
-        columns=list(replace_dict.keys()),
-        data=values_grid,
-    )
-    job_df = tfs.concat([job_df, data_df], sort=False, how_headers='left')
-    job_df = _setup_folders(job_df, cwd)
-
-    if htcutils.is_mask_file(mask_path_or_string):
-        LOG.debug("Creating all jobs from mask.")
-        script_extension = _get_script_extension(script_extension, executable, mask_path_or_string)
-        job_df = create_jobs_from_mask(
-            job_df, mask_path_or_string, replace_dict.keys(), script_extension
-        )
-
-    LOG.debug("Creating shell scripts for submission.")
-    job_df = htcutils.write_bash(
-        job_df,
-        output_dir,
-        executable=executable,
-        cmdline_arguments=script_args,
-        mask=mask_path_or_string,
-    )
-
-    job_df[COLUMN_JOB_DIRECTORY] = job_df[COLUMN_JOB_DIRECTORY].apply(str)
-    tfs.write(str(cwd / JOBSUMMARY_FILE), job_df, save_index=COLUMN_JOBID)
-    return job_df
-
-
-def _drop_already_ran_jobs(
-    job_df: tfs.TfsDataFrame, drop_jobs: bool, output_dir: str, check_files: str
-):
-    LOG.debug("Dropping already finished jobs, if necessary.")
-    finished_jobs = []
-    if drop_jobs:
-        finished_jobs = [
-            idx
-            for idx, row in job_df.iterrows()
-            if _job_was_successful(row, output_dir, check_files)
-        ]
-        LOG.info(
-            f"{len(finished_jobs):d} of {len(job_df.index):d}"
-            " Jobs have already finished and will be skipped."
-        )
-        job_df = job_df.drop(index=finished_jobs)
-    return job_df, finished_jobs
-
-
-def _run_local(job_df: tfs.TfsDataFrame, num_processes: int) -> None:
-    LOG.info(f"Running {len(job_df.index)} jobs locally in {num_processes:d} processes.")
-    pool = multiprocessing.Pool(processes=num_processes)
-    res = pool.map(_execute_shell, job_df.iterrows())
-    if any(res):
-        LOG.error("At least one job has failed.")
-        raise RuntimeError("At least one job has failed. Check output logs!")
-
-
-def _run_htc(
-    job_df: tfs.TfsDataFrame,
-    cwd: str,
-    output_dir: str,
-    flavour: str,
-    ssh: str,
-    dryrun: bool,
-    additional_htc_arguments: DictAsString,
-) -> None:
-    LOG.info(f"Submitting {len(job_df.index)} jobs on htcondor, flavour '{flavour}'.")
-    LOG.debug("Creating htcondor subfile.")
-    subfile = htcutils.make_subfile(
-        cwd, job_df, output_dir=output_dir, duration=flavour, **additional_htc_arguments
-    )
-    if not dryrun:
-        LOG.debug("Submitting jobs to htcondor.")
-        htcutils.submit_jobfile(subfile, ssh)
-
-
-def _get_script_extension(script_extension: str, executable: PathOrStr, mask: PathOrStr) -> str:
-    if script_extension is not None:
-        return script_extension
-    return SCRIPT_EXTENSIONS.get(executable, mask.suffix)
-
-
-# Sub Functions ----------------------------------------------------------------
-
-
-def _check_htcondor_presence() -> None:
-    """Checks the ``HAS_HTCONDOR`` variable and raises EnvironmentError if it is ``False``."""
-    if not HAS_HTCONDOR:
-        raise EnvironmentError("htcondor bindings are necessary to run this module.")
-
-
-def _setup_folders(job_df: tfs.TfsDataFrame, working_directory: PathOrStr) -> tfs.TfsDataFrame:
-    def _return_job_dir(job_id):
-        return working_directory / f"{JOBDIRECTORY_PREFIX}.{job_id}"
-
-    LOG.debug("Setting up folders: ")
-    job_df[COLUMN_JOB_DIRECTORY] = [_return_job_dir(id_) for id_ in job_df.index]
-
-    for job_dir in job_df[COLUMN_JOB_DIRECTORY]:
-        try:
-            job_dir.mkdir()
-        except IOError:
-            LOG.debug(f"   failed '{job_dir}' (might already exist).")
-        else:
-            LOG.debug(f"   created '{job_dir}'.")
-    return job_df
-
-
-def _job_was_successful(job_row, output_dir, files) -> bool:
-    output_dir = Path(job_row[COLUMN_JOB_DIRECTORY], output_dir)
-    success = output_dir.is_dir() and any(output_dir.iterdir())
-    if success and files is not None and len(files):
-        for f in files:
-            success &= len(list(output_dir.glob(f))) > 0
-    return success
-
-
-def _execute_shell(df_row) -> int:
-    idx, column = df_row
-    cmd = [] if on_windows() else ["sh"]
-
-    with Path(column[COLUMN_JOB_DIRECTORY], "log.tmp").open("w") as logfile:
-        process = subprocess.Popen(
-            cmd + [column[COLUMN_SHELL_SCRIPT]],
-            shell=on_windows(),
-            stdout=logfile,
-            stderr=subprocess.STDOUT,
-            cwd=column[COLUMN_JOB_DIRECTORY],
-        )
-    return process.wait()
-
-
-def _check_opts(opt):
+def check_opts(opt):
+    """ Checks options and sorts them into job-creation and running parameters. """
     LOG.debug("Checking options.")
     if opt.resume_jobs and opt.append_jobs:
         raise ValueError("Select either Resume jobs or Append jobs")
@@ -491,15 +350,21 @@ def _check_opts(opt):
     if str(opt.executable) in EXECUTEABLEPATH.keys():
         opt.executable = str(opt.executable)
 
-    if htcutils.is_mask_file(opt.mask):
-        mask = Path(opt.mask).read_text()  # checks that mask and dir are there
-        opt["mask"] = Path(opt["mask"])
+    if is_mask_file(opt.mask):
+        mask_content = Path(opt.mask).read_text()  # checks that mask and dir are there
+        opt.mask = Path(opt.mask)
     else:
-        mask = opt.mask
+        mask_content = opt.mask
+    
+    if is_eos_uri(opt.output_destination) and not ("://" in opt.output_destination and "//eos" in opt.output_destination):
+        raise ValueError(
+            "The 'output_destination' is an EOS-URI but missing '://' or '//eos' (double slashes?). "
+        )
+        
 
     # Replace dict ---
     dict_keys = set(opt.replace_dict.keys())
-    mask_keys = find_named_variables_in_mask(mask)
+    mask_keys = find_named_variables_in_mask(mask_content)
     not_in_mask = dict_keys - mask_keys
     not_in_dict = mask_keys - dict_keys
 
@@ -519,25 +384,24 @@ def _check_opts(opt):
         [opt.replace_dict.pop(key) for key in not_in_mask]
         if len(opt.replace_dict) == 0:
             raise KeyError("Empty replace-dictionary")
-    check_percentage_signs_in_mask(mask)
+    check_percentage_signs_in_mask(mask_content)
 
     print_dict_tree(opt, name="Input parameter", print_fun=LOG.debug)
     opt.replace_dict = make_replace_entries_iterable(opt.replace_dict)
-    return opt
+    
+    # Create new classes
+    opt.output_dir = opt.job_output_dir  # renaming
+
+    creation = CreationOpts(**{f.name: opt[f.name] for f in fields(CreationOpts)})
+    runner = RunnerOpts(**{f.name: opt[f.name] for f in fields(RunnerOpts)})
+    runner.output_dir = None if opt.output_destination else opt.output_dir
+    return creation, runner
 
 
-def _print_stats(new_jobs, finished_jobs):
-    """Print some quick statistics."""
-    LOG.info("------------- QUICK STATS ----------------")
-    LOG.info(f"Jobs total:{len(new_jobs) + len(finished_jobs):d}")
-    LOG.info(f"Jobs to run: {len(new_jobs):d}")
-    LOG.info(f"Jobs already finished: {len(finished_jobs):d}")
-    LOG.info("---------- JOBS TO RUN: NAMES -------------")
-    for job_name in new_jobs:
-        LOG.info(job_name)
-    LOG.info("--------- JOBS FINISHED: NAMES ------------")
-    for job_name in finished_jobs:
-        LOG.info(job_name)
+def _check_htcondor_presence() -> None:
+    """ Raises an error if htcondor is not installed. """
+    if htcondor is None:
+        raise EnvironmentError("htcondor bindings are necessary to run this module.")
 
 
 # Script Mode ------------------------------------------------------------------
