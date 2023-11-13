@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pylhc_submitter.job_submitter &mdash; pylhc_submitter 2.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Submitter</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../entrypoints/autosix.html">AutoSix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../entrypoints/job_submitter.html">Job Submitter</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/constants.html">Constants Definitions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/constants.html#general">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/constants.html#external-paths">External Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/constants.html#job-submitter">Job Submitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/constants.html#htcondor">HTCondor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/constants.html#autosix">Autosix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sixdesk_tools.html#stages">Stages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/submitter.html">Submitter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/submitter.html#htcondor-utilities">HTCondor Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/submitter.html#job-submitter-io-tools">Job Submitter IO-Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/submitter.html#mask-resolver">Mask Resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/submitter.html#job-submitter-runners">Job Submitter Runners</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/utils.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/utils.html#io-tools">IO-Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/utils.html#logging-tools">Logging Tools</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pylhc_submitter</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pylhc_submitter.job_submitter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pylhc_submitter.job_submitter</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Job Submitter</span>
+<span class="sd">-------------</span>
+
+
+<span class="sd">The ``job_submitter`` allows to execute a parametric study using a script mask and a `dictionary` of parameters to replace in this mask, from the command line.</span>
+<span class="sd">These parameters must be present in the given mask in the ``%(PARAMETER)s`` format (other types apart from string are also allowed).</span>
+
+<span class="sd">The type of script and executable is freely choosable, but defaults to ``madx``, for which this submitter was originally written.</span>
+<span class="sd">When submitting to ``HTCondor``, data to be transferred back to the working directory must be written in a sub-folder defined by ``job_output_directory`` which defaults to **Outputdata**.</span>
+
+<span class="sd">This script also allows to check if all ``HTCondor`` jobs finished successfully, for resubmissions with a different parameter grid, and for local execution.</span>
+<span class="sd">A **Jobs.tfs** file is created in the working directory containing the Job Id, parameter per job</span>
+<span class="sd">and job directory for further post processing.</span>
+
+<span class="sd">For additional information and guides, see the `Job Submitter page</span>
+<span class="sd">&lt;https://pylhc.github.io/packages/pylhcsubmitter/job_submitter.html&gt;`_ in the ``OMC`` documentation site.</span>
+
+
+<span class="sd">*--Required--*</span>
+
+<span class="sd">- **mask** *(PathOrStr)*:</span>
+
+<span class="sd">    Program mask to use</span>
+
+
+<span class="sd">- **replace_dict** *(DictAsString)*:</span>
+
+<span class="sd">    Dict containing the str to replace as keys and values a list of</span>
+<span class="sd">    parameters to replace</span>
+
+
+<span class="sd">- **working_directory** *(PathOrStr)*:</span>
+
+<span class="sd">    Directory where data should be put</span>
+
+
+<span class="sd">*--Optional--*</span>
+
+<span class="sd">- **append_jobs**:</span>
+
+<span class="sd">    Flag to rerun job with finer/wider grid, already existing points will</span>
+<span class="sd">    not be reexecuted.</span>
+
+<span class="sd">    action: ``store_true``</span>
+
+
+<span class="sd">- **check_files** *(str)*:</span>
+
+<span class="sd">    List of files/file-name-masks expected to be in the &#39;job_output_dir&#39;</span>
+<span class="sd">    after a successful job (for appending/resuming). Uses the &#39;glob&#39;</span>
+<span class="sd">    function, so unix-wildcards (*) are allowed. If not given, only the</span>
+<span class="sd">    presence of the folder itself is checked.</span>
+
+
+<span class="sd">- **dryrun**:</span>
+
+<span class="sd">    Flag to only prepare folders and scripts, but does not start/submit</span>
+<span class="sd">    jobs. Together with `resume_jobs` this can be use to check which jobs</span>
+<span class="sd">    succeeded and which failed.</span>
+
+<span class="sd">    action: ``store_true``</span>
+
+
+<span class="sd">- **executable** *(PathOrStr)*:</span>
+
+<span class="sd">    Path to executable or job-type (of [&#39;madx&#39;, &#39;python3&#39;, &#39;python2&#39;]) to</span>
+<span class="sd">    use.</span>
+
+<span class="sd">    default: ``madx``</span>
+
+
+<span class="sd">- **htc_arguments** *(DictAsString)*:</span>
+
+<span class="sd">    Additional arguments for htcondor, as Dict-String. For AccountingGroup</span>
+<span class="sd">    please use &#39;accounting_group&#39;. &#39;max_retries&#39; and &#39;notification&#39; have</span>
+<span class="sd">    defaults (if not given). Others are just passed on.</span>
+
+<span class="sd">    default: ``{}``</span>
+
+
+<span class="sd">- **job_output_dir** *(str)*:</span>
+
+<span class="sd">    The name of the output dir of the job. (Make sure your script puts its</span>
+<span class="sd">    data there!)</span>
+
+<span class="sd">    default: ``Outputdata``</span>
+
+
+<span class="sd">- **jobflavour** *(str)*:</span>
+
+<span class="sd">    Jobflavour to give rough estimate of runtime of one job</span>
+
+<span class="sd">    choices: ``(&#39;espresso&#39;, &#39;microcentury&#39;, &#39;longlunch&#39;, &#39;workday&#39;, &#39;tomorrow&#39;, &#39;testmatch&#39;, &#39;nextweek&#39;)``</span>
+
+<span class="sd">    default: ``workday``</span>
+
+
+<span class="sd">- **jobid_mask** *(str)*:</span>
+
+<span class="sd">    Mask to name jobs from replace_dict</span>
+
+
+<span class="sd">- **num_processes** *(int)*:</span>
+
+<span class="sd">    Number of processes to be used if run locally</span>
+
+<span class="sd">    default: ``4``</span>
+
+
+<span class="sd">- **output_destination** *(PathOrStr)*:</span>
+
+<span class="sd">    Directory to copy the output of the jobs to, sorted into folders per job.</span>
+<span class="sd">    Can be on EOS, preferrably via EOS-URI format (&#39;root://eosuser.cern.ch//eos/...&#39;).</span>
+
+
+<span class="sd">- **resume_jobs**:</span>
+
+<span class="sd">    Only do jobs that did not work.</span>
+
+<span class="sd">    action: ``store_true``</span>
+
+
+<span class="sd">- **run_local**:</span>
+
+<span class="sd">    Flag to run the jobs on the local machine. Not suggested.</span>
+
+<span class="sd">    action: ``store_true``</span>
+
+
+<span class="sd">- **script_arguments** *(DictAsString)*:</span>
+
+<span class="sd">    Additional arguments to pass to the script, as dict in key-value pairs</span>
+<span class="sd">    (&#39;--&#39; need to be included in the keys).</span>
+
+<span class="sd">    default: ``{}``</span>
+
+
+<span class="sd">- **script_extension** *(str)*:</span>
+
+<span class="sd">    New extension for the scripts created from the masks. This is inferred</span>
+<span class="sd">    automatically for [&#39;madx&#39;, &#39;python3&#39;, &#39;python2&#39;]. Otherwise not</span>
+<span class="sd">    changed.</span>
+
+
+<span class="sd">- **ssh** *(str)*:</span>
+
+<span class="sd">    Run htcondor from this machine via ssh (needs access to the</span>
+<span class="sd">    `working_directory`)</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">fields</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">generic_parser</span> <span class="kn">import</span> <span class="n">EntryPointParameters</span><span class="p">,</span> <span class="n">entrypoint</span>
+<span class="kn">from</span> <span class="nn">generic_parser.entry_datatypes</span> <span class="kn">import</span> <span class="n">DictAsString</span>
+<span class="kn">from</span> <span class="nn">generic_parser.tools</span> <span class="kn">import</span> <span class="n">print_dict_tree</span>
+
+<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.htcondor</span> <span class="kn">import</span> <span class="n">JOBFLAVOURS</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.job_submitter</span> <span class="kn">import</span> <span class="n">EXECUTEABLEPATH</span><span class="p">,</span> <span class="n">SCRIPT_EXTENSIONS</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.submitter.iotools</span> <span class="kn">import</span> <span class="n">CreationOpts</span><span class="p">,</span> <span class="n">create_jobs</span><span class="p">,</span> <span class="n">is_eos_uri</span><span class="p">,</span> <span class="n">print_stats</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.submitter.mask</span> <span class="kn">import</span> <span class="p">(</span><span class="n">check_percentage_signs_in_mask</span><span class="p">,</span>
+                                            <span class="n">find_named_variables_in_mask</span><span class="p">,</span> <span class="n">is_mask_file</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.submitter.runners</span> <span class="kn">import</span> <span class="n">RunnerOpts</span><span class="p">,</span> <span class="n">run_jobs</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.utils.iotools</span> <span class="kn">import</span> <span class="p">(</span><span class="n">PathOrStr</span><span class="p">,</span> <span class="n">keys_to_path</span><span class="p">,</span> <span class="n">make_replace_entries_iterable</span><span class="p">,</span>
+                                           <span class="n">save_config</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.utils.logging_tools</span> <span class="kn">import</span> <span class="n">log_setup</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">htcondor</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">platform</span> <span class="o">=</span> <span class="s2">&quot;macOS&quot;</span> <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span> <span class="k">else</span> <span class="s2">&quot;windows&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;htcondor python bindings are linux-only. You can still use job_submitter on </span><span class="si">{</span><span class="n">platform</span><span class="si">}</span><span class="s2">, &quot;</span>
+        <span class="s2">&quot;but only for local runs.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">htcondor</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">get_params</span><span class="p">():</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">EntryPointParameters</span><span class="p">()</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">PathOrStr</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Program mask to use&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;working_directory&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">PathOrStr</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Directory where data should be put&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;executable&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;madx&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">PathOrStr</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Path to executable or job-type &quot;</span> <span class="sa">f</span><span class="s2">&quot;(of </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">EXECUTEABLEPATH</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span><span class="si">}</span><span class="s2">) to use.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;jobflavour&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="n">JOBFLAVOURS</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;workday&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Jobflavour to give rough estimate of runtime of one job &quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;run_local&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Flag to run the jobs on the local machine. Not suggested.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;resume_jobs&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Only do jobs that did not work.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;append_jobs&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Flag to rerun job with finer/wider grid, already existing points will not be &quot;</span>
+            <span class="s2">&quot;reexecuted.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dryrun&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Flag to only prepare folders and scripts, but does not start/submit jobs. &quot;</span>
+            <span class="s2">&quot;Together with `resume_jobs` this can be use to check which jobs &quot;</span>
+            <span class="s2">&quot;succeeded and which failed.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;replace_dict&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Dict containing the str to replace as keys and values a list of parameters to &quot;</span>
+            <span class="s2">&quot;replace&quot;</span>
+        <span class="p">),</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">DictAsString</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;script_arguments&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Additional arguments to pass to the script, as dict in key-value pairs &quot;</span>
+            <span class="s2">&quot;(&#39;--&#39; need to be included in the keys).&quot;</span>
+        <span class="p">),</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">DictAsString</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">{},</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;script_extension&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;New extension for the scripts created from the masks. This is inferred &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;automatically for </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">SCRIPT_EXTENSIONS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span><span class="si">}</span><span class="s2">. Otherwise not changed.&quot;</span>
+        <span class="p">),</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;num_processes&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of processes to be used if run locally&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;check_files&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;List of files/file-name-masks expected to be in the &quot;</span>
+            <span class="s2">&quot;&#39;job_output_dir&#39; after a successful job &quot;</span>
+            <span class="s2">&quot;(for appending/resuming). Uses the &#39;glob&#39; function, so &quot;</span>
+            <span class="s2">&quot;unix-wildcards (*) are allowed. If not given, only the &quot;</span>
+            <span class="s2">&quot;presence of the folder itself is checked.&quot;</span>
+        <span class="p">),</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;jobid_mask&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Mask to name jobs from replace_dict&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;job_output_dir&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name of the output dir of the job. (Make sure your script puts its data there!)&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Outputdata&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;output_destination&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Directory to copy the output of the jobs to, sorted into folders per job. &quot;</span>
+             <span class="s2">&quot;Can be on EOS, preferrably via EOS-URI format (&#39;root://eosuser.cern.ch//eos/...&#39;).&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">PathOrStr</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;htc_arguments&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Additional arguments for htcondor, as Dict-String. &quot;</span>
+            <span class="s2">&quot;For AccountingGroup please use &#39;accounting_group&#39;. &quot;</span>
+            <span class="s2">&quot;&#39;max_retries&#39; and &#39;notification&#39; have defaults (if not given). &quot;</span>
+            <span class="s2">&quot;Others are just passed on. &quot;</span>
+        <span class="p">),</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">DictAsString</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">{},</span>
+    <span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ssh&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run htcondor from this machine via ssh (needs access to the `working_directory`)&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">params</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">get_params</span><span class="p">(),</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">opt</span><span class="o">.</span><span class="n">run_local</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting HTCondor Job-submitter.&quot;</span><span class="p">)</span>
+        <span class="n">_check_htcondor_presence</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Job-submitter.&quot;</span><span class="p">)</span>
+
+    <span class="n">save_config</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">working_directory</span><span class="p">),</span> <span class="n">opt</span><span class="p">,</span> <span class="s2">&quot;job_submitter&quot;</span><span class="p">)</span>
+    <span class="n">creation_opt</span><span class="p">,</span> <span class="n">runner_opt</span> <span class="o">=</span> <span class="n">check_opts</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
+
+    <span class="n">job_df</span><span class="p">,</span> <span class="n">dropped_jobs</span> <span class="o">=</span> <span class="n">create_jobs</span><span class="p">(</span><span class="n">creation_opt</span><span class="p">)</span>
+
+    <span class="n">run_jobs</span><span class="p">(</span><span class="n">job_df</span><span class="p">,</span> <span class="n">runner_opt</span><span class="p">)</span>
+
+    <span class="n">print_stats</span><span class="p">(</span><span class="n">job_df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">dropped_jobs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="check_opts">
+<a class="viewcode-back" href="../../entrypoints/job_submitter.html#pylhc_submitter.job_submitter.check_opts">[docs]</a>
+<span class="k">def</span> <span class="nf">check_opts</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Checks options and sorts them into job-creation and running parameters. &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking options.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">resume_jobs</span> <span class="ow">and</span> <span class="n">opt</span><span class="o">.</span><span class="n">append_jobs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Select either Resume jobs or Append jobs&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Paths ---</span>
+    <span class="n">opt</span> <span class="o">=</span> <span class="n">keys_to_path</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="s2">&quot;working_directory&quot;</span><span class="p">,</span> <span class="s2">&quot;executable&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span> <span class="ow">in</span> <span class="n">EXECUTEABLEPATH</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_mask_file</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span>
+        <span class="n">mask_content</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>  <span class="c1"># checks that mask and dir are there</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask_content</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">mask</span>
+    
+    <span class="k">if</span> <span class="n">is_eos_uri</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;://&quot;</span> <span class="ow">in</span> <span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span> <span class="ow">and</span> <span class="s2">&quot;//eos&quot;</span> <span class="ow">in</span> <span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;output_destination&#39; is an EOS-URI but missing &#39;://&#39; or &#39;//eos&#39; (double slashes?). &quot;</span>
+        <span class="p">)</span>
+        
+
+    <span class="c1"># Replace dict ---</span>
+    <span class="n">dict_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">replace_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">mask_keys</span> <span class="o">=</span> <span class="n">find_named_variables_in_mask</span><span class="p">(</span><span class="n">mask_content</span><span class="p">)</span>
+    <span class="n">not_in_mask</span> <span class="o">=</span> <span class="n">dict_keys</span> <span class="o">-</span> <span class="n">mask_keys</span>
+    <span class="n">not_in_dict</span> <span class="o">=</span> <span class="n">mask_keys</span> <span class="o">-</span> <span class="n">dict_keys</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_in_dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+            <span class="s2">&quot;The following keys in the mask were not found in the given replace_dict: &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">not_in_dict</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_in_mask</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;The following replace_dict keys were not found in the given mask: &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">not_in_mask</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># remove all keys which are not present in mask (otherwise unnecessary jobs)</span>
+        <span class="p">[</span><span class="n">opt</span><span class="o">.</span><span class="n">replace_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">not_in_mask</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">replace_dict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Empty replace-dictionary&quot;</span><span class="p">)</span>
+    <span class="n">check_percentage_signs_in_mask</span><span class="p">(</span><span class="n">mask_content</span><span class="p">)</span>
+
+    <span class="n">print_dict_tree</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Input parameter&quot;</span><span class="p">,</span> <span class="n">print_fun</span><span class="o">=</span><span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+    <span class="n">opt</span><span class="o">.</span><span class="n">replace_dict</span> <span class="o">=</span> <span class="n">make_replace_entries_iterable</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">replace_dict</span><span class="p">)</span>
+    
+    <span class="c1"># Create new classes</span>
+    <span class="n">opt</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">job_output_dir</span>  <span class="c1"># renaming</span>
+
+    <span class="n">creation</span> <span class="o">=</span> <span class="n">CreationOpts</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">opt</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">CreationOpts</span><span class="p">)})</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">RunnerOpts</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">opt</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">RunnerOpts</span><span class="p">)})</span>
+    <span class="n">runner</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span> <span class="k">else</span> <span class="n">opt</span><span class="o">.</span><span class="n">output_dir</span>
+    <span class="k">return</span> <span class="n">creation</span><span class="p">,</span> <span class="n">runner</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_check_htcondor_presence</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Raises an error if htcondor is not installed. &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">htcondor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s2">&quot;htcondor bindings are necessary to run this module.&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Script Mode ------------------------------------------------------------------</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">log_setup</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

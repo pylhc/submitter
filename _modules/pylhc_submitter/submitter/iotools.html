@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pylhc_submitter.submitter.iotools &mdash; pylhc_submitter 2.0.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/omc_logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Submitter</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/autosix.html">AutoSix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../entrypoints/job_submitter.html">Job Submitter</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/constants.html">Constants Definitions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#general">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#external-paths">External Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#job-submitter">Job Submitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#htcondor">HTCondor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/constants.html#autosix">Autosix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#stages">Stages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/submitter.html">Submitter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/submitter.html#htcondor-utilities">HTCondor Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/submitter.html#job-submitter-io-tools">Job Submitter IO-Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/submitter.html#mask-resolver">Mask Resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/submitter.html#job-submitter-runners">Job Submitter Runners</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/utils.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#io-tools">IO-Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/utils.html#logging-tools">Logging Tools</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pylhc_submitter</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pylhc_submitter.submitter.iotools</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  
+  
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pylhc_submitter.submitter.iotools</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">Job Submitter IO-Tools</span>
+<span class="sd">----------------------</span>
+
+<span class="sd">Tools for input and output for the job-submitter.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">tfs</span>
+
+<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.htcondor</span> <span class="kn">import</span> <span class="n">HTCONDOR_JOBLIMIT</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.job_submitter</span> <span class="kn">import</span> <span class="p">(</span><span class="n">COLUMN_DEST_DIRECTORY</span><span class="p">,</span> <span class="n">COLUMN_JOB_DIRECTORY</span><span class="p">,</span>
+                                                     <span class="n">COLUMN_JOBID</span><span class="p">,</span> <span class="n">JOBDIRECTORY_PREFIX</span><span class="p">,</span>
+                                                     <span class="n">JOBSUMMARY_FILE</span><span class="p">,</span> <span class="n">SCRIPT_EXTENSIONS</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.submitter</span> <span class="kn">import</span> <span class="n">htc_utils</span>
+<span class="kn">from</span> <span class="nn">pylhc_submitter.submitter.mask</span> <span class="kn">import</span> <span class="p">(</span><span class="n">create_job_scripts_from_mask</span><span class="p">,</span> <span class="n">generate_jobdf_index</span><span class="p">,</span>
+                                            <span class="n">is_mask_file</span><span class="p">)</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CreationOpts">
+<a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.iotools.CreationOpts">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">CreationOpts</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Options for creating jobs. &quot;&quot;&quot;</span>
+    <span class="n">working_directory</span><span class="p">:</span> <span class="n">Path</span>         <span class="c1"># Path to working directory (afs)</span>
+    <span class="n">mask</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>          <span class="c1"># Path to mask file or mask-string</span>
+    <span class="n">jobid_mask</span><span class="p">:</span> <span class="nb">str</span>                 <span class="c1"># Mask for jobid</span>
+    <span class="n">replace_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>    <span class="c1"># Replace-dict</span>
+    <span class="n">output_dir</span><span class="p">:</span> <span class="n">Path</span>                <span class="c1"># Path to local output directory</span>
+    <span class="n">output_destination</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>  <span class="c1"># Path or URI to remote output directory (e.g. eos)</span>
+    <span class="n">append_jobs</span><span class="p">:</span> <span class="nb">bool</span>               <span class="c1"># Append jobs to existing jobs</span>
+    <span class="n">resume_jobs</span><span class="p">:</span> <span class="nb">bool</span>               <span class="c1"># Resume jobs that have already run/failed/got interrupted</span>
+    <span class="n">executable</span><span class="p">:</span> <span class="nb">str</span>                 <span class="c1"># Name of executable to call the script (from mask)</span>
+    <span class="n">check_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>      <span class="c1"># List of output files to check for success</span>
+    <span class="n">script_arguments</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>  <span class="c1"># Arguments to pass to script</span>
+    <span class="n">script_extension</span><span class="p">:</span> <span class="nb">str</span>           <span class="c1"># Extension of the script to run</span>
+
+<div class="viewcode-block" id="CreationOpts.should_drop_jobs">
+<a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.iotools.CreationOpts.should_drop_jobs">[docs]</a>
+    <span class="k">def</span> <span class="nf">should_drop_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Check if jobs should be dropped after creating the whole parameter space, </span>
+<span class="sd">        e.g. because they already exist. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append_jobs</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">resume_jobs</span></div>
+</div>
+
+
+
+
+<div class="viewcode-block" id="create_jobs">
+<a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.iotools.create_jobs">[docs]</a>
+<span class="k">def</span> <span class="nf">create_jobs</span><span class="p">(</span><span class="n">opt</span><span class="p">:</span> <span class="n">CreationOpts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main function to prepare all the jobs and folder structure.</span>
+<span class="sd">    This greates the value-grid based on the replace-dict and</span>
+<span class="sd">    checks for existing jobs (if so desired).</span>
+<span class="sd">    A job-dataframe is created - and written out - containing all the information and</span>
+<span class="sd">    its values are used to generate the job-scripts.</span>
+<span class="sd">    It also creates bash-scripts to call the executable for the job-scripts. </span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        opt (CreationOpts): Options for creating jobs </span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tfs.TfsDataFrame: The job-dataframe containing information for all jobs. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating Jobs.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Generate product of replace-dict and compare to existing jobs  ---</span>
+    <span class="n">parameters</span><span class="p">,</span> <span class="n">values_grid</span><span class="p">,</span> <span class="n">prev_job_df</span> <span class="o">=</span> <span class="n">_generate_parameter_space</span><span class="p">(</span>
+        <span class="n">replace_dict</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">replace_dict</span><span class="p">,</span>
+        <span class="n">append_jobs</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">append_jobs</span><span class="p">,</span>
+        <span class="n">cwd</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">working_directory</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Check new jobs ---</span>
+    <span class="n">njobs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values_grid</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">njobs</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No (new) jobs found!&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">njobs</span> <span class="o">&gt;</span> <span class="n">HTCONDOR_JOBLIMIT</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;You are attempting to submit an important number of jobs (</span><span class="si">{</span><span class="n">njobs</span><span class="si">}</span><span class="s2">).&quot;</span>
+            <span class="s2">&quot;This can be a high stress on your system, make sure you know what you are doing.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initial number of jobs: </span><span class="si">{</span><span class="n">njobs</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Generate new job-dataframe ---</span>
+    <span class="n">job_df</span> <span class="o">=</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">generate_jobdf_index</span><span class="p">(</span><span class="n">prev_job_df</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">jobid_mask</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">values_grid</span><span class="p">),</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">values_grid</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">job_df</span> <span class="o">=</span> <span class="n">tfs</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">prev_job_df</span><span class="p">,</span> <span class="n">job_df</span><span class="p">],</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">how_headers</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Setup folders ---</span>
+    <span class="n">job_df</span> <span class="o">=</span> <span class="n">create_folders</span><span class="p">(</span><span class="n">job_df</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">working_directory</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span><span class="p">)</span>
+
+    <span class="c1"># Create scripts ---</span>
+    <span class="k">if</span> <span class="n">is_mask_file</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating all jobs from mask.&quot;</span><span class="p">)</span>
+        <span class="n">script_extension</span> <span class="o">=</span> <span class="n">_get_script_extension</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">script_extension</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+        <span class="n">job_df</span> <span class="o">=</span> <span class="n">create_job_scripts_from_mask</span><span class="p">(</span>
+            <span class="n">job_df</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">script_extension</span>
+        <span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating shell scripts.&quot;</span><span class="p">)</span>
+    <span class="n">job_df</span> <span class="o">=</span> <span class="n">htc_utils</span><span class="o">.</span><span class="n">write_bash</span><span class="p">(</span>
+        <span class="n">job_df</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+        <span class="n">executable</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span>
+        <span class="n">cmdline_arguments</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">script_arguments</span><span class="p">,</span>
+        <span class="n">mask</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Convert paths to strings and write df to file ---</span>
+    <span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_JOB_DIRECTORY</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_JOB_DIRECTORY</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">COLUMN_DEST_DIRECTORY</span> <span class="ow">in</span> <span class="n">job_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_DEST_DIRECTORY</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_DEST_DIRECTORY</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+    <span class="n">tfs</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">working_directory</span> <span class="o">/</span> <span class="n">JOBSUMMARY_FILE</span><span class="p">),</span> <span class="n">job_df</span><span class="p">,</span> <span class="n">save_index</span><span class="o">=</span><span class="n">COLUMN_JOBID</span><span class="p">)</span>
+    
+    <span class="c1"># Drop already run jobs ---</span>
+    <span class="n">dropped_jobs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">should_drop_jobs</span><span class="p">():</span>
+        <span class="n">job_df</span><span class="p">,</span> <span class="n">dropped_jobs</span> <span class="o">=</span> <span class="n">_drop_already_run_jobs</span><span class="p">(</span>
+            <span class="n">job_df</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">check_files</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">job_df</span><span class="p">,</span> <span class="n">dropped_jobs</span></div>
+
+
+
+<div class="viewcode-block" id="create_folders">
+<a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.iotools.create_folders">[docs]</a>
+<span class="k">def</span> <span class="nf">create_folders</span><span class="p">(</span><span class="n">job_df</span><span class="p">:</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">working_directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> 
+                   <span class="n">destination_directory</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create the folder-structure in the given working directory and the </span>
+<span class="sd">    destination directory if given.</span>
+<span class="sd">    This creates a folder per job in which then the job-scripts and bash-scripts</span>
+<span class="sd">    can be stored later.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        job_df (tfs.TfsDataFrame): DataFrame containing all the job-information</span>
+<span class="sd">        working_directory (Path): Path to the working directory</span>
+<span class="sd">        destination_directory (Path, optional): Path to the destination directory, </span>
+<span class="sd">        i.e. the directory to copy the outputs to manually. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tfs.TfsDataFrame: The job-dataframe again, but with the added paths to the job-dirs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting up folders: &quot;</span><span class="p">)</span>
+    
+    <span class="n">jobname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">JOBDIRECTORY_PREFIX</span><span class="si">}</span><span class="s2">.</span><span class="se">{{</span><span class="s2">0</span><span class="se">}}</span><span class="s2">&quot;</span>
+    <span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_JOB_DIRECTORY</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">working_directory</span> <span class="o">/</span> <span class="n">jobname</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_</span><span class="p">)</span> <span class="k">for</span> <span class="n">id_</span> <span class="ow">in</span> <span class="n">job_df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">job_dir</span> <span class="ow">in</span> <span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_JOB_DIRECTORY</span><span class="p">]:</span>
+        <span class="n">job_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   created &#39;</span><span class="si">{</span><span class="n">job_dir</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">destination_directory</span><span class="p">:</span>
+        <span class="n">dest_path</span> <span class="o">=</span> <span class="n">uri_to_path</span><span class="p">(</span><span class="n">destination_directory</span><span class="p">)</span>
+        <span class="n">dest_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">server</span> <span class="o">=</span> <span class="n">get_server_from_uri</span><span class="p">(</span><span class="n">destination_directory</span><span class="p">)</span>
+        <span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_DEST_DIRECTORY</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">server</span><span class="si">}{</span><span class="n">dest_path</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">jobname</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">id_</span> <span class="ow">in</span> <span class="n">job_df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="c1"># Make some symlinks for easy navigation---</span>
+        <span class="c1"># Output directory -&gt; Working Directory</span>
+        <span class="n">sym_submission</span> <span class="o">=</span> <span class="n">dest_path</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;SUBMISSION_DIR&#39;</span><span class="p">)</span>
+        <span class="n">sym_submission</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">sym_submission</span><span class="o">.</span><span class="n">symlink_to</span><span class="p">(</span><span class="n">working_directory</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="n">target_is_directory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Working Directory -&gt; Output Directory</span>
+        <span class="n">sym_destination</span> <span class="o">=</span> <span class="n">working_directory</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;OUTPUT_DIR&#39;</span><span class="p">)</span>
+        <span class="n">sym_destination</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">sym_destination</span><span class="o">.</span><span class="n">symlink_to</span><span class="p">(</span><span class="n">dest_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="n">target_is_directory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Create output dirs per job ---</span>
+        <span class="k">for</span> <span class="n">job_dest_dir</span> <span class="ow">in</span> <span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_DEST_DIRECTORY</span><span class="p">]:</span>
+            <span class="n">uri_to_path</span><span class="p">(</span><span class="n">job_dest_dir</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   created &#39;</span><span class="si">{</span><span class="n">job_dest_dir</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">job_df</span></div>
+
+
+
+<div class="viewcode-block" id="is_eos_uri">
+<a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.iotools.is_eos_uri">[docs]</a>
+<span class="k">def</span> <span class="nf">is_eos_uri</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Check if the given path is an EOS-URI as `eos cp` only works with those.</span>
+<span class="sd">    E.g.: root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt</span>
+<span class="sd">    </span>
+<span class="sd">    This function does not check the double slashes,</span>
+<span class="sd">    to avoid having the user pass a malformed path by accident and then </span>
+<span class="sd">    assuming it is just a path. This is tested for in </span>
+<span class="sd">    :func:`pylhc_submitter.job_submitter.check_opts`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span> 
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span>  <span class="c1"># at least root:, server, path</span>
+        <span class="ow">and</span>
+        <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+        <span class="ow">and</span>
+        <span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;eos&#39;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="uri_to_path">
+<a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.iotools.uri_to_path">[docs]</a>
+<span class="k">def</span> <span class="nf">uri_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Strip EOS path information from a path.</span>
+<span class="sd">    EOS paths for HTCondor can be given as URI. Strip for direct writing.</span>
+<span class="sd">    E.g.: root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parts</span>
+    <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+        <span class="c1"># the first two parts are host info, e.g `file: //host/path`</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+    <span class="k">return</span> <span class="n">path</span> </div>
+
+
+
+<div class="viewcode-block" id="get_server_from_uri">
+<a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.iotools.get_server_from_uri">[docs]</a>
+<span class="k">def</span> <span class="nf">get_server_from_uri</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Get server information from a path.</span>
+<span class="sd">    E.g.: root://eosuser.cern.ch//eos/user/a/ -&gt; root://eosuser.cern.ch/</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path_part</span> <span class="o">=</span> <span class="n">uri_to_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">path_part</span> <span class="o">==</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+    
+    <span class="n">server_part</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path_part</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">server_part</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;//&quot;</span><span class="p">):</span>
+        <span class="n">server_part</span> <span class="o">=</span> <span class="n">server_part</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">server_part</span></div>
+
+
+
+<div class="viewcode-block" id="print_stats">
+<a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.iotools.print_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">print_stats</span><span class="p">(</span><span class="n">new_jobs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">finished_jobs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print some quick statistics.&quot;&quot;&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">------------- QUICK STATS ----------------&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Jobs total:</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_jobs</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">finished_jobs</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;Jobs to run: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_jobs</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;Jobs already finished: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">finished_jobs</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;---------- JOBS TO RUN: NAMES -------------&quot;</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">job_name</span> <span class="ow">in</span> <span class="n">new_jobs</span><span class="p">:</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_name</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;--------- JOBS FINISHED: NAMES ------------&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">job_name</span> <span class="ow">in</span> <span class="n">finished_jobs</span><span class="p">:</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_name</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_generate_parameter_space</span><span class="p">(</span>
+        <span class="n">replace_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">append_jobs</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">cwd</span><span class="p">:</span> <span class="n">Path</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Generate parameter space from replace-dict, check for existing jobs. &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Generating parameter space from replace-dict.&quot;</span><span class="p">)</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">replace_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">values_grid</span> <span class="o">=</span> <span class="n">_generate_values_grid</span><span class="p">(</span><span class="n">replace_dict</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">append_jobs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">values_grid</span><span class="p">,</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">()</span>
+
+    <span class="n">jobfile_path</span> <span class="o">=</span> <span class="n">cwd</span> <span class="o">/</span> <span class="n">JOBSUMMARY_FILE</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">prev_job_df</span> <span class="o">=</span> <span class="n">tfs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">jobfile_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()),</span> <span class="n">index</span><span class="o">=</span><span class="n">COLUMN_JOBID</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">filerror</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+            <span class="s2">&quot;Cannot append jobs, as no previous jobfile was found at &quot;</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">jobfile_path</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span> <span class="nn">filerror</span>
+    <span class="n">new_jobs_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prev_job_df</span><span class="p">[</span><span class="n">parameters</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">values_grid</span><span class="p">]</span>
+    <span class="n">values_grid</span> <span class="o">=</span> <span class="n">values_grid</span><span class="p">[</span><span class="n">new_jobs_mask</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">values_grid</span><span class="p">,</span> <span class="n">prev_job_df</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_values_grid</span><span class="p">(</span><span class="n">replace_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Creates an array of the inner-product of the replace-dict. &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">replace_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_drop_already_run_jobs</span><span class="p">(</span>
+        <span class="n">job_df</span><span class="p">:</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">check_files</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Check for jobs that have already been run and drop them from current job_df. &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Dropping already finished jobs.&quot;</span><span class="p">)</span>
+    <span class="n">finished_jobs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">idx</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">job_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_job_was_successful</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">check_files</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">finished_jobs</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">job_df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="s2">&quot; Jobs have already finished and will be skipped.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">job_df</span> <span class="o">=</span> <span class="n">job_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">finished_jobs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">job_df</span><span class="p">,</span> <span class="n">finished_jobs</span>
+
+
+<span class="k">def</span> <span class="nf">_job_was_successful</span><span class="p">(</span><span class="n">job_row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Determines if the job was successful. </span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        job_row (pd.Series): row from the job_df</span>
+<span class="sd">        output_dir (str): Name of the (local) output directory</span>
+<span class="sd">        files (List[str]): list of files that should have been generated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">job_dir</span> <span class="o">=</span> <span class="n">job_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">COLUMN_DEST_DIRECTORY</span><span class="p">)</span> <span class="ow">or</span> <span class="n">job_row</span><span class="p">[</span><span class="n">COLUMN_JOB_DIRECTORY</span><span class="p">]</span>
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">job_dir</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">output_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">success</span> <span class="ow">and</span> <span class="n">files</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">success</span> <span class="o">&amp;=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">output_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">f</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">success</span>
+
+
+<span class="k">def</span> <span class="nf">_get_script_extension</span><span class="p">(</span><span class="n">script_extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">executable</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Returns the extension of the script to run based on </span>
+<span class="sd">    either the given value, its executable or the mask. &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">script_extension</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">script_extension</span>
+    <span class="k">return</span> <span class="n">SCRIPT_EXTENSIONS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">mask</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

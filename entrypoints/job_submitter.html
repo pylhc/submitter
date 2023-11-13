@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Job Submitter &mdash; pylhc_submitter 1.1.1 documentation</title>
+  <title>Job Submitter &mdash; pylhc_submitter 2.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -14,7 +14,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=58fbf978"></script>
+        <script src="../_static/documentation_options.js?v=51b770b3"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -37,7 +37,7 @@
               <img src="../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.1
+                2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -50,99 +50,38 @@
               <p class="caption" role="heading"><span class="caption-text">Submitter</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="autosix.html">AutoSix</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autosix.html#pylhc_submitter.autosix.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="autosix.html#pylhc_submitter.autosix.run_job"><code class="docutils literal notranslate"><span class="pre">run_job()</span></code></a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Job Submitter</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../modules/constants.html">Constants Definitions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#constants-general">Constants: General</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#constants-external-paths">Constants: External Paths</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#constants-autosix">Constants: Autosix</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#pylhc_submitter.constants.autosix.AutoSixEnvironment"><code class="docutils literal notranslate"><span class="pre">AutoSixEnvironment</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#pylhc_submitter.constants.autosix.SetDynamically"><code class="docutils literal notranslate"><span class="pre">SetDynamically</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#pylhc_submitter.constants.autosix.SixDeskEnvironment"><code class="docutils literal notranslate"><span class="pre">SixDeskEnvironment</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#pylhc_submitter.constants.autosix.StageSkip"><code class="docutils literal notranslate"><span class="pre">StageSkip</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#pylhc_submitter.constants.autosix.StageStop"><code class="docutils literal notranslate"><span class="pre">StageStop</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/htc.html">HTCondor Tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#htcondor-utilities">HTCondor Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#pylhc_submitter.htc.utils.create_multijob_for_bashfiles"><code class="docutils literal notranslate"><span class="pre">create_multijob_for_bashfiles()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#pylhc_submitter.htc.utils.create_subfile_from_job"><code class="docutils literal notranslate"><span class="pre">create_subfile_from_job()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#pylhc_submitter.htc.utils.make_subfile"><code class="docutils literal notranslate"><span class="pre">make_subfile()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#pylhc_submitter.htc.utils.submit_jobfile"><code class="docutils literal notranslate"><span class="pre">submit_jobfile()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#pylhc_submitter.htc.utils.write_bash"><code class="docutils literal notranslate"><span class="pre">write_bash()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#mask-resolver">Mask Resolver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#pylhc_submitter.htc.mask.check_percentage_signs_in_mask"><code class="docutils literal notranslate"><span class="pre">check_percentage_signs_in_mask()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#pylhc_submitter.htc.mask.create_jobs_from_mask"><code class="docutils literal notranslate"><span class="pre">create_jobs_from_mask()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/htc.html#pylhc_submitter.htc.mask.generate_jobdf_index"><code class="docutils literal notranslate"><span class="pre">generate_jobdf_index()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#general">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#external-paths">External Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#job-submitter">Job Submitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#htcondor">HTCondor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/constants.html#autosix">Autosix</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/sixdesk_tools.html">Sixdesk Tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#stages">Stages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckInput"><code class="docutils literal notranslate"><span class="pre">CheckInput</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CheckSixtrackOutput"><code class="docutils literal notranslate"><span class="pre">CheckSixtrackOutput</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.CreateJob"><code class="docutils literal notranslate"><span class="pre">CreateJob</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Final"><code class="docutils literal notranslate"><span class="pre">Final</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.InitializeWorkspace"><code class="docutils literal notranslate"><span class="pre">InitializeWorkspace</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.PostProcess"><code class="docutils literal notranslate"><span class="pre">PostProcess</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbCmd"><code class="docutils literal notranslate"><span class="pre">SixdbCmd</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SixdbLoad"><code class="docutils literal notranslate"><span class="pre">SixdbLoad</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.Stage"><code class="docutils literal notranslate"><span class="pre">Stage</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.StageMeta"><code class="docutils literal notranslate"><span class="pre">StageMeta</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitMask"><code class="docutils literal notranslate"><span class="pre">SubmitMask</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.stages.SubmitSixtrack"><code class="docutils literal notranslate"><span class="pre">SubmitSixtrack</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#create-sixdesk-workspace">Create SixDesk Workspace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.create_job"><code class="docutils literal notranslate"><span class="pre">create_job()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.fix_pythonfile_call"><code class="docutils literal notranslate"><span class="pre">fix_pythonfile_call()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.init_workspace"><code class="docutils literal notranslate"><span class="pre">init_workspace()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.remove_twiss_fail_check"><code class="docutils literal notranslate"><span class="pre">remove_twiss_fail_check()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.create_workspace.set_max_materialize"><code class="docutils literal notranslate"><span class="pre">set_max_materialize()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#sixdesk-submission-utils">SixDesk Submission Utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.check_sixtrack_input"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_input()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.check_sixtrack_output"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_output()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.sixdb_cmd"><code class="docutils literal notranslate"><span class="pre">sixdb_cmd()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.sixdb_load"><code class="docutils literal notranslate"><span class="pre">sixdb_load()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.submit_mask"><code class="docutils literal notranslate"><span class="pre">submit_mask()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.submit.submit_sixtrack"><code class="docutils literal notranslate"><span class="pre">submit_sixtrack()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#post-process-da">Post Process DA</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.create_da_tfs"><code class="docutils literal notranslate"><span class="pre">create_da_tfs()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.create_polar_plots"><code class="docutils literal notranslate"><span class="pre">create_polar_plots()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.plot_polar"><code class="docutils literal notranslate"><span class="pre">plot_polar()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.post_process_da.post_process_da"><code class="docutils literal notranslate"><span class="pre">post_process_da()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#extract-data-from-database">Extract Data From DataBase</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.extract_data_from_db.extract_da_data"><code class="docutils literal notranslate"><span class="pre">extract_da_data()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.extract_data_from_db.extract_meta_data"><code class="docutils literal notranslate"><span class="pre">extract_meta_data()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#sixdesk-utilities">SixDesk Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.check_mask"><code class="docutils literal notranslate"><span class="pre">check_mask()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.is_locked"><code class="docutils literal notranslate"><span class="pre">is_locked()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#sixdesk-troubleshooting-tools">SixDesk Troubleshooting tools</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_last_stage"><code class="docutils literal notranslate"><span class="pre">check_last_stage()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_sixtrack_output_data"><code class="docutils literal notranslate"><span class="pre">check_sixtrack_output_data()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.check_stages_for_setup"><code class="docutils literal notranslate"><span class="pre">check_stages_for_setup()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.find_obviously_failed_sixtrack_submissions"><code class="docutils literal notranslate"><span class="pre">find_obviously_failed_sixtrack_submissions()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.for_all_jobs"><code class="docutils literal notranslate"><span class="pre">for_all_jobs()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_all_jobs_in_base"><code class="docutils literal notranslate"><span class="pre">get_all_jobs_in_base()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_first_dir"><code class="docutils literal notranslate"><span class="pre">get_first_dir()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.get_last_stage"><code class="docutils literal notranslate"><span class="pre">get_last_stage()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.reset_stages"><code class="docutils literal notranslate"><span class="pre">reset_stages()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.set_stages"><code class="docutils literal notranslate"><span class="pre">set_stages()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.set_stages_for_setup"><code class="docutils literal notranslate"><span class="pre">set_stages_for_setup()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.troubleshooting.skip_stages"><code class="docutils literal notranslate"><span class="pre">skip_stages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/submitter.html">Submitter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/submitter.html#htcondor-utilities">HTCondor Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/submitter.html#job-submitter-io-tools">Job Submitter IO-Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/submitter.html#mask-resolver">Mask Resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/submitter.html#job-submitter-runners">Job Submitter Runners</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/utils.html">Utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#io-tools">IO-Tools</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#pylhc_submitter.utils.iotools.PathOrStr"><code class="docutils literal notranslate"><span class="pre">PathOrStr</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#pylhc_submitter.utils.iotools.convert_paths_in_dict_to_strings"><code class="docutils literal notranslate"><span class="pre">convert_paths_in_dict_to_strings()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#pylhc_submitter.utils.iotools.escape_percentage_signs"><code class="docutils literal notranslate"><span class="pre">escape_percentage_signs()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#pylhc_submitter.utils.iotools.keys_to_path"><code class="docutils literal notranslate"><span class="pre">keys_to_path()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#pylhc_submitter.utils.iotools.make_replace_entries_iterable"><code class="docutils literal notranslate"><span class="pre">make_replace_entries_iterable()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#pylhc_submitter.utils.iotools.save_config"><code class="docutils literal notranslate"><span class="pre">save_config()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#logging-tools">Logging Tools</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/utils.html#pylhc_submitter.utils.logging_tools.log_setup"><code class="docutils literal notranslate"><span class="pre">log_setup()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -163,16 +102,19 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Job Submitter</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/entrypoints/job_submitter.rst.txt" rel="nofollow"> View page source</a>
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/pylhc/submitter" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+  
+  
            <div itemprop="articleBody">
              
   <section id="job-submitter">
-<span id="module-pylhc_submitter.job_submitter"></span><h1>Job Submitter<a class="headerlink" href="#job-submitter" title="Link to this heading"></a></h1>
+<h1>Job Submitter<a class="headerlink" href="#job-submitter" title="Link to this heading"></a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">job_submitter</span></code> allows to execute a parametric study using a script mask and a <cite>dictionary</cite> of parameters to replace in this mask, from the command line.
 These parameters must be present in the given mask in the <code class="docutils literal notranslate"><span class="pre">%(PARAMETER)s</span></code> format (other types apart from string are also allowed).</p>
 <p>The type of script and executable is freely choosable, but defaults to <code class="docutils literal notranslate"><span class="pre">madx</span></code>, for which this submitter was originally written.
@@ -180,69 +122,142 @@ When submitting to <code class="docutils literal notranslate"><span class="pre">
 <p>This script also allows to check if all <code class="docutils literal notranslate"><span class="pre">HTCondor</span></code> jobs finished successfully, for resubmissions with a different parameter grid, and for local execution.
 A <strong>Jobs.tfs</strong> file is created in the working directory containing the Job Id, parameter per job
 and job directory for further post processing.</p>
-<p>For additional information and guides, see the <a class="reference external" href="https://pylhc.github.io/packages/pylhcsubmitter/job_submitter/">Job Submitter page</a> in the <code class="docutils literal notranslate"><span class="pre">OMC</span></code> documentation site.</p>
+<p>For additional information and guides, see the <a class="reference external" href="https://pylhc.github.io/packages/pylhcsubmitter/job_submitter.html">Job Submitter page</a> in the <code class="docutils literal notranslate"><span class="pre">OMC</span></code> documentation site.</p>
 <p><em>--Required--</em></p>
-<ul class="simple">
-<li><p><strong>mask</strong> <em>(str)</em>: Program mask to use</p></li>
-<li><p><strong>replace_dict</strong> <em>(DictAsString)</em>: Dict containing the str to replace as
-keys and values a list of parameters to replace</p></li>
-<li><p><strong>working_directory</strong> <em>(str)</em>: Directory where data should be put</p></li>
+<ul>
+<li><p><strong>mask</strong> <em>(PathOrStr)</em>:</p>
+<blockquote>
+<div><p>Program mask to use</p>
+</div></blockquote>
+</li>
+<li><p><strong>replace_dict</strong> <em>(DictAsString)</em>:</p>
+<blockquote>
+<div><p>Dict containing the str to replace as keys and values a list of
+parameters to replace</p>
+</div></blockquote>
+</li>
+<li><p><strong>working_directory</strong> <em>(PathOrStr)</em>:</p>
+<blockquote>
+<div><p>Directory where data should be put</p>
+</div></blockquote>
+</li>
 </ul>
 <p><em>--Optional--</em></p>
 <ul>
-<li><p><strong>append_jobs</strong>: Flag to rerun job with finer/wider grid,
-already existing points will not be reexecuted.</p>
-<p>Action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+<li><p><strong>append_jobs</strong>:</p>
+<blockquote>
+<div><p>Flag to rerun job with finer/wider grid, already existing points will
+not be reexecuted.</p>
+<p>action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+</div></blockquote>
 </li>
-<li><p><strong>check_files</strong> <em>(str)</em>: List of files/file-name-masks expected to be in the
-‘job_output_dir’ after a successful job (for appending/resuming). Uses the ‘glob’
-function, so unix-wildcards (*) are allowed. If not given, only the presence of the folder itself is checked.</p></li>
-<li><p><strong>dryrun</strong>: Flag to only prepare folders and scripts,
-but does not start/submit jobs.
-Together with <cite>resume_jobs</cite> this can be use to check which jobs succeeded and which failed.</p>
-<p>Action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+<li><p><strong>check_files</strong> <em>(str)</em>:</p>
+<blockquote>
+<div><p>List of files/file-name-masks expected to be in the ‘job_output_dir’
+after a successful job (for appending/resuming). Uses the ‘glob’
+function, so unix-wildcards (*) are allowed. If not given, only the
+presence of the folder itself is checked.</p>
+</div></blockquote>
 </li>
-<li><p><strong>executable</strong> <em>(str)</em>: Path to executable or job-type (of [‘madx’, ‘python3’, ‘python2’]) to use.</p></li>
-<li><p><strong>htc_arguments</strong> <em>(DictAsString)</em>: Additional arguments for htcondor, as Dict-String.
-For AccountingGroup please use ‘accounting_group’. ‘max_retries’ and ‘notification’ have defaults (if not given).
-Others are just passed on.</p>
-<p>Default: <code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+<li><p><strong>dryrun</strong>:</p>
+<blockquote>
+<div><p>Flag to only prepare folders and scripts, but does not start/submit
+jobs. Together with <cite>resume_jobs</cite> this can be use to check which jobs
+succeeded and which failed.</p>
+<p>action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+</div></blockquote>
 </li>
-<li><p><strong>job_output_dir</strong> <em>(str)</em>: The name of the output dir of the job. (Make sure your script puts its data there!)</p>
-<p>Default: <code class="docutils literal notranslate"><span class="pre">Outputdata</span></code></p>
+<li><p><strong>executable</strong> <em>(PathOrStr)</em>:</p>
+<blockquote>
+<div><p>Path to executable or job-type (of [‘madx’, ‘python3’, ‘python2’]) to
+use.</p>
+<p>default: <code class="docutils literal notranslate"><span class="pre">madx</span></code></p>
+</div></blockquote>
 </li>
-<li><p><strong>jobflavour</strong> <em>(str)</em>: Jobflavour to give rough estimate of runtime of one job</p>
-<p>Choices: <code class="docutils literal notranslate"><span class="pre">('espresso',</span> <span class="pre">'microcentury',</span> <span class="pre">'longlunch',</span> <span class="pre">'workday',</span> <span class="pre">'tomorrow',</span> <span class="pre">'testmatch',</span> <span class="pre">'nextweek')</span></code>
-Default: <code class="docutils literal notranslate"><span class="pre">workday</span></code></p>
+<li><p><strong>htc_arguments</strong> <em>(DictAsString)</em>:</p>
+<blockquote>
+<div><p>Additional arguments for htcondor, as Dict-String. For AccountingGroup
+please use ‘accounting_group’. ‘max_retries’ and ‘notification’ have
+defaults (if not given). Others are just passed on.</p>
+<p>default: <code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+</div></blockquote>
 </li>
-<li><p><strong>jobid_mask</strong> <em>(str)</em>: Mask to name jobs from replace_dict</p></li>
-<li><p><strong>num_processes</strong> <em>(int)</em>: Number of processes to be used if run locally</p>
-<p>Default: <code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+<li><p><strong>job_output_dir</strong> <em>(str)</em>:</p>
+<blockquote>
+<div><p>The name of the output dir of the job. (Make sure your script puts its
+data there!)</p>
+<p>default: <code class="docutils literal notranslate"><span class="pre">Outputdata</span></code></p>
+</div></blockquote>
 </li>
-<li><p><strong>resume_jobs</strong>: Only do jobs that did not work.</p>
-<p>Action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+<li><p><strong>jobflavour</strong> <em>(str)</em>:</p>
+<blockquote>
+<div><p>Jobflavour to give rough estimate of runtime of one job</p>
+<p>choices: <code class="docutils literal notranslate"><span class="pre">('espresso',</span> <span class="pre">'microcentury',</span> <span class="pre">'longlunch',</span> <span class="pre">'workday',</span> <span class="pre">'tomorrow',</span> <span class="pre">'testmatch',</span> <span class="pre">'nextweek')</span></code></p>
+<p>default: <code class="docutils literal notranslate"><span class="pre">workday</span></code></p>
+</div></blockquote>
 </li>
-<li><p><strong>run_local</strong>: Flag to run the jobs on the local machine. Not suggested.</p>
-<p>Action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+<li><p><strong>jobid_mask</strong> <em>(str)</em>:</p>
+<blockquote>
+<div><p>Mask to name jobs from replace_dict</p>
+</div></blockquote>
 </li>
-<li><p><strong>script_arguments</strong> <em>(DictAsString)</em>: Additional arguments to pass to the script,
-as dict in key-value pairs (‘--’ need to be included in the keys).</p>
-<p>Default: <code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+<li><p><strong>num_processes</strong> <em>(int)</em>:</p>
+<blockquote>
+<div><p>Number of processes to be used if run locally</p>
+<p>default: <code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+</div></blockquote>
 </li>
-<li><p><strong>script_extension</strong> <em>(str)</em>: New extension for the scripts created from the masks.
-This is inferred automatically for [‘madx’, ‘python3’, ‘python2’]. Otherwise not changed.</p></li>
-<li><p><strong>ssh</strong> <em>(str)</em>: Run htcondor from this machine via ssh (needs access to the <cite>working_directory</cite>)</p></li>
+<li><p><strong>output_destination</strong> <em>(PathOrStr)</em>:</p>
+<blockquote>
+<div><p>Directory to copy the output of the jobs to, sorted into folders per job.
+Can be on EOS, preferrably via EOS-URI format (‘root://eosuser.cern.ch//eos/…’).</p>
+</div></blockquote>
+</li>
+<li><p><strong>resume_jobs</strong>:</p>
+<blockquote>
+<div><p>Only do jobs that did not work.</p>
+<p>action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+</div></blockquote>
+</li>
+<li><p><strong>run_local</strong>:</p>
+<blockquote>
+<div><p>Flag to run the jobs on the local machine. Not suggested.</p>
+<p>action: <code class="docutils literal notranslate"><span class="pre">store_true</span></code></p>
+</div></blockquote>
+</li>
+<li><p><strong>script_arguments</strong> <em>(DictAsString)</em>:</p>
+<blockquote>
+<div><p>Additional arguments to pass to the script, as dict in key-value pairs
+(‘--’ need to be included in the keys).</p>
+<p>default: <code class="docutils literal notranslate"><span class="pre">{}</span></code></p>
+</div></blockquote>
+</li>
+<li><p><strong>script_extension</strong> <em>(str)</em>:</p>
+<blockquote>
+<div><p>New extension for the scripts created from the masks. This is inferred
+automatically for [‘madx’, ‘python3’, ‘python2’]. Otherwise not
+changed.</p>
+</div></blockquote>
+</li>
+<li><p><strong>ssh</strong> <em>(str)</em>:</p>
+<blockquote>
+<div><p>Run htcondor from this machine via ssh (needs access to the
+<cite>working_directory</cite>)</p>
+</div></blockquote>
+</li>
 </ul>
-<dl class="field-list simple">
-<dt class="field-odd">author<span class="colon">:</span></dt>
-<dd class="field-odd"><p>mihofer, jdilly, fesoubel</p>
-</dd>
-</dl>
 </section>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylhc_submitter.job_submitter.</span></span><span class="sig-name descname"><span class="pre">check_opts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pylhc_submitter/job_submitter.html#check_opts"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Checks options and sorts them into job-creation and running parameters.</p>
+</dd></dl>
+
 
 
            </div>
           </div>
+
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="autosix.html" class="btn btn-neutral float-left" title="AutoSix" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../modules/constants.html" class="btn btn-neutral float-right" title="Constants Definitions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
