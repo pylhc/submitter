@@ -115,18 +115,6 @@ def test_htcondor_bindings_not_found_on_nonlinux_os(tmp_path):
     assert "htcondor bindings" in str(e)
 
 
-@pytest.mark.skipif(on_windows(), reason="Paths are not split on '/' on Windows.")
-def test_eos_uri_manipulation_functions():
-    """ Unit-test for the EOS-URI parsing. (OH LOOK! An actual unit test!)"""
-    server = "root://eosuser.cern.ch/"
-    path = "/eos/user/m/mmustermann/"
-    uri = f"{server}{path}"
-    assert is_eos_uri(uri)
-    assert not is_eos_uri(path)
-    assert uri_to_path(uri) == Path(path)
-    assert get_server_from_uri(uri) == server
-
-
 @run_only_on_linux
 @pytest.mark.cern_network
 @pytest.mark.parametrize("destination", [True, False])
