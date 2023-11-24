@@ -1,5 +1,9 @@
 # `pylhc-submitter` Changelog
 
+## Version 2.0.1
+
+- Fixing job_submitter: type error in `print_stats`, when job-names are integers.
+
 ## Version 2.0.0
 
 - General code cleanup/refactoring/documentation:

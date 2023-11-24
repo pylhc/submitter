@@ -25,6 +25,9 @@ from pylhc_submitter.submitter.mask import (create_job_scripts_from_mask, genera
 LOG = logging.getLogger(__name__)
 
 
+JobNamesType = Sequence[Union[str, int]]
+
+
 @dataclass
 class CreationOpts:
     """ Options for creating jobs. """
@@ -228,7 +231,7 @@ def get_server_from_uri(path: Union[Path, str]) -> str:
     return server_part
 
 
-def print_stats(new_jobs: Sequence[str], finished_jobs: Sequence[str]):
+def print_stats(new_jobs: JobNamesType, finished_jobs: JobNamesType):
     """Print some quick statistics."""
     text = [
         "\n------------- QUICK STATS ----------------"
@@ -237,11 +240,9 @@ def print_stats(new_jobs: Sequence[str], finished_jobs: Sequence[str]):
         f"Jobs already finished: {len(finished_jobs):d}",
         "---------- JOBS TO RUN: NAMES -------------"
     ]
-    for job_name in new_jobs:
-        text.append(job_name)
+    text += [str(job_name) for job_name in new_jobs]
     text += ["--------- JOBS FINISHED: NAMES ------------"]
-    for job_name in finished_jobs:
-        text.append(job_name)
+    text += [str(job_name) for job_name in finished_jobs]
     LOG.info("\n".join(text))
 
 
