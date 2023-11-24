@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylhc_submitter.submitter.iotools &mdash; pylhc_submitter 2.0.0 documentation</title>
+  <title>pylhc_submitter.submitter.iotools &mdash; pylhc_submitter 2.0.1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -13,7 +13,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+        <script src="../../../_static/documentation_options.js?v=f5cff4aa"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -135,6 +135,9 @@
                                             <span class="n">is_mask_file</span><span class="p">)</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">JobNamesType</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
 
 
 <div class="viewcode-block" id="CreationOpts">
@@ -363,7 +366,7 @@
 
 <div class="viewcode-block" id="print_stats">
 <a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.iotools.print_stats">[docs]</a>
-<span class="k">def</span> <span class="nf">print_stats</span><span class="p">(</span><span class="n">new_jobs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">finished_jobs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="k">def</span> <span class="nf">print_stats</span><span class="p">(</span><span class="n">new_jobs</span><span class="p">:</span> <span class="n">JobNamesType</span><span class="p">,</span> <span class="n">finished_jobs</span><span class="p">:</span> <span class="n">JobNamesType</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Print some quick statistics.&quot;&quot;&quot;</span>
     <span class="n">text</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">------------- QUICK STATS ----------------&quot;</span>
@@ -372,11 +375,9 @@
         <span class="sa">f</span><span class="s2">&quot;Jobs already finished: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">finished_jobs</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s2">&quot;---------- JOBS TO RUN: NAMES -------------&quot;</span>
     <span class="p">]</span>
-    <span class="k">for</span> <span class="n">job_name</span> <span class="ow">in</span> <span class="n">new_jobs</span><span class="p">:</span>
-        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_name</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">job_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">job_name</span> <span class="ow">in</span> <span class="n">new_jobs</span><span class="p">]</span>
     <span class="n">text</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;--------- JOBS FINISHED: NAMES ------------&quot;</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">job_name</span> <span class="ow">in</span> <span class="n">finished_jobs</span><span class="p">:</span>
-        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_name</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">job_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">job_name</span> <span class="ow">in</span> <span class="n">finished_jobs</span><span class="p">]</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span></div>
 
 
