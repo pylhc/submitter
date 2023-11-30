@@ -46,15 +46,21 @@ def test_output_directory(tmp_path):
 
 def test_detects_wrong_uri(tmp_path):
     """ Tests that wrong URI's are identified. """
-    setup = InputParameters(
-        working_directory=tmp_path, 
-        run_local=True,
-        output_destination="root:/eosuser.cern.ch/eos/my_new_output",
-    )
-    setup.create_mask()
-    with pytest.raises(ValueError) as e:
-        job_submit(**asdict(setup))
-    assert "EOS-URI" in str(e)
+    for test_uri in [
+        "root:/eosuser.cern.ch//eos/my_new_output/",
+        "root://eosuser.cern.ch/eos/my_new_output/",
+        "root:/eosuser.cern.ch/eos/my_new_output/",
+    ]:
+        setup = InputParameters(
+            working_directory=tmp_path, 
+            run_local=True,
+            output_destination=test_uri,
+        )
+        setup.create_mask()
+        with pytest.raises(ValueError) as e:
+            job_submit(**asdict(setup))
+        assert "EOS-URI" in str(e)
+    
 
 
 @run_only_on_linux
