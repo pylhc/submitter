@@ -1,8 +1,12 @@
 # `pylhc-submitter` Changelog
 
+## Version 2.0.2
+
+- Fixing `job_submitter`: Discovers more invalid URIs.
+
 ## Version 2.0.1
 
-- Fixing job_submitter: type error in `print_stats`, when job-names are integers.
+- Fixing `job_submitter`: type error in `print_stats`, when job-names are integers.
 
 ## Version 2.0.0
 

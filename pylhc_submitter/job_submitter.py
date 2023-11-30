@@ -356,7 +356,7 @@ def check_opts(opt):
     else:
         mask_content = opt.mask
     
-    if is_eos_uri(opt.output_destination) and not ("://" in opt.output_destination and "//eos" in opt.output_destination):
+    if is_eos_uri(opt.output_destination) and not ("://" in opt.output_destination and "//eos/" in opt.output_destination):
         raise ValueError(
             "The 'output_destination' is an EOS-URI but missing '://' or '//eos' (double slashes?). "
         )
