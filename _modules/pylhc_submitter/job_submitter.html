@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylhc_submitter.job_submitter &mdash; pylhc_submitter 2.0.1 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <title>pylhc_submitter.job_submitter &mdash; pylhc_submitter 2.0.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=449bdd91" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=f5cff4aa"></script>
+        <script src="../../_static/documentation_options.js?v=c2377ec0"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -470,7 +472,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mask_content</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">mask</span>
     
-    <span class="k">if</span> <span class="n">is_eos_uri</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;://&quot;</span> <span class="ow">in</span> <span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span> <span class="ow">and</span> <span class="s2">&quot;//eos&quot;</span> <span class="ow">in</span> <span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">is_eos_uri</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;://&quot;</span> <span class="ow">in</span> <span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span> <span class="ow">and</span> <span class="s2">&quot;//eos/&quot;</span> <span class="ow">in</span> <span class="n">opt</span><span class="o">.</span><span class="n">output_destination</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;The &#39;output_destination&#39; is an EOS-URI but missing &#39;://&#39; or &#39;//eos&#39; (double slashes?). &quot;</span>
         <span class="p">)</span>
