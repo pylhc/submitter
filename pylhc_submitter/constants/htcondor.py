@@ -22,6 +22,3 @@ JOBFLAVOURS = (
 )
 
 NOTIFICATIONS = ("always", "complete", "error", "never")
-
-# Other HTC Paramters ---
-TRANSFER_FILES = "SHOULD_TRANSFER_FILES"

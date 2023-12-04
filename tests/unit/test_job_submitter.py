@@ -1,14 +1,13 @@
 import itertools
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-import re
 from typing import Any, Dict, List, Optional, Sequence, Union
 
 import numpy as np
 import pytest
 
 from pylhc_submitter.job_submitter import main as job_submit
-from pylhc_submitter.submitter.iotools import get_server_from_uri, is_eos_uri, uri_to_path
+from pylhc_submitter.submitter.iotools import uri_to_path
 from pylhc_submitter.utils.environment import on_linux, on_windows
 
 SUBFILE = "queuehtc.sub"

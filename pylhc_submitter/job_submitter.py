@@ -159,7 +159,7 @@ from generic_parser import EntryPointParameters, entrypoint
 from generic_parser.entry_datatypes import DictAsString
 from generic_parser.tools import print_dict_tree
 
-from pylhc_submitter.constants.htcondor import JOBFLAVOURS, TRANSFER_FILES
+from pylhc_submitter.constants.htcondor import JOBFLAVOURS
 from pylhc_submitter.constants.job_submitter import EXECUTEABLEPATH, SCRIPT_EXTENSIONS
 from pylhc_submitter.submitter.iotools import CreationOpts, create_jobs, is_eos_uri, print_stats
 from pylhc_submitter.submitter.mask import (check_percentage_signs_in_mask,
