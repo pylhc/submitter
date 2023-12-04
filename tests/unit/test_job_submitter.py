@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 from pylhc_submitter.job_submitter import main as job_submit
-from pylhc_submitter.submitter.iotools import get_server_from_uri, is_eos_uri, uri_to_path
+from pylhc_submitter.submitter.iotools import uri_to_path
 from pylhc_submitter.utils.environment import on_linux, on_windows
 
 SUBFILE = "queuehtc.sub"
@@ -41,7 +41,6 @@ def test_output_directory(tmp_path):
     )
     setup.create_mask()
     job_submit(**asdict(setup))
-    _test_output(setup)
 
 
 def test_detects_wrong_uri(tmp_path):
@@ -62,7 +61,6 @@ def test_detects_wrong_uri(tmp_path):
         assert "EOS-URI" in str(e)
     
 
-
 @run_only_on_linux
 def test_job_creation_and_localrun_with_multiline_maskstring(tmp_path):
     """ Tests that the jobs are created and can be run locally from a multiline mask-string. """
@@ -82,6 +80,23 @@ def test_job_creation_and_dryrun(tmp_path, maskfile):
     job_submit(**asdict(setup))
     _test_subfile_content(setup)
     _test_output(setup, post_run=False)
+
+
+@run_only_on_linux
+@pytest.mark.parametrize("maskfile", [True, False])
+@pytest.mark.parametrize("destination", [True, False])
+def test_more_subfile_content(tmp_path, maskfile, destination):
+    """ Tests that the jobs are created as dry-run from mask-file and from mask-string. """
+    setup = InputParameters(
+        jobflavour="espresso",  # change from default
+        working_directory=tmp_path, 
+        dryrun=True,
+        output_destination= tmp_path / "my_new_output" / "long_path" if destination else None,
+        job_output_dir="MyOutputDataHere",  # change from default
+        )
+    setup.create_mask(as_file=maskfile)
+    job_submit(**asdict(setup))
+    _test_subfile_content(setup)
 
 
 @run_only_on_linux
@@ -243,7 +258,7 @@ def _test_subfile_content(setup: InputParameters):
         if setup.output_destination is None:
             assert filecontents["transfer_output_files"] == setup.job_output_dir
         else:
-            assert "transfer_output_files" not in filecontents
+            assert filecontents["transfer_output_files"] == '""'
 
         for key in setup.htc_arguments.keys():
             assert filecontents[key] == setup.htc_arguments[key]

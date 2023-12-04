@@ -107,7 +107,7 @@ def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs) -> str:
 
     Keyword Args:
         output_dir (str): output directory that will be transferred. Defaults to ``None``.
-        duration (str): max duration of the job. Needs to be one of the ``HTCondor`` Jobflavours.
+        jobflavour (str): max duration of the job. Needs to be one of the ``HTCondor`` Jobflavours.
             Defaults to ``workday``.
         group (str): force use of accounting group. Defaults to ``None``.
         retries (int): maximum amount of retries. Default to ``3``.
@@ -257,8 +257,8 @@ def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
 
     # Predefined mappings 
     htc_map = { # name: mapped_name, choices, default
-        "duration": ("+JobFlavour", JOBFLAVOURS, "workday"),
-        "output_dir": ("transfer_output_files", None, None),
+        "jobflavour": ("+JobFlavour", JOBFLAVOURS, "workday"),
+        "output_dir": ("transfer_output_files", None, '""'),
         "accounting_group": ("+AccountingGroup", None, None),
         "max_retries": ("max_retries", None, 3),
         "notification": ("notification", NOTIFICATIONS, "error"),

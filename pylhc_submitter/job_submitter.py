@@ -394,7 +394,7 @@ def check_opts(opt):
 
     creation = CreationOpts(**{f.name: opt[f.name] for f in fields(CreationOpts)})
     runner = RunnerOpts(**{f.name: opt[f.name] for f in fields(RunnerOpts)})
-    runner.output_dir = None if opt.output_destination else opt.output_dir
+    runner.output_dir = '""' if opt.output_destination else opt.output_dir  # empty string stops htc transfer of files
     return creation, runner
 
 

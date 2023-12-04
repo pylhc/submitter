@@ -1,5 +1,9 @@
 # `pylhc-submitter` Changelog
 
+## Version 2.0.3
+
+- Fixing `job_submitter`: Do not transfer any output files, when the `output_destination` is given.
+
 ## Version 2.0.2
 
 - Fixing `job_submitter`: Discovers more invalid URIs.
