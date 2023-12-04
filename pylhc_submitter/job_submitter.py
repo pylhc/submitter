@@ -159,7 +159,7 @@ from generic_parser import EntryPointParameters, entrypoint
 from generic_parser.entry_datatypes import DictAsString
 from generic_parser.tools import print_dict_tree
 
-from pylhc_submitter.constants.htcondor import JOBFLAVOURS
+from pylhc_submitter.constants.htcondor import JOBFLAVOURS, TRANSFER_FILES
 from pylhc_submitter.constants.job_submitter import EXECUTEABLEPATH, SCRIPT_EXTENSIONS
 from pylhc_submitter.submitter.iotools import CreationOpts, create_jobs, is_eos_uri, print_stats
 from pylhc_submitter.submitter.mask import (check_percentage_signs_in_mask,
@@ -394,7 +394,7 @@ def check_opts(opt):
 
     creation = CreationOpts(**{f.name: opt[f.name] for f in fields(CreationOpts)})
     runner = RunnerOpts(**{f.name: opt[f.name] for f in fields(RunnerOpts)})
-    runner.output_dir = None if opt.output_destination else opt.output_dir
+    runner.output_dir = '""' if opt.output_destination else opt.output_dir  # empty string stops htc transfer of files
     return creation, runner
 
 

@@ -7,7 +7,7 @@ Defines the methods to run the job-submitter, locally or on HTC.
 import logging
 import multiprocessing
 import subprocess
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
@@ -31,7 +31,7 @@ class RunnerOpts:
     output_dir: Optional[str] = None  # Name of the output directory, where jobs store data
     ssh: Optional[str] = None         # SSH command
     dryrun: Optional[bool] = False    # Perform only a dry-run, i.e. do all but submit to HTC
-    htc_arguments: Optional[Dict[str, Any]] = None  # Arguments to pass on to htc as keywords
+    htc_arguments: Optional[Dict[str, Any]] = field(default_factory=dict)  # Arguments to pass on to htc as keywords
     run_local: Optional[bool] = False # Run jobs locally
     num_processes: Optional[int] = 4  # Number of processes to run in parallel (locally)
 
@@ -83,7 +83,7 @@ def run_htc(job_df: tfs.TfsDataFrame, opt: RunnerOpts) -> None:
     subfile = htc_utils.make_subfile(
         opt.working_directory, job_df, 
         output_dir=opt.output_dir, 
-        duration=opt.jobflavour, 
+        jobflavour=opt.jobflavour, 
         **opt.htc_arguments
     )
 
