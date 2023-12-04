@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylhc_submitter.submitter.htc_utils &mdash; pylhc_submitter 2.0.2 documentation</title>
+  <title>pylhc_submitter.submitter.htc_utils &mdash; pylhc_submitter 2.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=449bdd91" />
@@ -15,7 +15,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=c2377ec0"></script>
+        <script src="../../../_static/documentation_options.js?v=664ffad9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -229,7 +229,7 @@
 
 <span class="sd">    Keyword Args:</span>
 <span class="sd">        output_dir (str): output directory that will be transferred. Defaults to ``None``.</span>
-<span class="sd">        duration (str): max duration of the job. Needs to be one of the ``HTCondor`` Jobflavours.</span>
+<span class="sd">        jobflavour (str): max duration of the job. Needs to be one of the ``HTCondor`` Jobflavours.</span>
 <span class="sd">            Defaults to ``workday``.</span>
 <span class="sd">        group (str): force use of accounting group. Defaults to ``None``.</span>
 <span class="sd">        retries (int): maximum amount of retries. Default to ``3``.</span>
@@ -388,8 +388,8 @@
 
     <span class="c1"># Predefined mappings </span>
     <span class="n">htc_map</span> <span class="o">=</span> <span class="p">{</span> <span class="c1"># name: mapped_name, choices, default</span>
-        <span class="s2">&quot;duration&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;+JobFlavour&quot;</span><span class="p">,</span> <span class="n">JOBFLAVOURS</span><span class="p">,</span> <span class="s2">&quot;workday&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;output_dir&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;transfer_output_files&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">&quot;jobflavour&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;+JobFlavour&quot;</span><span class="p">,</span> <span class="n">JOBFLAVOURS</span><span class="p">,</span> <span class="s2">&quot;workday&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;output_dir&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;transfer_output_files&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&quot;&quot;&#39;</span><span class="p">),</span>
         <span class="s2">&quot;accounting_group&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;+AccountingGroup&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
         <span class="s2">&quot;max_retries&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;max_retries&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
         <span class="s2">&quot;notification&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;notification&quot;</span><span class="p">,</span> <span class="n">NOTIFICATIONS</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">),</span>
