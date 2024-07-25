@@ -1,0 +1,87 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "pylhc_submitter/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/doc",
+  "/tests",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["pylhc_submitter"]
+
+[project]
+name = "pylhc_submitter"
+readme = "README.md"
+description = "pylhc-submitter contains scripts to simplify the creation and submission of jobs to HTCondor at CERN"
+authors = [
+    {name = "PyLHC", email = "pylhc@github.com"},
+    {name = "Joschua Dilly", email = "joschua.dilly@cern.ch"},
+    {name = "Felix Soubelet", email = "felix.soubelet@cern.ch"},
+    {name = "Michael Hofer"},
+]
+license = "MIT"
+dynamic = ["version"]
+requires-python = ">=3.9"
+
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "numpy >= 1.24",
+    "scipy >= 1.10",
+    "pandas >= 2.1",
+    "tfs-pandas >= 3.8",
+    "matplotlib >= 3.8",
+    "htcondor >= 8.9.2 ; sys_platform=='linux'",  # no bindings for macOS or windows on PyPI
+    "generic-parser >= 1.1",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "pytest-cov>=2.9",
+    "pytest-mpl>=0.15",
+]
+doc = [
+    "sphinx >= 7.0",
+    "sphinx_rtd_theme >= 2.0",
+]
+
+all = [
+    "pylhc_submitter[test]",
+    "pylhc_submitter[doc]",
+]
+
+[project.urls]
+homepage = "https://github.com/pylhc/submitter"
+repository = "https://github.com/pylhc/submitter"
+documentation = "https://pylhc.github.io/submitter/"
+changelog = "https://github.com/pylhc/submitter/blob/master/CHANGELOG.md"
+
+# ----- Testing ----- #
+
+[tool.pytest.ini_options]
+markers = [
+    "cern_network: tests that require access to afs or the technical network",
+]
+# Helpful for pytest-debugging (leave commented out on commit):
+# log_cli=true
+# log_level=DEBUG
