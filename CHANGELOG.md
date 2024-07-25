@@ -1,5 +1,9 @@
 # `pylhc-submitter` Changelog
 
+## Version 2.0.4
+
+- Fixed use of `np.NaN` to ensure compatibility with `numpy 2.0`.
+
 ## Version 2.0.3
 
 - Fixing `job_submitter`: Do not transfer any output files, when the `output_destination` is given.
