@@ -20,10 +20,7 @@ name = "pylhc_submitter"
 readme = "README.md"
 description = "pylhc-submitter contains scripts to simplify the creation and submission of jobs to HTCondor at CERN"
 authors = [
-    {name = "PyLHC", email = "pylhc@github.com"},
-    {name = "Joschua Dilly", email = "joschua.dilly@cern.ch"},
-    {name = "Felix Soubelet", email = "felix.soubelet@cern.ch"},
-    {name = "Michael Hofer"},
+    {name = "OMC Team", email = "pylhc@github.com"},  # see zenodo file / commits for details
 ]
 license = "MIT"
 dynamic = ["version"]
