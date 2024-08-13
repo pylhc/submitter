@@ -261,7 +261,7 @@ def _plot_seeds(ax, df_da: TfsDataFrame, da_col: str, interpolated: bool) -> Tup
             seed_mask = df_da[SEED] == seed
             angles = np.deg2rad(df_da.loc[seed_mask, ANGLE])
             da_data = df_da.loc[seed_mask, da_col]
-            da_data.loc[da_data == 0] = np.NaN
+            da_data.loc[da_data == 0] = np.nan
             if interpolated:
                 seed_h, _, _ = _interpolated_line(
                     ax,
