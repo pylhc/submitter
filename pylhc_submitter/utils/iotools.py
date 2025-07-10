@@ -8,7 +8,7 @@ Tools for input and output.
 from __future__ import annotations
 
 from collections.abc import Iterable
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 
 from generic_parser.entry_datatypes import get_instance_faker_meta
@@ -32,7 +32,11 @@ def save_config(output_dir: Path, opt: dict, script: str):
     output_dir.mkdir(parents=True, exist_ok=True)
     opt = convert_paths_in_dict_to_strings(opt)
     opt = escape_percentage_signs(opt)
-    time = datetime.now(UTC).strftime(TIME)
+
+    # TODO: datetime.utcnow() is deprecated in 3.12 and the recommended replacement
+    # was introduced in 3.11. When the time comes, replace the following line with:
+    # time = datetime.now(UTC).strftime(TIME)
+    time = datetime.utcnow().strftime(TIME)
     save_options_to_config(output_dir / f"{script:s}_{time:s}.ini", dict(sorted(opt.items())))
 
 
