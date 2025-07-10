@@ -7,6 +7,7 @@ Tools to setup the workspace for sixdesk.
 
 from __future__ import annotations
 
+import contextlib
 import logging
 import re
 import shutil
@@ -167,10 +168,8 @@ def _create_workspace(jobname: str, basedir: Path, sixdesk: Path = SIXDESK_UTILS
         user_answer = input()
         if user_answer.lower().startswith("y"):
             shutil.rmtree(workspace_path)
-            try:
+            with contextlib.suppress(FileNotFoundError):
                 shutil.rmtree(scratch_path)
-            except FileNotFoundError:
-                pass
         else:
             LOG.warning("Keeping Workspace as-is.")
             return

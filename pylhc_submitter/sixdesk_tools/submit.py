@@ -160,6 +160,8 @@ def sixdb_cmd(
     try:
         start_subprocess([python, sixdesk / SIXDB, jobname] + cmd, cwd=sixjobs_path, ssh=ssh)
     except OSError as e:
-        raise StageSkipError(f"SixBD command {cmd_str} for {jobname} failed. Check (debug-) log.") from e
+        raise StageSkipError(
+            f"SixBD command {cmd_str} for {jobname} failed. Check (debug-) log."
+        ) from e
     else:
         LOG.info(f"SixDB command '{cmd_str}' successfully run.")
