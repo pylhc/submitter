@@ -216,7 +216,7 @@ class InputParameters:
     job_output_dir: str | None = "Outputdir"
     jobid_mask: str | None = "%(PARAM1)s.%(PARAM2)d"
     replace_dict: dict | None = field(
-        default_factory=lambda: dict(PARAM1=["a", "b"], PARAM2=[1, 2, 3])
+        default_factory=lambda: {"PARAM1": ["a", "b"], "PARAM2": [1, 2, 3]}
     )
     jobflavour: str | None = "workday"
     resume_jobs: bool | None = True
