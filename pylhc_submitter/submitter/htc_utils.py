@@ -159,11 +159,11 @@ def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs) -> str:
         for parts in zip(job_df[COLUMN_JOB_DIRECTORY], job_df[COLUMN_SHELL_SCRIPT])
     ]
     args = [",".join(parts) for parts in zip(scripts, job_df[COLUMN_JOB_DIRECTORY])]
-    queueArgs = ["queue executable, initialdir from (", *args, ")"]
+    queue_args = ["queue executable, initialdir from (", *args, ")"]
 
     # ugly but submission.setQArgs doesn't take string containing '\n':
     # submission.setQArgs("\n".join(queueArgs))  # doesn't work
-    submission = str(submission) + "\n".join(queueArgs)
+    submission = str(submission) + "\n".join(queue_args)
     LOG.debug(f"Created HTCondor subfile with content: \n{submission}")
     return submission
 
