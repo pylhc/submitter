@@ -7,7 +7,7 @@ The ``job_submitter`` allows to execute a parametric study using a script mask a
 These parameters must be present in the given mask in the ``%(PARAMETER)s`` format (other types apart from string are also allowed).
 
 The type of script and executable is freely choosable, but defaults to ``madx``, for which this submitter was originally written.
-When submitting to ``HTCondor``, data to be transferred back to the working directory must be written in a sub-folder defined by ``job_output_directory`` which defaults to **Outputdata**.
+When submitting to ``HTCondor``, data to be transferred back to the working directory must be written in a sub-folder defined by ``job_output_dir`` which defaults to **Outputdata**.
 
 This script also allows to check if all ``HTCondor`` jobs finished successfully, for resubmissions with a different parameter grid, and for local execution.
 A **Jobs.tfs** file is created in the working directory containing the Job Id, parameter per job
