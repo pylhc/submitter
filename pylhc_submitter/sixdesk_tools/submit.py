@@ -15,7 +15,7 @@ from pylhc_submitter.constants.autosix import (
     RUNSIX_SH,
     RUNSTATUS_SH,
     SIXDB,
-    StageSkip,
+    StageSkipError,
     get_sixjobs_path,
 )
 from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
@@ -57,11 +57,11 @@ def check_sixtrack_input(
         if resubmit:
             LOG.info("Resubmitting mask to run wrong seeds for sixtrack input generation.")
             start_subprocess([sixdesk / MAD_TO_SIXTRACK_SH, "-w"], cwd=sixjobs_path, ssh=ssh)
-            raise StageSkip(
+            raise StageSkipError(
                 "Resubmitted input generation jobs "
                 "(Not really an error, but the run is now interrupted)."
             )
-        raise StageSkip(
+        raise StageSkipError(
             "Checking input files failed. Check (debug-) logs. Maybe restart with 'resubmit' flag."
         ) from e
     else:
@@ -90,7 +90,7 @@ def submit_sixtrack(
             [sixdesk / RUNSIX_SH] + args, cwd=sixjobs_path, ssh=ssh, check_log="exit status: 1"
         )
     except OSError as e:
-        raise StageSkip(
+        raise StageSkipError(
             f"{re_str}Submit to sixtrack for {jobname} ended in error."
             f" Input generation possibly not finished. Check your Scheduler."
         ) from e
@@ -114,12 +114,12 @@ def check_sixtrack_output(
     except OSError as e:
         if resubmit:
             submit_sixtrack(jobname, basedir, python=python, ssh=ssh, resubmit=True)
-            raise StageSkip(
+            raise StageSkipError(
                 f"Sixtrack for {jobname} seems to be incomplete."
                 " Resubmitted incomplete sixtrack jobs."
                 " Wait until they have finished and run again."
             )
-        raise StageSkip(
+        raise StageSkipError(
             f"Sixtrack for {jobname} seems to be incomplete."
             f" Run possibly not finished. Check (debug-) log or your Scheduler."
         ) from e
@@ -140,7 +140,7 @@ def sixdb_load(
     try:
         start_subprocess([python, sixdesk / SIXDB, ".", "load_dir"], cwd=sixjobs_path, ssh=ssh)
     except OSError as e:
-        raise StageSkip(f"Sixdb loading for {jobname} failed. Check (debug-) log.") from e
+        raise StageSkipError(f"Sixdb loading for {jobname} failed. Check (debug-) log.") from e
     else:
         LOG.info("Created database for study.")
 
@@ -160,6 +160,6 @@ def sixdb_cmd(
     try:
         start_subprocess([python, sixdesk / SIXDB, jobname] + cmd, cwd=sixjobs_path, ssh=ssh)
     except OSError as e:
-        raise StageSkip(f"SixBD command {cmd_str} for {jobname} failed. Check (debug-) log.") from e
+        raise StageSkipError(f"SixBD command {cmd_str} for {jobname} failed. Check (debug-) log.") from e
     else:
         LOG.info(f"SixDB command '{cmd_str}' successfully run.")

@@ -149,7 +149,7 @@ SEED, ANGLE, ALOST1, ALOST2, AMP = "SEED", "ANGLE", "ALOST1", "ALOST2", "A"
 # Errors ---
 
 
-class StageSkip(Exception):
+class StageSkipError(Exception):
     """Indicates that the stage was not completed or skipped entirely.
     This can be due to an error or on purpose (e.g. user interaction before
     restart)."""
@@ -157,7 +157,7 @@ class StageSkip(Exception):
     pass
 
 
-class StageStop(Exception):
+class StageStopError(Exception):
     """A signal sent at the end of a Stage indicating, that it has succeeded
     and that any iteration should be stopped after this Stage as the jobs have
     been submitted and the user needs to wait for them to finish."""

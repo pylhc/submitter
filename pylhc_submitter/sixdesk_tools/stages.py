@@ -17,8 +17,8 @@ from generic_parser import DotDict
 
 from pylhc_submitter.constants.autosix import (
     AutoSixEnvironment,
-    StageSkip,
-    StageStop,
+    StageSkipError,
+    StageStopError,
     get_stagefile_path,
 )
 from pylhc_submitter.sixdesk_tools.create_workspace import (
@@ -138,11 +138,11 @@ class Stage(ABC, metaclass=StageMeta):
             stage = stage_class(jobname, jobargs, env)
             try:
                 stage.run()
-            except StageSkip as e:
+            except StageSkipError as e:
                 if str(e):
                     LOG.error(e)
                 # break  # stop here or always run to the end and show all skipped stages
-            except StageStop:
+            except StageStopError:
                 LOG.info(
                     f"Stopping after Stage '{stage!s}' as the submitted jobs will now run. "
                     f"Check `condor_q` for their progress and restart autosix when they are done."
@@ -232,19 +232,19 @@ class Stage(ABC, metaclass=StageMeta):
 
         try:
             self._run()
-        except StageStop as e:
+        except StageStopError as e:
             # Stage indicates that it ran successfully,
             # but that there should be a stop in the loop.
             self.stage_done()
             raise e
-        except StageSkip as e:
+        except StageSkipError as e:
             # logged/handled outside
             raise e
         except Exception as e:
-            # convert any exception to a StageSkip,
+            # convert any exception to a StageSkipError,
             # so the other jobs can continue running.
             LOG.exception(str(e))
-            raise StageSkip(f"Stage {self!s} failed!") from e
+            raise StageSkipError(f"Stage {self!s} failed!") from e
 
         self.stage_done()
 
@@ -300,7 +300,7 @@ class InitializeWorkspace(Stage):
                 " and ``sysenv``. Remove 'stop_workspace_init' from input"
                 " parameters or set to 'False' to continue run."
             )
-            raise StageSkip()
+            raise StageSkipError()
 
         init_workspace(
             self.jobname, self.basedir, sixdesk=self.env.sixdesk_directory, ssh=self.env.ssh
@@ -321,7 +321,7 @@ class SubmitMask(Stage):
         submit_mask(
             self.jobname, self.basedir, sixdesk=self.env.sixdesk_directory, ssh=self.env.ssh
         )
-        raise StageStop()
+        raise StageStopError()
 
 
 class CheckInput(Stage):
@@ -365,7 +365,7 @@ class SubmitSixtrack(Stage):
             python=self.env.python2,
         )
 
-        raise StageStop()
+        raise StageStopError()
 
 
 class CheckSixtrackOutput(Stage):
@@ -461,4 +461,4 @@ class Final(Stage):
             f"All stages run. Check stagefile {str(stage_file)} "
             "in case you want to rerun some stages."
         )
-        raise StageSkip()
+        raise StageSkipError()
