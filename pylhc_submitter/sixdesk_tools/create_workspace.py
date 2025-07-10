@@ -4,6 +4,7 @@ Create SixDesk Workspace
 
 Tools to setup the workspace for sixdesk.
 """
+
 import re
 import shutil
 from dataclasses import asdict
@@ -28,7 +29,8 @@ from pylhc_submitter.constants.autosix import (
     get_autosix_results_path,
     get_sysenv_path,
     get_sixdeskenv_path,
-    SixDeskEnvironment, SIXENV_OPTIONAL,
+    SixDeskEnvironment,
+    SIXENV_OPTIONAL,
 )
 from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
 from pylhc_submitter.sixdesk_tools.utils import start_subprocess
@@ -42,9 +44,16 @@ LOG = logging.getLogger(__name__)
 # Main -------------------------------------------------------------------------
 
 
-def create_job(jobname: str, basedir: Path, executable: Union[Path, str], mask_text: str,
-               sixdesk: Path = SIXDESK_UTILS, ssh: str = None, **kwargs):
-    """ Create environment and individual jobs/masks for SixDesk to send to HTC.
+def create_job(
+    jobname: str,
+    basedir: Path,
+    executable: Union[Path, str],
+    mask_text: str,
+    sixdesk: Path = SIXDESK_UTILS,
+    ssh: str = None,
+    **kwargs,
+):
+    """Create environment and individual jobs/masks for SixDesk to send to HTC.
 
     Keyword Args:
         Need to contain all replacements for sixdeskenv and the mask.
@@ -57,14 +66,14 @@ def create_job(jobname: str, basedir: Path, executable: Union[Path, str], mask_t
 
 
 def init_workspace(jobname: str, basedir: Path, sixdesk: Path = SIXDESK_UTILS, ssh: str = None):
-    """ Initializes the workspace with sixdeskenv and sysenv. """
+    """Initializes the workspace with sixdeskenv and sysenv."""
     sixjobs_path = get_sixjobs_path(jobname, basedir)
     start_subprocess([sixdesk / SETENV_SH, "-s"], cwd=sixjobs_path, ssh=ssh)
     LOG.info("Workspace initialized.")
 
 
 def remove_twiss_fail_check(jobname: str, basedir: Path):
-    """ Comments out the "Twiss fail" check from mad6t.sh """
+    """Comments out the "Twiss fail" check from mad6t.sh"""
     LOG.info("Applying twiss-fail hack.")
     for mad6t_path in (
         get_mad6t_mask_path(jobname, basedir),
@@ -91,17 +100,17 @@ def remove_twiss_fail_check(jobname: str, basedir: Path):
 
 
 def fix_pythonfile_call(jobname: str, basedir: Path):
-    """ Removes '<' in the `binary file` line in mad6t.sh so __file__ works. """
+    """Removes '<' in the `binary file` line in mad6t.sh so __file__ works."""
     LOG.info("Applying python-file call fix.")
     for mad6t_path in (
-            get_mad6t_mask_path(jobname, basedir),
-            get_mad6t1_mask_path(jobname, basedir),
+        get_mad6t_mask_path(jobname, basedir),
+        get_mad6t1_mask_path(jobname, basedir),
     ):
         with open(mad6t_path, "r") as f:
             lines = f.readlines()
 
         for idx, line in enumerate(lines):
-            if line.startswith('$MADX_PATH/$MADX'):
+            if line.startswith("$MADX_PATH/$MADX"):
                 lines[idx] = f'$MADX_PATH/$MADX $junktmp/$filejob."$i" > $filejob.out."$i"\n'
                 break
         else:
@@ -112,7 +121,7 @@ def fix_pythonfile_call(jobname: str, basedir: Path):
 
 
 def set_max_materialize(sixdesk: Path, max_materialize: int = None):
-    """ Adds the ``max_materialize`` option into the htcondor sixtrack
+    """Adds the ``max_materialize`` option into the htcondor sixtrack
     submission-file."""
     if max_materialize is None:
         return
@@ -142,15 +151,17 @@ def set_max_materialize(sixdesk: Path, max_materialize: int = None):
     try:
         sub_path.write_text(sub_content)
     except IOError as e:
-        raise IOError(f"Could not write to {sub_path!s}. `max_materialization` could not be set.\n"
-                      f"Remove option or use a SixDesk with writing rights.") from e
+        raise IOError(
+            f"Could not write to {sub_path!s}. `max_materialization` could not be set.\n"
+            f"Remove option or use a SixDesk with writing rights."
+        ) from e
 
 
 # Helper -----------------------------------------------------------------------
 
 
-def _create_workspace(jobname: str,  basedir: Path, sixdesk: Path = SIXDESK_UTILS, ssh: str = None):
-    """ Create workspace structure (with default files). """
+def _create_workspace(jobname: str, basedir: Path, sixdesk: Path = SIXDESK_UTILS, ssh: str = None):
+    """Create workspace structure (with default files)."""
     workspace_path = get_workspace_path(jobname, basedir)
     scratch_path = get_scratch_path(basedir)
     LOG.info(f'Creating new workspace in "{str(workspace_path)}"')
@@ -182,7 +193,7 @@ def _create_workspace(jobname: str,  basedir: Path, sixdesk: Path = SIXDESK_UTIL
 
 
 def _create_sixdeskenv(jobname: str, basedir: Path, **kwargs):
-    """ Fills sixdeskenv mask and copies it to workspace """
+    """Fills sixdeskenv mask and copies it to workspace"""
     workspace_path = get_workspace_path(jobname, basedir)
     scratch_path = get_scratch_path(basedir)
     sixdeskenv_path = get_sixdeskenv_path(jobname, basedir)
@@ -206,7 +217,7 @@ def _create_sixdeskenv(jobname: str, basedir: Path, **kwargs):
 
 
 def _create_sysenv(jobname: str, basedir: Path, binary_path: Path):
-    """ Fills sysenv mask and copies it to workspace """
+    """Fills sysenv mask and copies it to workspace"""
     LOG.info(f"Chosen binary for mask '{str(binary_path)}'")
     sysenv_path = get_sysenv_path(jobname, basedir)
     sysenv_replace = dict(
@@ -219,13 +230,13 @@ def _create_sysenv(jobname: str, basedir: Path, binary_path: Path):
 
 
 def _write_mask(jobname: str, basedir: Path, mask_text: str, **kwargs):
-    """ Fills mask with arguments and writes it out. """
+    """Fills mask with arguments and writes it out."""
     masks_path = get_masks_path(jobname, basedir)
     seed_range = [kwargs.get(key, getattr(SixDeskEnvironment, key)) for key in SEED_KEYS]
 
     if seed_range.count(None) == 1:
         raise ValueError(
-            "First- or Lastseed is set, but the other one is deactivated. " "Set or unset both."
+            "First- or Lastseed is set, but the other one is deactivated. Set or unset both."
         )
 
     if ("%SEEDRAN" not in mask_text) and ("%SEEDRAN" not in kwargs.values()) and any(seed_range):

@@ -5,19 +5,29 @@ from unittest.mock import patch
 
 import tfs
 
-from pylhc_submitter.sixdesk_tools.create_workspace import remove_twiss_fail_check, set_max_materialize
+from pylhc_submitter.sixdesk_tools.create_workspace import (
+    remove_twiss_fail_check,
+    set_max_materialize,
+)
 from pylhc_submitter.sixdesk_tools.post_process_da import plot_polar, plt
 from pylhc_submitter.autosix import _generate_jobs, run_job
 from pylhc_submitter.constants.autosix import (
-    get_masks_path, get_autosix_results_path, get_sixdeskenv_path,
-    get_sysenv_path, get_stagefile_path, ANGLE, get_mad6t_mask_path, get_mad6t1_mask_path, AutoSixEnvironment
+    get_masks_path,
+    get_autosix_results_path,
+    get_sixdeskenv_path,
+    get_sysenv_path,
+    get_stagefile_path,
+    ANGLE,
+    get_mad6t_mask_path,
+    get_mad6t1_mask_path,
+    AutoSixEnvironment,
 )
 from pylhc_submitter.sixdesk_tools.stages import STAGE_ORDER, CreateJob, InitializeWorkspace
 
 STAGE_NAMES = list(STAGE_ORDER.keys())
 
-INPUTS = Path(__file__).parent.parent / 'inputs'
-DA_RESULTS_DIR = INPUTS / 'sixdesk_da_results'
+INPUTS = Path(__file__).parent.parent / "inputs"
+DA_RESULTS_DIR = INPUTS / "sixdesk_da_results"
 
 # log-texts to be changed if they change in `should_run_stage`
 ALREADY_RUN_LOG = "Stage '{}' has already been run."
@@ -26,12 +36,10 @@ AFTER_MAXIMUM_LOG = "Stage '{}' would run after requested maximum stage '{}'."
 
 
 def test_create_job_matrix(tmp_path):
-    jobs_df = _generate_jobs(tmp_path, jobid_mask=None, 
-                             param0=[1, 2., 3],
-                             param1=[4],
-                             param2=["test", "some", "more"]
-                             )
-    
+    jobs_df = _generate_jobs(
+        tmp_path, jobid_mask=None, param0=[1, 2.0, 3], param1=[4], param2=["test", "some", "more"]
+    )
+
     assert tmp_path in jobs_df.headers.values()
     assert len(jobs_df.index) == 9
     assert all(f"param{i}" in jobs_df.columns for i in range(3))
@@ -39,7 +47,7 @@ def test_create_job_matrix(tmp_path):
 
 
 def test_create_workspace(tmp_path):
-    jobname="test_job"
+    jobname = "test_job"
 
     mock_create, mock_submit = _create_subprocess_mocks(jobname, tmp_path)
     with mock_create, mock_submit:
@@ -48,16 +56,18 @@ def test_create_workspace(tmp_path):
             env=AutoSixEnvironment(
                 working_directory=tmp_path,
                 mask_text="Just a mask %(PARAM1)s %(PARAM2)s %(BEAM)s",
-                executable=Path('somethingcomplicated/pathomatic'),
+                executable=Path("somethingcomplicated/pathomatic"),
             ),
             jobargs=dict(
                 PARAM1=4,
                 PARAM2="%SEEDRAN",
                 BEAM=1,
                 TURNS=10101,
-                AMPMIN=2, AMPMAX=20, AMPSTEP=2,
+                AMPMIN=2,
+                AMPMAX=20,
+                AMPSTEP=2,
                 ANGLES=5,
-            )
+            ),
         )
 
         mask = next(get_masks_path(jobname, tmp_path).glob("*"))
@@ -93,7 +103,7 @@ def test_create_workspace(tmp_path):
 
 
 def test_create_workspace_stop_init(tmp_path):
-    jobname="test_job"
+    jobname = "test_job"
 
     mock_create, mock_submit = _create_subprocess_mocks(jobname, tmp_path)
     with mock_create, mock_submit:
@@ -102,7 +112,7 @@ def test_create_workspace_stop_init(tmp_path):
             env=AutoSixEnvironment(
                 working_directory=tmp_path,
                 mask_text="Just a mask %(PARAM1)s %(PARAM2)s %(BEAM)s",
-                executable=Path('somethingcomplicated/pathomatic'),
+                executable=Path("somethingcomplicated/pathomatic"),
                 stop_workspace_init=True,
             ),
             jobargs=dict(
@@ -110,10 +120,13 @@ def test_create_workspace_stop_init(tmp_path):
                 PARAM2="%SEEDRAN",
                 BEAM=1,
                 TURNS=10101,
-                AMPMIN=2, AMPMAX=20, AMPSTEP=2,
+                AMPMIN=2,
+                AMPMAX=20,
+                AMPSTEP=2,
                 ANGLES=5,
-                FIRSTSEED=None, LASTSEED=None,
-            )
+                FIRSTSEED=None,
+                LASTSEED=None,
+            ),
         )
 
         stagefile = get_stagefile_path(jobname, tmp_path)
@@ -125,7 +138,7 @@ def test_create_workspace_stop_init(tmp_path):
 
 
 def test_skip_all_stages(tmp_path, caplog):
-    """ Skips all stages but the last one, which prints "All stages run". """
+    """Skips all stages but the last one, which prints "All stages run"."""
     jobname = "test_job"
 
     stagefile = get_stagefile_path(jobname, tmp_path)
@@ -138,7 +151,7 @@ def test_skip_all_stages(tmp_path, caplog):
                 mask_text="",
                 working_directory=tmp_path,
             ),
-            jobargs=dict()
+            jobargs=dict(),
         )
 
     assert all(ALREADY_RUN_LOG.format(s) in caplog.text for s in STAGE_NAMES[:-1])
@@ -146,8 +159,8 @@ def test_skip_all_stages(tmp_path, caplog):
 
 
 def test_max_stage(tmp_path, caplog):
-    """ Skips all stages, first because they had already 'run',
-    the others because they come after `max_stage`. """
+    """Skips all stages, first because they had already 'run',
+    the others because they come after `max_stage`."""
     jobname = "test_job"
     stages = list(STAGE_ORDER.values())
     run_stages = stages[:-2]  # ends at `-3`
@@ -165,7 +178,7 @@ def test_max_stage(tmp_path, caplog):
                 working_directory=tmp_path,
                 max_stage=max_stage,
             ),
-            jobargs=dict()
+            jobargs=dict(),
         )
 
     assert all(ALREADY_RUN_LOG.format(s) in caplog.text for s in run_stages)
@@ -174,8 +187,8 @@ def test_max_stage(tmp_path, caplog):
 
 
 def test_polar_plot(tmp_path):
-    df_angles = tfs.read(DA_RESULTS_DIR / 'da_per_angle.tfs', index=ANGLE)
-    df_da = tfs.read(DA_RESULTS_DIR / 'da.tfs')
+    df_angles = tfs.read(DA_RESULTS_DIR / "da_per_angle.tfs", index=ANGLE)
+    df_da = tfs.read(DA_RESULTS_DIR / "da.tfs")
     fig = plot_polar(df_angles=df_angles, df_da=df_da, interpolated=False, fill=True)
     assert len(fig.axes) == 1
     assert len(fig.axes[0].lines) == 63  # 60 Seeds, MEAN, MIN, MAX
@@ -183,8 +196,8 @@ def test_polar_plot(tmp_path):
 
 
 def test_polar_plot_interpolated(tmp_path):
-    df_angles = tfs.read(DA_RESULTS_DIR / 'da_per_angle.tfs', index=ANGLE)
-    df_da = tfs.read(DA_RESULTS_DIR / 'da.tfs')
+    df_angles = tfs.read(DA_RESULTS_DIR / "da_per_angle.tfs", index=ANGLE)
+    df_da = tfs.read(DA_RESULTS_DIR / "da.tfs")
     fig = plot_polar(df_angles=df_angles, df_da=df_da, interpolated=True, fill=False)
     assert len(fig.axes) == 1
     assert len(fig.axes[0].lines) == 63  # 60 Seeds, MEAN, MIN, MAX
@@ -205,6 +218,7 @@ def test_twissfail_removal(tmp_path):
 
 def test_max_materialize_setter(tmp_path):
     subfile_path = tmp_path / "utilities" / "templates" / "htcondor" / "htcondor_run_six.sub"
+
     def check_max_materialize_is(value):
         text = subfile_path.read_text()
         if value == 0:
@@ -237,8 +251,12 @@ def _create_subprocess_mocks(jobname, dirpath):
         dirpath.mkdir(exist_ok=True, parents=True)
         get_masks_path(jobname, dirpath).mkdir(exist_ok=True, parents=True)
 
-    mock_crate = patch('pylhc_submitter.sixdesk_tools.create_workspace.start_subprocess', new=subprocess_mock)
-    mock_submit = patch('pylhc_submitter.sixdesk_tools.submit.start_subprocess', new=subprocess_mock)
+    mock_crate = patch(
+        "pylhc_submitter.sixdesk_tools.create_workspace.start_subprocess", new=subprocess_mock
+    )
+    mock_submit = patch(
+        "pylhc_submitter.sixdesk_tools.submit.start_subprocess", new=subprocess_mock
+    )
     return mock_crate, mock_submit
 
 

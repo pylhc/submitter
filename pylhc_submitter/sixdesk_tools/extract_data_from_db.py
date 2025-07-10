@@ -8,6 +8,7 @@ form it.
 TODO: Implement extraction of data into ``.csv`` (and/or tfs?)
 like fvanderv does.
 """
+
 import logging
 import sqlite3 as sql
 from pathlib import Path
@@ -47,7 +48,7 @@ LOG = logging.getLogger(__name__)
 
 
 def extract_da_data(jobname: str, basedir: Path) -> TfsDataFrame:
-    """ Extract DA data directly from the database.
+    """Extract DA data directly from the database.
 
     Args:
         jobname (str): Name of the Job
@@ -72,16 +73,14 @@ def extract_da_data(jobname: str, basedir: Path) -> TfsDataFrame:
 
 
 def extract_meta_data(jobname: str, basedir: Path) -> TfsDataFrame:
-    """ Extract the meta-data directly from the database.
+    """Extract the meta-data directly from the database.
 
     Args:
         jobname (str): Name of the Job
         basedir (Path): SixDesk Basefolder Location
     """
     with _get_database(jobname, basedir) as db:
-        df_da = pd.read_sql(
-            "SELECT keyname, value FROM env", db
-        )
+        df_da = pd.read_sql("SELECT keyname, value FROM env", db)
     return TfsDataFrame(df_da)
 
 

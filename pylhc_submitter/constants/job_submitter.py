@@ -1,10 +1,10 @@
-
 """
 Job Submitter
 -------------
 
 Collections of constants and paths used in the job-submitter.
 """
+
 from pylhc_submitter.constants.external_paths import MADX_BIN, PYTHON2_BIN, PYTHON3_BIN
 
 JOBSUMMARY_FILE = "Jobs.tfs"
@@ -30,4 +30,9 @@ COLUMN_JOB_DIRECTORY = "JobDirectory"
 COLUMN_DEST_DIRECTORY = "DestDirectory"
 COLUMN_JOB_FILE = "JobFile"
 
-NON_PARAMETER_COLUMNS = (COLUMN_SHELL_SCRIPT, COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE, COLUMN_DEST_DIRECTORY)
+NON_PARAMETER_COLUMNS = (
+    COLUMN_SHELL_SCRIPT,
+    COLUMN_JOB_DIRECTORY,
+    COLUMN_JOB_FILE,
+    COLUMN_DEST_DIRECTORY,
+)

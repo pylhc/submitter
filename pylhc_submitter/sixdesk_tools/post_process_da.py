@@ -6,6 +6,7 @@ Tools to process data after sixdb has calculated the
 da. Includes functions for extracting data from database
 as well as plotting of DA polar plots.
 """
+
 import logging
 from pathlib import Path
 from typing import Any, Tuple, Iterable
@@ -60,7 +61,7 @@ ALPHA_FILL_STD = 0.2
 
 
 def post_process_da(jobname: str, basedir: Path):
-    """ Post process the DA results into dataframes and DA plots. """
+    """Post process the DA results into dataframes and DA plots."""
     LOG.info("Post-Processing Sixdesk Results.")
     df_da, df_angle, df_seed = create_da_tfs(jobname, basedir)
     create_polar_plots(jobname, basedir, df_da, df_angle)
@@ -71,7 +72,7 @@ def post_process_da(jobname: str, basedir: Path):
 
 
 def create_da_tfs(jobname: str, basedir: Path) -> Tuple[TfsDataFrame, TfsDataFrame, TfsDataFrame]:
-    """ Extracts data from db into dataframes, and writes and returns them.
+    """Extracts data from db into dataframes, and writes and returns them.
 
     Args:
         jobname (str): Name of the Job
@@ -89,7 +90,7 @@ def create_da_tfs(jobname: str, basedir: Path) -> Tuple[TfsDataFrame, TfsDataFra
 
 
 def _create_stats_df(df: pd.DataFrame, parameter: str, global_index: Any = None) -> TfsDataFrame:
-    """ Calculates the stats over a given parameter.
+    """Calculates the stats over a given parameter.
     Note: Could be refactored to use `group_by`.
 
     Args:
@@ -131,9 +132,7 @@ def _create_stats_df(df: pd.DataFrame, parameter: str, global_index: Any = None)
 
             # Global MEAN, MIN, MAX Dynamic Aperture
             for name, operation in operation_map.get_subdict([MEAN, MIN, MAX, STD]).items():
-                df_stats.loc[global_index, f"{name}{col_da}"] = operation(
-                    df.loc[mask, col_da]
-                )
+                df_stats.loc[global_index, f"{name}{col_da}"] = operation(df.loc[mask, col_da])
 
             # Global MIN, MAX Amplitudes
             for name, operation in operation_map.get_subdict([MIN, MAX]).items():
@@ -150,7 +149,7 @@ def _create_stats_df(df: pd.DataFrame, parameter: str, global_index: Any = None)
 
 
 def create_polar_plots(jobname: str, basedir: Path, df_da: TfsDataFrame, df_angles: TfsDataFrame):
-    """ Plotting loop over da-methods and wrapper so save plots.
+    """Plotting loop over da-methods and wrapper so save plots.
 
     Args:
         jobname (str): Name of the Job
@@ -338,7 +337,7 @@ def _interpolated_line(ax, x, y, npoints: int = 100, **kwargs):
 
 
 def _interpolated_coords(x, y, npoints: int = 100):
-    """ Do linear interpolation between points. """
+    """Do linear interpolation between points."""
     ip_x = np.linspace(min(x), max(x), npoints)
     ip_y = interp1d(x, y)(ip_x)
     return ip_x, ip_y

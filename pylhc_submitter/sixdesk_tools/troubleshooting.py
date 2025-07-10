@@ -4,6 +4,7 @@ SixDesk Troubleshooting tools
 
 Some useful functions to troubleshoot the SixDesk output.
 """
+
 import logging
 from pathlib import Path
 
@@ -33,8 +34,9 @@ def get_last_stage(jobname, basedir):
 
 # Set Stages ---
 
+
 def set_stages_for_setup(basedir: Path, stage_name: str, jobid_mask: str, replace_dict: dict):
-    """ Sets the last run stage for all jobs from given job-setups. """
+    """Sets the last run stage for all jobs from given job-setups."""
     jobs, _ = get_jobs_and_values(jobid_mask, **replace_dict)
     for job in jobs:
         LOG.info(f"Setting stage to {stage_name} in {job}")
@@ -66,9 +68,7 @@ def skip_stages(jobname: str, basedir: Path, stage_name: str):
     new_stage = STAGE_ORDER[stage_name]
     last_stage = get_last_stage(jobname, basedir)
     if last_stage < new_stage:
-        LOG.info(
-            f"Skipping stage form {last_stage.name} to {new_stage.name} in {jobname}"
-        )
+        LOG.info(f"Skipping stage form {last_stage.name} to {new_stage.name} in {jobname}")
         set_stages(jobname, basedir, stage_name)
     else:
         LOG.debug(f"Stage {last_stage.name} unchanged in {jobname}")
@@ -91,8 +91,9 @@ def reset_stages(jobname: str, basedir: Path, stage_name: str):
 
 # Check Stages ---
 
+
 def check_stages_for_setup(basedir: Path, stage_name: str, jobid_mask: str, replace_dict: dict):
-    """ Check the last run stage for all jobs from given job-setups. """
+    """Check the last run stage for all jobs from given job-setups."""
     jobs, _ = get_jobs_and_values(jobid_mask, **replace_dict)
     for job in jobs:
         check_last_stage(job, basedir)
@@ -128,9 +129,7 @@ def find_obviously_failed_sixtrack_submissions(basedir: Path):
             if not len(out_files_present):
                 raise OSError(str(get_workspace_path(jobname=job, basedir=basedir)))
         except OSError as e:
-            LOG.error(
-                f"{e.args[0]} (stage: {get_last_stage(jobname=job, basedir=basedir).name})"
-            )
+            LOG.error(f"{e.args[0]} (stage: {get_last_stage(jobname=job, basedir=basedir).name})")
             jobs.append(str(job))
     return jobs
 
@@ -188,7 +187,9 @@ def check_sixtrack_output_data(jobname: str, basedir: Path):
                             raise OSError(f"Not all htcondor files present in {str(angle_dir)}.")
 
                         file_names = [f.name for f in angle_dir.glob("*")]
-                        in_files_present = [f for f in SIXTRACK_INPUT_CHECK_FILES if f in file_names]
+                        in_files_present = [
+                            f for f in SIXTRACK_INPUT_CHECK_FILES if f in file_names
+                        ]
                         if len(in_files_present):
                             raise OSError(
                                 f"The files '{in_files_present}' are found in {str(angle_dir)},"

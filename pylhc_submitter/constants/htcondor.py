@@ -4,6 +4,7 @@ HTCondor
 
 Constants for the HTCondor parameters.
 """
+
 SHEBANG = "#!/bin/bash"
 SUBFILE = "queuehtc.sub"
 BASH_FILENAME = "Job"

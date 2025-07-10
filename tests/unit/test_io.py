@@ -4,7 +4,12 @@ import pytest
 from generic_parser import EntryPoint, EntryPointParameters
 from generic_parser.entry_datatypes import DictAsString
 
-from pylhc_submitter.utils.iotools import PathOrStr, save_config, keys_to_path, make_replace_entries_iterable
+from pylhc_submitter.utils.iotools import (
+    PathOrStr,
+    save_config,
+    keys_to_path,
+    make_replace_entries_iterable,
+)
 
 
 def test_escape_percentages(tmp_path):
@@ -13,13 +18,13 @@ def test_escape_percentages(tmp_path):
     save_load_and_check(tmp_path, opt)
 
 
-@pytest.mark.parametrize('pathparam', ['test', Path('test')], ids=['str', 'Path'])
+@pytest.mark.parametrize("pathparam", ["test", Path("test")], ids=["str", "Path"])
 def test_pathstr(tmp_path, pathparam):
     """Test PathOrStr datatype."""
     opt = entrypoint(pathstr=pathparam)
     assert isinstance(opt.pathstr, pathparam.__class__)
 
-    opt = keys_to_path(opt, 'pathstr')
+    opt = keys_to_path(opt, "pathstr")
     assert isinstance(opt.pathstr, Path)
 
     save_load_and_check(tmp_path, opt)
@@ -41,9 +46,11 @@ def test_replace_dict(tmp_path):
 
 def test_multiple_entries(tmp_path):
     """Test config file for multiple entries from above."""
-    opt = entrypoint(replace_dict={"A": 1, "B": [100, 200], "C": "ITERME"},
-                     pathstr=Path("test"),
-                     mask="%(PARAM)d+%(PARAM)d")
+    opt = entrypoint(
+        replace_dict={"A": 1, "B": [100, 200], "C": "ITERME"},
+        pathstr=Path("test"),
+        mask="%(PARAM)d+%(PARAM)d",
+    )
 
     save_load_and_check(tmp_path, opt)
 
@@ -73,7 +80,7 @@ def entrypoint(**kwargs):
         ),
         mask=dict(
             type=str,
-        )
+        ),
     )
     entry = EntryPoint(params)
     return entry.parse(**kwargs)[0]
