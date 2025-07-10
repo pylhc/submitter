@@ -42,10 +42,10 @@ from pylhc_submitter.submitter.mask import is_mask_file
 from pylhc_submitter.utils.environment import on_windows
 
 try:
-    import htcondor
+    import htcondor  # noqa: N801
 except ImportError:  # will be handled by job_submitter
 
-    class htcondor:
+    class htcondor:  # noqa: N801
         """Dummy HTCondor module. To satisfy the typing."""
 
         Submit: Any = None
