@@ -10,13 +10,16 @@ from __future__ import annotations
 
 import logging
 import re
-from collections.abc import Iterable, Sequence
 from pathlib import Path
-
-import pandas as pd
-from numpy.typing import ArrayLike
+from typing import TYPE_CHECKING
 
 from pylhc_submitter.constants.job_submitter import COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Sequence
+
+    import pandas as pd
+    from numpy.typing import ArrayLike
 
 LOG = logging.getLogger(__name__)
 

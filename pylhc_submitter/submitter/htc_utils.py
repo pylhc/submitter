@@ -18,9 +18,7 @@ from __future__ import annotations
 import logging
 import subprocess
 from pathlib import Path
-from typing import Any
-
-from pandas import DataFrame
+from typing import TYPE_CHECKING, Any
 
 from pylhc_submitter.constants.htcondor import (
     BASH_FILENAME,
@@ -52,6 +50,9 @@ except ImportError:  # will be handled by job_submitter
 
         Submit: Any = None
 
+
+if TYPE_CHECKING:
+    from pandas import DataFrame
 
 LOG = logging.getLogger(__name__)
 

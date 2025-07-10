@@ -12,10 +12,9 @@ import logging
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import pandas as pd
 import tfs
 
 from pylhc_submitter.constants.htcondor import HTCONDOR_JOBLIMIT
@@ -33,6 +32,9 @@ from pylhc_submitter.submitter.mask import (
     generate_jobdf_index,
     is_mask_file,
 )
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 LOG = logging.getLogger(__name__)
 

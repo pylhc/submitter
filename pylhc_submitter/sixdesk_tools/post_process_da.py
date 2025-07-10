@@ -14,7 +14,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import pandas as pd
 from generic_parser import DotDict
 from matplotlib import lines as mlines
 from matplotlib import pyplot as plt
@@ -45,6 +44,8 @@ from pylhc_submitter.sixdesk_tools.extract_data_from_db import extract_da_data
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+
+    import pandas as pd
 
 
 LOG = logging.getLogger(__name__)

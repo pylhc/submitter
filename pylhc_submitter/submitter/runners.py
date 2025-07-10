@@ -12,10 +12,7 @@ import multiprocessing
 import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
-
-import pandas as pd
-import tfs
+from typing import TYPE_CHECKING, Any
 
 from pylhc_submitter.constants.job_submitter import (
     COLUMN_JOB_DIRECTORY,
@@ -23,6 +20,10 @@ from pylhc_submitter.constants.job_submitter import (
 )
 from pylhc_submitter.submitter import htc_utils
 from pylhc_submitter.utils.environment import on_windows
+
+if TYPE_CHECKING:
+    import pandas as pd
+    import tfs
 
 LOG = logging.getLogger(__name__)
 
