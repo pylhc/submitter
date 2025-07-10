@@ -58,16 +58,16 @@ def test_create_workspace(tmp_path):
                 mask_text="Just a mask %(PARAM1)s %(PARAM2)s %(BEAM)s",
                 executable=Path("somethingcomplicated/pathomatic"),
             ),
-            jobargs=dict(
-                PARAM1=4,
-                PARAM2="%SEEDRAN",
-                BEAM=1,
-                TURNS=10101,
-                AMPMIN=2,
-                AMPMAX=20,
-                AMPSTEP=2,
-                ANGLES=5,
-            ),
+            jobargs={
+                "PARAM1": 4,
+                "PARAM2": "%SEEDRAN",
+                "BEAM": 1,
+                "TURNS": 10101,
+                "AMPMIN": 2,
+                "AMPMAX": 20,
+                "AMPSTEP": 2,
+                "ANGLES": 5,
+            },
         )
 
         mask = next(get_masks_path(jobname, tmp_path).glob("*"))
@@ -115,18 +115,18 @@ def test_create_workspace_stop_init(tmp_path):
                 executable=Path("somethingcomplicated/pathomatic"),
                 stop_workspace_init=True,
             ),
-            jobargs=dict(
-                PARAM1=4,
-                PARAM2="%SEEDRAN",
-                BEAM=1,
-                TURNS=10101,
-                AMPMIN=2,
-                AMPMAX=20,
-                AMPSTEP=2,
-                ANGLES=5,
-                FIRSTSEED=None,
-                LASTSEED=None,
-            ),
+            jobargs={
+                "PARAM1": 4,
+                "PARAM2": "%SEEDRAN",
+                "BEAM": 1,
+                "TURNS": 10101,
+                "AMPMIN": 2,
+                "AMPMAX": 20,
+                "AMPSTEP": 2,
+                "ANGLES": 5,
+                "FIRSTSEED": None,
+                "LASTSEED": None,
+            },
         )
 
         stagefile = get_stagefile_path(jobname, tmp_path)
@@ -151,7 +151,7 @@ def test_skip_all_stages(tmp_path, caplog):
                 mask_text="",
                 working_directory=tmp_path,
             ),
-            jobargs=dict(),
+            jobargs={},
         )
 
     assert all(ALREADY_RUN_LOG.format(s) in caplog.text for s in STAGE_NAMES[:-1])
@@ -178,7 +178,7 @@ def test_max_stage(tmp_path, caplog):
                 working_directory=tmp_path,
                 max_stage=max_stage,
             ),
-            jobargs=dict(),
+            jobargs={},
         )
 
     assert all(ALREADY_RUN_LOG.format(s) in caplog.text for s in run_stages)

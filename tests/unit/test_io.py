@@ -72,15 +72,9 @@ def save_load_and_check(path, opt):
 def entrypoint(**kwargs):
     """Creates an entrypoint and parses kwargs."""
     params = EntryPointParameters(
-        pathstr=dict(
-            type=PathOrStr,
-        ),
-        replace_dict=dict(
-            type=DictAsString,
-        ),
-        mask=dict(
-            type=str,
-        ),
+        pathstr={"type": PathOrStr},
+        replace_dict={"type": DictAsString},
+        mask={"type": str},
     )
     entry = EntryPoint(params)
     return entry.parse(**kwargs)[0]

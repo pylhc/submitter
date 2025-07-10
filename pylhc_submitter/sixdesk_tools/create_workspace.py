@@ -217,10 +217,10 @@ def _create_sysenv(jobname: str, basedir: Path, binary_path: Path):
     """Fills sysenv mask and copies it to workspace"""
     LOG.info(f"Chosen binary for mask '{str(binary_path)}'")
     sysenv_path = get_sysenv_path(jobname, basedir)
-    sysenv_replace = dict(
-        MADXPATH=str(binary_path.parent),
-        MADXBIN=binary_path.name,
-    )
+    sysenv_replace = {
+        "MADXPATH": str(binary_path.parent),
+        "MADXBIN": binary_path.name,
+    }
     sysenv_text = SYSENV_MASK.read_text()
     sysenv_path.write_text(sysenv_text % sysenv_replace)
     LOG.debug("sysenv written.")
