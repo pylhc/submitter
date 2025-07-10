@@ -76,8 +76,7 @@ def remove_twiss_fail_check(jobname: str, basedir: Path):
         get_mad6t_mask_path(jobname, basedir),
         get_mad6t1_mask_path(jobname, basedir),
     ):
-        with open(mad6t_path) as f:
-            lines = f.readlines()
+        lines = Path(mad6t_path).read_text().splitlines(keepends=True)
 
         check_started = False
         for idx, line in enumerate(lines):
@@ -92,8 +91,7 @@ def remove_twiss_fail_check(jobname: str, basedir: Path):
             LOG.info(f"'TWISS fail' not found in {mad6t_path.name}")
             continue
 
-        with open(mad6t_path, "w") as f:
-            f.writelines(lines)
+        Path(mad6t_path).write_text("".join(lines))
 
 
 def fix_pythonfile_call(jobname: str, basedir: Path):
@@ -103,8 +101,7 @@ def fix_pythonfile_call(jobname: str, basedir: Path):
         get_mad6t_mask_path(jobname, basedir),
         get_mad6t1_mask_path(jobname, basedir),
     ):
-        with open(mad6t_path) as f:
-            lines = f.readlines()
+        lines = Path(mad6t_path).read_text().splitlines(keepends=True)
 
         for idx, line in enumerate(lines):
             if line.startswith("$MADX_PATH/$MADX"):
@@ -113,8 +110,7 @@ def fix_pythonfile_call(jobname: str, basedir: Path):
         else:
             raise OSError(f"'$MADX_PATH/$MADX' line not found in {mad6t_path.name}")
 
-        with open(mad6t_path, "w") as f:
-            f.writelines(lines)
+        Path(mad6t_path).write_text("".join(lines))
 
 
 def set_max_materialize(sixdesk: Path, max_materialize: int = None):
@@ -247,5 +243,5 @@ def _write_mask(jobname: str, basedir: Path, mask_text: str, **kwargs):
         "#!#SEEDRAN", "%SEEDRAN"
     )  # bring seedran back for sixdesk seed-loop
 
-    with open(masks_path / f"{jobname}.mask", "w") as mask_out:
-        mask_out.write(mask_filled)
+    mask_outfile = masks_path / f"{jobname}.mask"
+    mask_outfile.write_text(mask_filled)

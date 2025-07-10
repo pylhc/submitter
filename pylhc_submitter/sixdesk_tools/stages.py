@@ -9,6 +9,7 @@ In this module the stages are organized.
 import logging
 import re
 from abc import ABC, ABCMeta, abstractmethod
+from pathlib import Path
 
 from generic_parser import DotDict
 
@@ -219,7 +220,7 @@ class Stage(ABC, metaclass=StageMeta):
 
     def stage_done(self):
         """Append current stage name to stagefile."""
-        with open(self.stage_file, "a+") as f:
+        with Path(self.stage_file).open("a+") as f:
             f.write(f"{self!s}\n")
 
     def run(self):

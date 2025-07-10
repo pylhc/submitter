@@ -223,7 +223,7 @@ def write_bash(
         jobfile = job_dir / bash_file_name
 
         LOG.debug(f"Writing bash-file {idx:d} '{jobfile}'.")
-        with open(jobfile, "w") as f:
+        with Path(jobfile).open("w") as f:
             # Preparation ---
             if not on_windows():
                 f.write(f"{SHEBANG}\n")
