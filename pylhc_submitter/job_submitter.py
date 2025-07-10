@@ -352,7 +352,7 @@ def check_opts(opt):
     # Paths ---
     opt = keys_to_path(opt, "working_directory", "executable")
 
-    if str(opt.executable) in EXECUTEABLEPATH.keys():
+    if str(opt.executable) in EXECUTEABLEPATH:
         opt.executable = str(opt.executable)
 
     if is_mask_file(opt.mask):

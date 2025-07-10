@@ -273,7 +273,7 @@ def _test_subfile_content(setup: InputParameters):
         else:
             assert filecontents["transfer_output_files"] == '""'
 
-        for key in setup.htc_arguments.keys():
+        for key in setup.htc_arguments:
             assert filecontents[key] == setup.htc_arguments[key]
 
 

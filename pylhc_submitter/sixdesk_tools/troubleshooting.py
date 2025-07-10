@@ -45,12 +45,12 @@ def set_stages_for_setup(basedir: Path, stage_name: str, jobid_mask: str, replac
 
 def set_stages(jobname: str, basedir: Path, stage_name: str):
     """Sets the last run stage of all given jobs to `stage_name`."""
-    if stage_name not in STAGE_ORDER.keys():
+    if stage_name not in STAGE_ORDER:
         raise ValueError(f"Unknown stage '{stage_name}'")
     new_stage = STAGE_ORDER[stage_name]
 
     stages = []
-    for stage in STAGE_ORDER.keys():
+    for stage in STAGE_ORDER:
         stages.append(stage.name)
         if stage == new_stage:
             break
@@ -62,7 +62,7 @@ def set_stages(jobname: str, basedir: Path, stage_name: str):
 def skip_stages(jobname: str, basedir: Path, stage_name: str):
     """Skip stages until `stagename`, i.e. similar to `set_stages` but only if
     the stage hasn't been reached yet. Inverse to `reset_stages`"""
-    if stage_name not in STAGE_ORDER.keys():
+    if stage_name not in STAGE_ORDER:
         raise ValueError(f"Unknown stage '{stage_name}'")
 
     new_stage = STAGE_ORDER[stage_name]
@@ -77,7 +77,7 @@ def skip_stages(jobname: str, basedir: Path, stage_name: str):
 def reset_stages(jobname: str, basedir: Path, stage_name: str):
     """Reset stages until `stagename`, i.e. similar to `set_stages` but only if
     the stage has already been run. Inverse to `skip_stages`"""
-    if stage_name not in STAGE_ORDER.keys():
+    if stage_name not in STAGE_ORDER:
         raise ValueError(f"Unknown stage '{stage_name}'")
 
     new_stage = STAGE_ORDER[stage_name]
