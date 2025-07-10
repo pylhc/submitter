@@ -212,7 +212,7 @@ def test_twissfail_removal(tmp_path):
     for f in (mad6t, mad6t1):
         mad6t_lines = f.read_text().split("\n")
 
-        assert all(l.startswith("#") for l in mad6t_lines[:-1])
+        assert all(line.startswith("#") for line in mad6t_lines[:-1])
         assert mad6t_lines[-1].startswith("if")
 
 
