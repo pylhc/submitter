@@ -7,15 +7,14 @@ Individual functions to call SixDesk functionality.
 
 import logging
 from pathlib import Path
-from typing import Union
 
 from pylhc_submitter.constants.autosix import (
     MAD_TO_SIXTRACK_SH,
     RUNSIX_SH,
     RUNSTATUS_SH,
     SIXDB,
-    get_sixjobs_path,
     StageSkip,
+    get_sixjobs_path,
 )
 from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
 from pylhc_submitter.sixdesk_tools.utils import start_subprocess
@@ -57,11 +56,10 @@ def check_sixtrack_input(
                 "Resubmitted input generation jobs "
                 "(Not really an error, but the run is now interrupted)."
             )
-        else:
-            raise StageSkip(
-                "Checking input files failed. Check (debug-) logs. "
-                "Maybe restart with 'resubmit' flag."
-            ) from e
+        raise StageSkip(
+            "Checking input files failed. Check (debug-) logs. "
+            "Maybe restart with 'resubmit' flag."
+        ) from e
     else:
         LOG.info("Check for input files was successful.")
 
@@ -99,7 +97,7 @@ def submit_sixtrack(
 def check_sixtrack_output(
     jobname: str,
     basedir: Path,
-    python: Union[Path, str],
+    python: Path | str,
     sixdesk: Path = SIXDESK_UTILS,
     ssh: str = None,
     resubmit: bool = False,
@@ -117,11 +115,10 @@ def check_sixtrack_output(
                 " Resubmitted incomplete sixtrack jobs."
                 " Wait until they have finished and run again."
             )
-        else:
-            raise StageSkip(
-                f"Sixtrack for {jobname} seems to be incomplete."
-                f" Run possibly not finished. Check (debug-) log or your Scheduler."
-            ) from e
+        raise StageSkip(
+            f"Sixtrack for {jobname} seems to be incomplete."
+            f" Run possibly not finished. Check (debug-) log or your Scheduler."
+        ) from e
     else:
         LOG.info("Sixtrack results are all present.")
 
@@ -129,7 +126,7 @@ def check_sixtrack_output(
 def sixdb_load(
     jobname: str,
     basedir: Path,
-    python: Union[Path, str],
+    python: Path | str,
     sixdesk: Path = SIXDESK_UTILS,
     ssh: str = None,
 ):
@@ -147,7 +144,7 @@ def sixdb_load(
 def sixdb_cmd(
     jobname: str,
     basedir: Path,
-    python: Union[Path, str],
+    python: Path | str,
     cmd: list,
     sixdesk: Path = SIXDESK_UTILS,
     ssh: str = None,

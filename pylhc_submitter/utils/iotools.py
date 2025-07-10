@@ -5,9 +5,9 @@ IO-Tools
 Tools for input and output.
 """
 
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable
 
 from generic_parser.entry_datatypes import get_instance_faker_meta
 from generic_parser.entrypoint_parser import save_options_to_config

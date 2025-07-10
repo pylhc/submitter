@@ -9,11 +9,10 @@ Collections of constants and paths used in autosix.
 
 """
 
-from dataclasses import dataclass, fields, MISSING
-from pathlib import Path
-from typing import Union
-
 import logging
+from dataclasses import MISSING, dataclass, fields
+from pathlib import Path
+
 from pylhc_submitter.constants.external_paths import MADX_BIN, SIXDESK_UTILS
 from pylhc_submitter.constants.general import PMASS
 
@@ -40,9 +39,9 @@ HEADER_BASEDIR = "BASEDIR"
 class AutoSixEnvironment:
     mask_text: str
     working_directory: Path
-    executable: Union[str, Path] = MADX_BIN
-    python2: Union[str, Path] = None
-    python3: Union[str, Path] = "python3"
+    executable: str | Path = MADX_BIN
+    python2: str | Path = None
+    python3: str | Path = "python3"
     da_turnstep: int = 100
     sixdesk_directory: Path = SIXDESK_UTILS
     unlock: bool = False
@@ -93,7 +92,7 @@ class SixDeskEnvironment:
     def __post_init__(self):
         # Check Runtype, Energy and Gamma ---
         energy_map = {"inj": 450_000.0, "col": 7000_000.0}
-        if self.RUNTYPE not in energy_map.keys():
+        if self.RUNTYPE not in energy_map:
             raise ValueError(f"RUNTYPE needs to be one of : {list(energy_map.keys())}")
 
         if self.ENERGY is None:
@@ -101,7 +100,7 @@ class SixDeskEnvironment:
             LOG.debug(f"Energy for '{self.RUNTYPE}' defaults to {energy}")
             self.ENERGY = energy
 
-        if self.ENERGY >= 6500_000 and self.RUNTYPE != list(energy_map.keys())[1]:
+        if self.ENERGY >= 6500_000 and list(energy_map.keys())[1] != self.RUNTYPE:
             LOG.warning(
                 f"Runtype is {self.RUNTYPE}, yet energy is set to {self.ENERGY}. Are you sure?"
             )
@@ -173,7 +172,7 @@ def get_workspace_path(jobname: str, basedir: Path) -> Path:
 
 
 def get_scratch_path(basedir: Path) -> Path:
-    return basedir / f"scratch-0"
+    return basedir / "scratch-0"
 
 
 def get_sixjobs_path(jobname: str, basedir: Path) -> Path:

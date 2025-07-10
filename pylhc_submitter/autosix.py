@@ -204,9 +204,9 @@ from pylhc_submitter.constants.autosix import (
     AutoSixEnvironment,
 )
 from pylhc_submitter.constants.job_submitter import COLUMN_JOBID, JOBSUMMARY_FILE
-from pylhc_submitter.submitter.mask import generate_jobdf_index
 from pylhc_submitter.sixdesk_tools.stages import STAGE_ORDER, Stage
 from pylhc_submitter.sixdesk_tools.utils import check_mask, is_locked
+from pylhc_submitter.submitter.mask import generate_jobdf_index
 from pylhc_submitter.utils.iotools import (
     PathOrStr,
     keys_to_path,

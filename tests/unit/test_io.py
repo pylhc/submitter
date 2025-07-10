@@ -6,9 +6,9 @@ from generic_parser.entry_datatypes import DictAsString
 
 from pylhc_submitter.utils.iotools import (
     PathOrStr,
-    save_config,
     keys_to_path,
     make_replace_entries_iterable,
+    save_config,
 )
 
 

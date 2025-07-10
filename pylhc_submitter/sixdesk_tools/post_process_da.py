@@ -8,35 +8,37 @@ as well as plotting of DA polar plots.
 """
 
 import logging
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Tuple, Iterable
+from typing import Any
 
 import numpy as np
 import pandas as pd
 from generic_parser import DotDict
+from matplotlib import lines as mlines
 from matplotlib import pyplot as plt
-from matplotlib import rcParams, lines as mlines
+from matplotlib import rcParams
 from scipy.interpolate import interp1d
 from tfs import TfsDataFrame, write_tfs
 
 from pylhc_submitter.constants.autosix import (
-    get_tfs_da_path,
-    get_tfs_da_seed_stats_path,
-    get_tfs_da_angle_stats_path,
-    get_autosix_results_path,
-    HEADER_NTOTAL,
-    HEADER_INFO,
-    HEADER_HINT,
-    MEAN,
-    STD,
-    MIN,
-    MAX,
-    N,
-    SEED,
-    ANGLE,
     ALOST1,
     ALOST2,
     AMP,
+    ANGLE,
+    HEADER_HINT,
+    HEADER_INFO,
+    HEADER_NTOTAL,
+    MAX,
+    MEAN,
+    MIN,
+    SEED,
+    STD,
+    N,
+    get_autosix_results_path,
+    get_tfs_da_angle_stats_path,
+    get_tfs_da_path,
+    get_tfs_da_seed_stats_path,
 )
 from pylhc_submitter.sixdesk_tools.extract_data_from_db import extract_da_data
 
@@ -71,7 +73,7 @@ def post_process_da(jobname: str, basedir: Path):
 # Data Analysis ----------------------------------------------------------------
 
 
-def create_da_tfs(jobname: str, basedir: Path) -> Tuple[TfsDataFrame, TfsDataFrame, TfsDataFrame]:
+def create_da_tfs(jobname: str, basedir: Path) -> tuple[TfsDataFrame, TfsDataFrame, TfsDataFrame]:
     """Extracts data from db into dataframes, and writes and returns them.
 
     Args:
@@ -242,7 +244,7 @@ def plot_polar(
     return fig
 
 
-def _plot_seeds(ax, df_da: TfsDataFrame, da_col: str, interpolated: bool) -> Tuple[list, list]:
+def _plot_seeds(ax, df_da: TfsDataFrame, da_col: str, interpolated: bool) -> tuple[list, list]:
     """Add the Seed lines to the polar plots, if df_da is given.
 
     Args:

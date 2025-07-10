@@ -9,7 +9,7 @@ from pylhc_submitter.submitter.iotools import (
     print_stats,
     uri_to_path,
 )
-from pylhc_submitter.utils.environment import on_linux, on_windows
+from pylhc_submitter.utils.environment import on_windows
 
 
 @pytest.mark.skipif(on_windows(), reason="Paths are not split on '/' on Windows.")

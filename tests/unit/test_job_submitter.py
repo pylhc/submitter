@@ -1,7 +1,8 @@
 import itertools
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any
 
 import numpy as np
 import pytest
@@ -210,27 +211,27 @@ class InputParameters:
     """job_submitter input parameters."""
 
     working_directory: Path
-    executable: Optional[str] = None if on_windows() else "/bin/bash"
-    script_extension: Optional[str] = ".bat" if on_windows() else ".sh"
-    job_output_dir: Optional[str] = "Outputdir"
-    jobid_mask: Optional[str] = "%(PARAM1)s.%(PARAM2)d"
-    replace_dict: Optional[Dict] = field(
+    executable: str | None = None if on_windows() else "/bin/bash"
+    script_extension: str | None = ".bat" if on_windows() else ".sh"
+    job_output_dir: str | None = "Outputdir"
+    jobid_mask: str | None = "%(PARAM1)s.%(PARAM2)d"
+    replace_dict: dict | None = field(
         default_factory=lambda: dict(PARAM1=["a", "b"], PARAM2=[1, 2, 3])
     )
-    jobflavour: Optional[str] = "workday"
-    resume_jobs: Optional[bool] = True
-    check_files: Optional[Sequence] = field(
+    jobflavour: str | None = "workday"
+    resume_jobs: bool | None = True
+    check_files: Sequence | None = field(
         default_factory=lambda: [
             "out.txt",
         ]
     )
-    dryrun: Optional[bool] = False
-    run_local: Optional[bool] = False
-    htc_arguments: Optional[Dict] = field(
+    dryrun: bool | None = False
+    run_local: bool | None = False
+    htc_arguments: dict | None = field(
         default_factory=lambda: {"max_retries": "4", "some_other_argument": "some_other_parameter"}
     )
-    output_destination: Optional[Path] = None
-    mask: Union[Path, str] = None  # will be set in create_mask
+    output_destination: Path | None = None
+    mask: Path | str = None  # will be set in create_mask
 
     def create_mask(
         self, name: str = "test_script.mask", content: str = None, as_file: bool = False
@@ -322,7 +323,7 @@ def _test_output(setup: InputParameters, post_run: bool = True):
             _check_output_content(setup.output_destination, check_output=post_run)
 
 
-def _generate_combinations(data: Dict[str, Sequence]) -> List[Dict[str, Any]]:
+def _generate_combinations(data: dict[str, Sequence]) -> list[dict[str, Any]]:
     """Creates all possible combinations of values in data as a list of dictionaries."""
     keys = list(data.keys())
     all_values = [data[key] for key in keys]

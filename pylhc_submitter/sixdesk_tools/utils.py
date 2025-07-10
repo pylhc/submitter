@@ -45,7 +45,7 @@ def is_locked(jobname: str, basedir: Path, unlock: bool = False):
         for lock in locks:
             LOG.info(f"{str(lock.parent)}")
 
-            with open(lock, "r") as f:
+            with open(lock) as f:
                 txt = f.read()
             txt = txt.replace(str(SIXDESK_UTILS), "$SIXUTILS").strip("\n")
             if txt:

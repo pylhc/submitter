@@ -8,8 +8,8 @@ submission.
 
 import logging
 import re
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Iterable, List, Sequence, Set, Union
 
 import pandas as pd
 from numpy.typing import ArrayLike
@@ -54,7 +54,7 @@ def create_job_scripts_from_mask(
     return job_df
 
 
-def find_named_variables_in_mask(mask: str) -> Set[str]:
+def find_named_variables_in_mask(mask: str) -> set[str]:
     """Find all variable-names in the mask."""
     return set(re.findall(r"%\((\w+)\)", mask))
 
@@ -76,7 +76,7 @@ def check_percentage_signs_in_mask(mask: str) -> None:
 
 def generate_jobdf_index(
     old_df: pd.DataFrame, jobid_mask: str, keys: Sequence[str], values: ArrayLike
-) -> Union[List[str], Iterable[int]]:
+) -> list[str] | Iterable[int]:
     """Generates index for jobdf from mask for job_id naming.
 
     Args:
@@ -113,4 +113,4 @@ def is_mask_string(mask: str) -> bool:
 
 
 if __name__ == "__main__":
-    raise EnvironmentError(f"{__file__} is not supposed to run as main.")
+    raise OSError(f"{__file__} is not supposed to run as main.")

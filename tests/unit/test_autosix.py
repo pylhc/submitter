@@ -5,23 +5,23 @@ from unittest.mock import patch
 
 import tfs
 
+from pylhc_submitter.autosix import _generate_jobs, run_job
+from pylhc_submitter.constants.autosix import (
+    ANGLE,
+    AutoSixEnvironment,
+    get_autosix_results_path,
+    get_mad6t1_mask_path,
+    get_mad6t_mask_path,
+    get_masks_path,
+    get_sixdeskenv_path,
+    get_stagefile_path,
+    get_sysenv_path,
+)
 from pylhc_submitter.sixdesk_tools.create_workspace import (
     remove_twiss_fail_check,
     set_max_materialize,
 )
-from pylhc_submitter.sixdesk_tools.post_process_da import plot_polar, plt
-from pylhc_submitter.autosix import _generate_jobs, run_job
-from pylhc_submitter.constants.autosix import (
-    get_masks_path,
-    get_autosix_results_path,
-    get_sixdeskenv_path,
-    get_sysenv_path,
-    get_stagefile_path,
-    ANGLE,
-    get_mad6t_mask_path,
-    get_mad6t1_mask_path,
-    AutoSixEnvironment,
-)
+from pylhc_submitter.sixdesk_tools.post_process_da import plot_polar
 from pylhc_submitter.sixdesk_tools.stages import STAGE_ORDER, CreateJob, InitializeWorkspace
 
 STAGE_NAMES = list(STAGE_ORDER.keys())

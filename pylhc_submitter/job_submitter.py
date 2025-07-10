@@ -409,7 +409,7 @@ def check_opts(opt):
 def _check_htcondor_presence() -> None:
     """Raises an error if htcondor is not installed."""
     if htcondor is None:
-        raise EnvironmentError("htcondor bindings are necessary to run this module.")
+        raise OSError("htcondor bindings are necessary to run this module.")
 
 
 # Script Mode ------------------------------------------------------------------

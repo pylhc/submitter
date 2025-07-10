@@ -11,37 +11,21 @@ like fvanderv does.
 
 import logging
 import sqlite3 as sql
-from pathlib import Path
-from typing import Any, Tuple, Iterable
 from contextlib import contextmanager
+from pathlib import Path
 
-import numpy as np
 import pandas as pd
-from generic_parser import DotDict
-from matplotlib import pyplot as plt
-from matplotlib import rcParams, lines as mlines
-from scipy.interpolate import interp1d
-from tfs import TfsDataFrame, write_tfs
+from tfs import TfsDataFrame
 
 from pylhc_submitter.constants.autosix import (
-    get_database_path,
-    get_tfs_da_path,
-    get_tfs_da_seed_stats_path,
-    get_tfs_da_angle_stats_path,
-    get_autosix_results_path,
-    HEADER_NTOTAL,
-    HEADER_INFO,
-    HEADER_HINT,
-    MEAN,
-    STD,
-    MIN,
-    MAX,
-    N,
-    SEED,
-    ANGLE,
     ALOST1,
     ALOST2,
     AMP,
+    ANGLE,
+    MAX,
+    MIN,
+    SEED,
+    get_database_path,
 )
 
 LOG = logging.getLogger(__name__)

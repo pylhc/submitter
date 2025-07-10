@@ -8,31 +8,31 @@ In this module the stages are organized.
 
 import logging
 import re
-from abc import ABC, abstractmethod, ABCMeta
+from abc import ABC, ABCMeta, abstractmethod
 
 from generic_parser import DotDict
 
 from pylhc_submitter.constants.autosix import (
-    get_stagefile_path,
+    AutoSixEnvironment,
     StageSkip,
     StageStop,
-    AutoSixEnvironment,
+    get_stagefile_path,
 )
 from pylhc_submitter.sixdesk_tools.create_workspace import (
     create_job,
-    init_workspace,
     fix_pythonfile_call,
+    init_workspace,
     remove_twiss_fail_check,
     set_max_materialize,
 )
 from pylhc_submitter.sixdesk_tools.post_process_da import post_process_da
 from pylhc_submitter.sixdesk_tools.submit import (
-    submit_mask,
     check_sixtrack_input,
-    submit_sixtrack,
     check_sixtrack_output,
-    sixdb_load,
     sixdb_cmd,
+    sixdb_load,
+    submit_mask,
+    submit_sixtrack,
 )
 
 LOG = logging.getLogger(__name__)
@@ -189,9 +189,8 @@ class Stage(ABC, metaclass=StageMeta):
         if not self.stage_file.exists():
             if self == 0:
                 return True
-            else:
-                LOG.info(f"Stage '{self!s}' not run because previous stage(s) missing.")
-                return False
+            LOG.info(f"Stage '{self!s}' not run because previous stage(s) missing.")
+            return False
 
         stage_file_txt = self.stage_file.read_text().split("\n")
         run_stages = [line.strip() for line in stage_file_txt if line.strip()]

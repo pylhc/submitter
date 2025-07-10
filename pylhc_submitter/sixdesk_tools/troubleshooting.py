@@ -10,12 +10,12 @@ from pathlib import Path
 
 from pylhc_submitter.autosix import get_jobs_and_values
 from pylhc_submitter.constants.autosix import (
-    get_stagefile_path,
-    get_track_path,
-    get_workspace_path,
     SIXTRACK_INPUT_CHECK_FILES,
     SIXTRACK_OUTPUT_FILES,
     get_database_path,
+    get_stagefile_path,
+    get_track_path,
+    get_workspace_path,
 )
 from pylhc_submitter.sixdesk_tools.stages import STAGE_ORDER
 

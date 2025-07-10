@@ -7,9 +7,10 @@ Tools for input and output for the job-submitter.
 
 import itertools
 import logging
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Tuple, Union
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -34,7 +35,7 @@ from pylhc_submitter.submitter.mask import (
 LOG = logging.getLogger(__name__)
 
 
-JobNamesType = Sequence[Union[str, int]]
+JobNamesType = Sequence[str | int]
 
 
 @dataclass
@@ -42,16 +43,16 @@ class CreationOpts:
     """Options for creating jobs."""
 
     working_directory: Path  # Path to working directory (afs)
-    mask: Union[Path, str]  # Path to mask file or mask-string
+    mask: Path | str  # Path to mask file or mask-string
     jobid_mask: str  # Mask for jobid
-    replace_dict: Dict[str, Any]  # Replace-dict
+    replace_dict: dict[str, Any]  # Replace-dict
     output_dir: Path  # Path to local output directory
-    output_destination: Union[Path, str]  # Path or URI to remote output directory (e.g. eos)
+    output_destination: Path | str  # Path or URI to remote output directory (e.g. eos)
     append_jobs: bool  # Append jobs to existing jobs
     resume_jobs: bool  # Resume jobs that have already run/failed/got interrupted
     executable: str  # Name of executable to call the script (from mask)
     check_files: Sequence[str]  # List of output files to check for success
-    script_arguments: Dict[str, Any]  # Arguments to pass to script
+    script_arguments: dict[str, Any]  # Arguments to pass to script
     script_extension: str  # Extension of the script to run
 
     def should_drop_jobs(self) -> bool:
@@ -86,7 +87,7 @@ def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
     # Check new jobs ---
     njobs = len(values_grid)
     if njobs == 0:
-        raise ValueError(f"No (new) jobs found!")
+        raise ValueError("No (new) jobs found!")
 
     if njobs > HTCONDOR_JOBLIMIT:
         LOG.warning(
@@ -139,7 +140,7 @@ def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
 def create_folders(
     job_df: tfs.TfsDataFrame,
     working_directory: Path,
-    destination_directory: Union[Path, str] = None,
+    destination_directory: Path | str = None,
 ) -> tfs.TfsDataFrame:
     """Create the folder-structure in the given working directory and the
     destination directory if given.
@@ -192,7 +193,7 @@ def create_folders(
     return job_df
 
 
-def is_eos_uri(path: Union[Path, str, None]) -> bool:
+def is_eos_uri(path: Path | str | None) -> bool:
     """Check if the given path is an EOS-URI as `eos cp` only works with those.
     E.g.: root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt
 
@@ -212,7 +213,7 @@ def is_eos_uri(path: Union[Path, str, None]) -> bool:
     )
 
 
-def uri_to_path(path: Union[Path, str]) -> Path:
+def uri_to_path(path: Path | str) -> Path:
     """Strip EOS path information from a path.
     EOS paths for HTCondor can be given as URI. Strip for direct writing.
     E.g.: root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt
@@ -225,7 +226,7 @@ def uri_to_path(path: Union[Path, str]) -> Path:
     return path
 
 
-def get_server_from_uri(path: Union[Path, str]) -> str:
+def get_server_from_uri(path: Path | str) -> str:
     """Get server information from a path.
     E.g.: root://eosuser.cern.ch//eos/user/a/ -> root://eosuser.cern.ch/
     """
@@ -255,8 +256,8 @@ def print_stats(new_jobs: JobNamesType, finished_jobs: JobNamesType):
 
 
 def _generate_parameter_space(
-    replace_dict: Dict[str, Any], append_jobs: bool, cwd: Path
-) -> Tuple[List[str], np.ndarray, tfs.TfsDataFrame]:
+    replace_dict: dict[str, Any], append_jobs: bool, cwd: Path
+) -> tuple[list[str], np.ndarray, tfs.TfsDataFrame]:
     """Generate parameter space from replace-dict, check for existing jobs."""
     LOG.debug("Generating parameter space from replace-dict.")
     parameters = list(replace_dict.keys())
@@ -277,14 +278,14 @@ def _generate_parameter_space(
     return parameters, values_grid, prev_job_df
 
 
-def _generate_values_grid(replace_dict: Dict[str, Any]) -> np.ndarray:
+def _generate_values_grid(replace_dict: dict[str, Any]) -> np.ndarray:
     """Creates an array of the inner-product of the replace-dict."""
     return np.array(list(itertools.product(*replace_dict.values())), dtype=object)
 
 
 def _drop_already_run_jobs(
     job_df: tfs.TfsDataFrame, output_dir: str, check_files: str
-) -> Tuple[tfs.TfsDataFrame, List[str]]:
+) -> tuple[tfs.TfsDataFrame, list[str]]:
     """Check for jobs that have already been run and drop them from current job_df."""
     LOG.debug("Dropping already finished jobs.")
     finished_jobs = [

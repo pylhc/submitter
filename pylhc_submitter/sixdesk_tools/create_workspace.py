@@ -5,32 +5,29 @@ Create SixDesk Workspace
 Tools to setup the workspace for sixdesk.
 """
 
+import logging
 import re
 import shutil
 from dataclasses import asdict
 from pathlib import Path
-from typing import Union
 
 import numpy as np
-import logging
-
-from generic_parser import DotDict
 
 from pylhc_submitter.constants.autosix import (
-    SETENV_SH,
-    SIXENV_REQUIRED,
     SEED_KEYS,
-    get_workspace_path,
-    get_scratch_path,
-    get_sixjobs_path,
-    get_masks_path,
-    get_mad6t_mask_path,
-    get_mad6t1_mask_path,
-    get_autosix_results_path,
-    get_sysenv_path,
-    get_sixdeskenv_path,
-    SixDeskEnvironment,
+    SETENV_SH,
     SIXENV_OPTIONAL,
+    SIXENV_REQUIRED,
+    SixDeskEnvironment,
+    get_autosix_results_path,
+    get_mad6t1_mask_path,
+    get_mad6t_mask_path,
+    get_masks_path,
+    get_scratch_path,
+    get_sixdeskenv_path,
+    get_sixjobs_path,
+    get_sysenv_path,
+    get_workspace_path,
 )
 from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
 from pylhc_submitter.sixdesk_tools.utils import start_subprocess
@@ -47,7 +44,7 @@ LOG = logging.getLogger(__name__)
 def create_job(
     jobname: str,
     basedir: Path,
-    executable: Union[Path, str],
+    executable: Path | str,
     mask_text: str,
     sixdesk: Path = SIXDESK_UTILS,
     ssh: str = None,
@@ -79,7 +76,7 @@ def remove_twiss_fail_check(jobname: str, basedir: Path):
         get_mad6t_mask_path(jobname, basedir),
         get_mad6t1_mask_path(jobname, basedir),
     ):
-        with open(mad6t_path, "r") as f:
+        with open(mad6t_path) as f:
             lines = f.readlines()
 
         check_started = False
@@ -106,15 +103,15 @@ def fix_pythonfile_call(jobname: str, basedir: Path):
         get_mad6t_mask_path(jobname, basedir),
         get_mad6t1_mask_path(jobname, basedir),
     ):
-        with open(mad6t_path, "r") as f:
+        with open(mad6t_path) as f:
             lines = f.readlines()
 
         for idx, line in enumerate(lines):
             if line.startswith("$MADX_PATH/$MADX"):
-                lines[idx] = f'$MADX_PATH/$MADX $junktmp/$filejob."$i" > $filejob.out."$i"\n'
+                lines[idx] = '$MADX_PATH/$MADX $junktmp/$filejob."$i" > $filejob.out."$i"\n'
                 break
         else:
-            raise IOError(f"'$MADX_PATH/$MADX' line not found in {mad6t_path.name}")
+            raise OSError(f"'$MADX_PATH/$MADX' line not found in {mad6t_path.name}")
 
         with open(mad6t_path, "w") as f:
             f.writelines(lines)
@@ -150,8 +147,8 @@ def set_max_materialize(sixdesk: Path, max_materialize: int = None):
     # Write out
     try:
         sub_path.write_text(sub_content)
-    except IOError as e:
-        raise IOError(
+    except OSError as e:
+        raise OSError(
             f"Could not write to {sub_path!s}. `max_materialization` could not be set.\n"
             f"Remove option or use a SixDesk with writing rights."
         ) from e
@@ -198,7 +195,7 @@ def _create_sixdeskenv(jobname: str, basedir: Path, **kwargs):
     scratch_path = get_scratch_path(basedir)
     sixdeskenv_path = get_sixdeskenv_path(jobname, basedir)
 
-    missing = [key for key in SIXENV_REQUIRED if key not in kwargs.keys()]
+    missing = [key for key in SIXENV_REQUIRED if key not in kwargs]
     if len(missing):
         raise ValueError(f"The following keys are required but missing {missing}.")
 

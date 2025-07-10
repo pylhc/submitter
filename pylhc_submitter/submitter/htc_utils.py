@@ -16,7 +16,7 @@ job can be specified, standard is 8h.
 import logging
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any
 
 from pandas import DataFrame
 
@@ -57,7 +57,7 @@ LOG = logging.getLogger(__name__)
 # Subprocess Methods ###########################################################
 
 
-def create_subfile_from_job(cwd: Path, submission: Union[str, htcondor.Submit]) -> Path:
+def create_subfile_from_job(cwd: Path, submission: str | htcondor.Submit) -> Path:
     """
     Write file to submit to ``HTCondor``.
 
@@ -88,11 +88,10 @@ def submit_jobfile(jobfile: Path, ssh: str) -> None:
     status = _start_subprocess(proc_args)
     if status:
         raise RuntimeError("Submit to HTCondor was not successful!")
-    else:
-        LOG.info("Jobs successfully submitted.")
+    LOG.info("Jobs successfully submitted.")
 
 
-def _start_subprocess(command: List[str]) -> int:
+def _start_subprocess(command: list[str]) -> int:
     """Start subprocess and log output.
 
     Args:
@@ -190,7 +189,7 @@ def write_bash(
     output_dir: Path = None,
     executable: str = "madx",
     cmdline_arguments: dict = None,
-    mask: Union[str, Path] = None,
+    mask: str | Path = None,
 ) -> DataFrame:
     """
     Write the bash-files to be called by ``HTCondor``, which in turn call the executable.
@@ -266,7 +265,7 @@ def write_bash(
     return job_df
 
 
-def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
+def map_kwargs(add_dict: dict[str, Any]) -> dict[str, Any]:
     """
     Maps the kwargs for the job-file.
     Some arguments have pre-defined choices and defaults, the remaining ones are just passed on.
@@ -317,7 +316,7 @@ def _maybe_put_in_quotes(key: str, value: Any) -> Any:
     return value
 
 
-def _str_ending_with_slash(s: Union[Path, str]) -> str:
+def _str_ending_with_slash(s: Path | str) -> str:
     """Add a slash at the end of a path if not present."""
     s = str(s)
     if s.endswith("/"):
@@ -329,4 +328,4 @@ def _str_ending_with_slash(s: Union[Path, str]) -> str:
 
 
 if __name__ == "__main__":
-    raise EnvironmentError(f"{__file__} is not supposed to run as main.")
+    raise OSError(f"{__file__} is not supposed to run as main.")
