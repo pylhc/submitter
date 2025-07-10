@@ -6,6 +6,8 @@ In this module the stages are organized.
 
 """
 
+from __future__ import annotations
+
 import logging
 import re
 from abc import ABC, ABCMeta, abstractmethod

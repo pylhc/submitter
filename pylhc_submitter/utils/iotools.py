@@ -5,6 +5,8 @@ IO-Tools
 Tools for input and output.
 """
 
+from __future__ import annotations
+
 from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path

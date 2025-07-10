@@ -5,6 +5,8 @@ Job Submitter Runners
 Defines the methods to run the job-submitter, locally or on HTC.
 """
 
+from __future__ import annotations
+
 import logging
 import multiprocessing
 import subprocess

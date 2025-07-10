@@ -9,6 +9,8 @@ Collections of constants and paths used in autosix.
 
 """
 
+from __future__ import annotations
+
 import logging
 from dataclasses import MISSING, dataclass, fields
 from pathlib import Path
@@ -45,7 +47,7 @@ class AutoSixEnvironment:
     da_turnstep: int = 100
     sixdesk_directory: Path = SIXDESK_UTILS
     unlock: bool = False
-    max_stage: "Stage" = None
+    max_stage: Stage = None
     ssh: str = None
     stop_workspace_init: bool = False
     apply_mad6t_hacks: bool = False

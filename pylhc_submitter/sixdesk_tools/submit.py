@@ -5,6 +5,8 @@ SixDesk Submission Utils
 Individual functions to call SixDesk functionality.
 """
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 

@@ -5,6 +5,8 @@ Environment Tools
 Some tools that depend on the environment of the run.
 """
 
+from __future__ import annotations
+
 import sys
 
 

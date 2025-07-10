@@ -5,6 +5,8 @@ Job Submitter IO-Tools
 Tools for input and output for the job-submitter.
 """
 
+from __future__ import annotations
+
 import itertools
 import logging
 from collections.abc import Sequence

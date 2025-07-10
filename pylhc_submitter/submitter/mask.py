@@ -6,6 +6,8 @@ This module provides functionality to resolve and write script masks for ``HTCon
 submission.
 """
 
+from __future__ import annotations
+
 import logging
 import re
 from collections.abc import Iterable, Sequence

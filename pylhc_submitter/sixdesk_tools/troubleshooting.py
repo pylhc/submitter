@@ -5,6 +5,8 @@ SixDesk Troubleshooting tools
 Some useful functions to troubleshoot the SixDesk output.
 """
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 

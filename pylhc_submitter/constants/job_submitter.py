@@ -5,6 +5,8 @@ Job Submitter
 Collections of constants and paths used in the job-submitter.
 """
 
+from __future__ import annotations
+
 from pylhc_submitter.constants.external_paths import MADX_BIN, PYTHON2_BIN, PYTHON3_BIN
 
 JOBSUMMARY_FILE = "Jobs.tfs"

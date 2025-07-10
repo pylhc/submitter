@@ -5,6 +5,8 @@ Create SixDesk Workspace
 Tools to setup the workspace for sixdesk.
 """
 
+from __future__ import annotations
+
 import logging
 import re
 import shutil

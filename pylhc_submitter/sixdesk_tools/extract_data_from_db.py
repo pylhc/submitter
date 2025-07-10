@@ -9,6 +9,8 @@ TODO: Implement extraction of data into ``.csv`` (and/or tfs?)
 like fvanderv does.
 """
 
+from __future__ import annotations
+
 import logging
 import sqlite3 as sql
 from contextlib import contextmanager

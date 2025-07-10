@@ -188,6 +188,8 @@ Arguments:
 
 """
 
+from __future__ import annotations
+
 import itertools
 import logging
 from pathlib import Path

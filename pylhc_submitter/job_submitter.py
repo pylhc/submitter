@@ -151,6 +151,8 @@ For additional information and guides, see the `Job Submitter page
 
 """
 
+from __future__ import annotations
+
 import logging
 import sys
 from dataclasses import fields

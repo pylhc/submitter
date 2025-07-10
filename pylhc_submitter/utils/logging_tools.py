@@ -5,6 +5,8 @@ Logging Tools
 Tools that make the logging life easier.
 """
 
+from __future__ import annotations
+
 import logging
 import sys
 

@@ -13,6 +13,8 @@ A shell script is created in each job directory in the dataframe.
 job can be specified, standard is 8h.
 """
 
+from __future__ import annotations
+
 import logging
 import subprocess
 from pathlib import Path

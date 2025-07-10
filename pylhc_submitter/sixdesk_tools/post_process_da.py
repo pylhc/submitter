@@ -7,6 +7,8 @@ da. Includes functions for extracting data from database
 as well as plotting of DA polar plots.
 """
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Any

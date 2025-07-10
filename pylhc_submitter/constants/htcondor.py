@@ -5,6 +5,8 @@ HTCondor
 Constants for the HTCondor parameters.
 """
 
+from __future__ import annotations
+
 SHEBANG = "#!/bin/bash"
 SUBFILE = "queuehtc.sub"
 BASH_FILENAME = "Job"
