@@ -8,9 +8,8 @@ as well as plotting of DA polar plots.
 """
 
 import logging
-from collections.abc import Iterable
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pandas as pd
@@ -41,6 +40,10 @@ from pylhc_submitter.constants.autosix import (
     get_tfs_da_seed_stats_path,
 )
 from pylhc_submitter.sixdesk_tools.extract_data_from_db import extract_da_data
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
 
 LOG = logging.getLogger(__name__)
 
