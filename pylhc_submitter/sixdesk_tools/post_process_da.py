@@ -10,7 +10,6 @@ as well as plotting of DA polar plots.
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -44,6 +43,7 @@ from pylhc_submitter.sixdesk_tools.extract_data_from_db import extract_da_data
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+    from pathlib import Path
 
     import pandas as pd
 

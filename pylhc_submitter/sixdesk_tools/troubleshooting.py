@@ -8,7 +8,7 @@ Some useful functions to troubleshoot the SixDesk output.
 from __future__ import annotations
 
 import logging
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from pylhc_submitter.autosix import get_jobs_and_values
 from pylhc_submitter.constants.autosix import (
@@ -20,6 +20,9 @@ from pylhc_submitter.constants.autosix import (
     get_workspace_path,
 )
 from pylhc_submitter.sixdesk_tools.stages import STAGE_ORDER
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 LOG = logging.getLogger(__name__)
 

@@ -8,7 +8,7 @@ Individual functions to call SixDesk functionality.
 from __future__ import annotations
 
 import logging
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from pylhc_submitter.constants.autosix import (
     MAD_TO_SIXTRACK_SH,
@@ -20,6 +20,9 @@ from pylhc_submitter.constants.autosix import (
 )
 from pylhc_submitter.constants.external_paths import SIXDESK_UTILS
 from pylhc_submitter.sixdesk_tools.utils import start_subprocess
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 LOG = logging.getLogger(__name__)
 

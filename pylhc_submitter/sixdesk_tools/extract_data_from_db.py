@@ -14,7 +14,7 @@ from __future__ import annotations
 import logging
 import sqlite3 as sql
 from contextlib import contextmanager
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pandas as pd
 from tfs import TfsDataFrame
@@ -29,6 +29,9 @@ from pylhc_submitter.constants.autosix import (
     SEED,
     get_database_path,
 )
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 LOG = logging.getLogger(__name__)
 
