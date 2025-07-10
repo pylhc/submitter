@@ -328,8 +328,6 @@ def _generate_combinations(data: dict[str, Sequence]) -> list[dict[str, Any]]:
     keys = list(data.keys())
     all_values = [data[key] for key in keys]
 
-    combinations = [
+    return [
         {keys[i]: values[i] for i in range(len(keys))} for values in itertools.product(*all_values)
     ]
-
-    return combinations

@@ -57,8 +57,7 @@ def check_sixtrack_input(
                 "(Not really an error, but the run is now interrupted)."
             )
         raise StageSkip(
-            "Checking input files failed. Check (debug-) logs. "
-            "Maybe restart with 'resubmit' flag."
+            "Checking input files failed. Check (debug-) logs. Maybe restart with 'resubmit' flag."
         ) from e
     else:
         LOG.info("Check for input files was successful.")
