@@ -79,7 +79,7 @@ def remove_twiss_fail_check(jobname: str, basedir: Path):
         get_mad6t_mask_path(jobname, basedir),
         get_mad6t1_mask_path(jobname, basedir),
     ):
-        lines = Path(mad6t_path).read_text().splitlines(keepends=True)
+        lines = mad6t_path.read_text().splitlines(keepends=True)
 
         check_started = False
         for idx, line in enumerate(lines):
