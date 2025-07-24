@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pylhc_submitter.constants.autosix &mdash; pylhc_submitter 2.0.4 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=449bdd91" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=adc66a14"></script>
-        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=adc66a14"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -35,9 +33,6 @@
             
               <img src="../../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                2.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -122,13 +117,15 @@
 <span class="sd">:author: jdilly</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">MISSING</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.external_paths</span> <span class="kn">import</span> <span class="n">MADX_BIN</span><span class="p">,</span> <span class="n">SIXDESK_UTILS</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.general</span> <span class="kn">import</span> <span class="n">PMASS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">MISSING</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.constants.external_paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">MADX_BIN</span><span class="p">,</span> <span class="n">SIXDESK_UTILS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.constants.general</span><span class="w"> </span><span class="kn">import</span> <span class="n">PMASS</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -145,23 +142,23 @@
 
 <span class="c1"># Constants and Requirements ---------------------------------------------------</span>
 
-<span class="n">HEADER_BASEDIR</span> <span class="o">=</span> <span class="s2">&quot;BASEDIR&quot;</span>
+<span class="n">HEADER_BASEDIR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;BASEDIR&quot;</span>
 
 
 <span class="c1"># AutoSix Environment (also defines defaults) ---</span>
 <div class="viewcode-block" id="AutoSixEnvironment">
 <a class="viewcode-back" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.AutoSixEnvironment">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">AutoSixEnvironment</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AutoSixEnvironment</span><span class="p">:</span>
     <span class="n">mask_text</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">working_directory</span><span class="p">:</span> <span class="n">Path</span>
-    <span class="n">executable</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="n">MADX_BIN</span>
-    <span class="n">python2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">python3</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;python3&quot;</span>
+    <span class="n">executable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">MADX_BIN</span>
+    <span class="n">python2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">python3</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="s2">&quot;python3&quot;</span>
     <span class="n">da_turnstep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">sixdesk_directory</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">SIXDESK_UTILS</span>
     <span class="n">unlock</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">max_stage</span><span class="p">:</span> <span class="s1">&#39;Stage&#39;</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">max_stage</span><span class="p">:</span> <span class="n">Stage</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># noqa: F821</span>
     <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">stop_workspace_init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">apply_mad6t_hacks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -171,15 +168,18 @@
 
 
 <span class="c1"># Sixenv ---</span>
-<span class="k">class</span> <span class="nc">_SetDynamicallyType</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_SetDynamicallyType</span><span class="p">:</span>
     <span class="k">pass</span>
+
+
 <span class="n">SetDynamically</span> <span class="o">=</span> <span class="n">_SetDynamicallyType</span><span class="p">()</span>
 <span class="sd">&quot;&quot;&quot;Sentinel value defining a parameter that is set later dynamically.&quot;&quot;&quot;</span>
+
 
 <div class="viewcode-block" id="SixDeskEnvironment">
 <a class="viewcode-back" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.SixDeskEnvironment">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">SixDeskEnvironment</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SixDeskEnvironment</span><span class="p">:</span>
     <span class="n">TURNS</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">AMPMIN</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">AMPMAX</span><span class="p">:</span> <span class="nb">int</span>
@@ -201,12 +201,14 @@
     <span class="n">DIMENSIONS</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># Phase-Space dimensions</span>
     <span class="n">WRITEBINS</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span>
     <span class="n">ENERGY</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">GAMMA</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">SetDynamically</span>  <span class="c1"># calculated from ENERGY, needs to be here so asdict() converts it</span>
+    <span class="n">GAMMA</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">SetDynamically</span>  <span class="c1"># calculated from ENERGY, needs to be here so asdict() converts it</span>
+    <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Check Runtype, Energy and Gamma ---</span>
-        <span class="n">energy_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;inj&#39;</span><span class="p">:</span> <span class="mf">450_000.</span><span class="p">,</span> <span class="s1">&#39;col&#39;</span><span class="p">:</span> <span class="mf">7000_000.</span><span class="p">}</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RUNTYPE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">energy_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">energy_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;inj&quot;</span><span class="p">:</span> <span class="mf">450_000.0</span><span class="p">,</span> <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="mf">7000_000.0</span><span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RUNTYPE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">energy_map</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RUNTYPE needs to be one of : </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">energy_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENERGY</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -214,8 +216,10 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Energy for &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RUNTYPE</span><span class="si">}</span><span class="s2">&#39; defaults to </span><span class="si">{</span><span class="n">energy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ENERGY</span> <span class="o">=</span> <span class="n">energy</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENERGY</span> <span class="o">&gt;=</span> <span class="mi">6500_000</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">RUNTYPE</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="n">energy_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Runtype is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RUNTYPE</span><span class="si">}</span><span class="s2">, yet energy is set to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ENERGY</span><span class="si">}</span><span class="s2">. Are you sure?&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENERGY</span> <span class="o">&gt;=</span> <span class="mi">6500_000</span> <span class="ow">and</span> <span class="nb">list</span><span class="p">(</span><span class="n">energy_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RUNTYPE</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Runtype is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">RUNTYPE</span><span class="si">}</span><span class="s2">, yet energy is set to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ENERGY</span><span class="si">}</span><span class="s2">. Are you sure?&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">GAMMA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENERGY</span> <span class="o">/</span> <span class="mi">1000</span> <span class="o">/</span> <span class="n">PMASS</span>
 
@@ -237,8 +241,14 @@
 
 
 
-<span class="n">SIXENV_REQUIRED</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">SixDeskEnvironment</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="n">MISSING</span><span class="p">)]</span>  <span class="c1"># required by user</span>
-<span class="n">SIXENV_OPTIONAL</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">SixDeskEnvironment</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">MISSING</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">SetDynamically</span><span class="p">)]</span>
+<span class="n">SIXENV_REQUIRED</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">SixDeskEnvironment</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="n">MISSING</span><span class="p">)</span>
+<span class="p">]</span>  <span class="c1"># required by user</span>
+<span class="n">SIXENV_OPTIONAL</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">SixDeskEnvironment</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">MISSING</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">SetDynamically</span><span class="p">)</span>
+<span class="p">]</span>
 <span class="n">SEED_KEYS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;FIRSTSEED&quot;</span><span class="p">,</span> <span class="s2">&quot;LASTSEED&quot;</span><span class="p">]</span>
 
 <span class="c1"># SixDB and Postprocess ---</span>
@@ -254,95 +264,97 @@
 <span class="c1"># Errors ---</span>
 
 
-<div class="viewcode-block" id="StageSkip">
-<a class="viewcode-back" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.StageSkip">[docs]</a>
-<span class="k">class</span> <span class="nc">StageSkip</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Indicates that the stage was not completed or skipped entirely.</span>
+<div class="viewcode-block" id="StageSkipError">
+<a class="viewcode-back" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.StageSkipError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StageSkipError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that the stage was not completed or skipped entirely.</span>
 <span class="sd">    This can be due to an error or on purpose (e.g. user interaction before</span>
-<span class="sd">    restart). &quot;&quot;&quot;</span>
+<span class="sd">    restart).&quot;&quot;&quot;</span>
+
     <span class="k">pass</span></div>
 
 
 
-<div class="viewcode-block" id="StageStop">
-<a class="viewcode-back" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.StageStop">[docs]</a>
-<span class="k">class</span> <span class="nc">StageStop</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; A signal sent at the end of a Stage indicating, that it has succeeded</span>
+<div class="viewcode-block" id="StageStopError">
+<a class="viewcode-back" href="../../../modules/constants.html#pylhc_submitter.constants.autosix.StageStopError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StageStopError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A signal sent at the end of a Stage indicating, that it has succeeded</span>
 <span class="sd">    and that any iteration should be stopped after this Stage as the jobs have</span>
-<span class="sd">    been submitted and the user needs to wait for them to finish. &quot;&quot;&quot;</span>
+<span class="sd">    been submitted and the user needs to wait for them to finish.&quot;&quot;&quot;</span>
+
     <span class="k">pass</span></div>
 
 
 
 <span class="c1"># Workspace Paths --------------------------------------------------------------</span>
 
+
 <span class="c1"># Input ---</span>
-<span class="k">def</span> <span class="nf">get_workspace_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_workspace_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">basedir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;workspace-</span><span class="si">{</span><span class="n">jobname</span><span class="si">}</span><span class="s2">&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_scratch_path</span><span class="p">(</span><span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">basedir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;scratch-0&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_scratch_path</span><span class="p">(</span><span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">basedir</span> <span class="o">/</span> <span class="s2">&quot;scratch-0&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_sixjobs_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sixjobs_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_workspace_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;sixjobs&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_sixdeskenv_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sixdeskenv_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_sixjobs_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;sixdeskenv&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_sysenv_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sysenv_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_sixjobs_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;sysenv&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_masks_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_masks_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_sixjobs_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;mask&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_track_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_track_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_sixjobs_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;track&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_database_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_database_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_sixjobs_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">jobname</span><span class="si">}</span><span class="s2">.db&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_sixtrack_input_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sixtrack_input_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_sixjobs_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;sixtrack_input&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_mad6t_mask_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_mad6t_mask_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_sixtrack_input_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;mad6t.sh&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_mad6t1_mask_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_mad6t1_mask_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_sixtrack_input_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;mad6t1.sh&quot;</span>
 
 
 <span class="c1"># Output ---</span>
 
 
-<span class="k">def</span> <span class="nf">get_autosix_results_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_autosix_results_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_sixjobs_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;autosix_output&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_stagefile_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_stagefile_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_autosix_results_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;stages_completed.txt&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_tfs_da_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tfs_da_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_autosix_results_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">jobname</span><span class="si">}</span><span class="s2">_da.tfs&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_tfs_da_seed_stats_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tfs_da_seed_stats_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_autosix_results_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">jobname</span><span class="si">}</span><span class="s2">_da_per_seed.tfs&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">get_tfs_da_angle_stats_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tfs_da_angle_stats_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">get_autosix_results_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">jobname</span><span class="si">}</span><span class="s2">_da_per_angle.tfs&quot;</span>
-
 </pre></div>
 
            </div>

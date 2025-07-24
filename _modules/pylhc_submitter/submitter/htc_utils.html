@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pylhc_submitter.submitter.htc_utils &mdash; pylhc_submitter 2.0.4 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=449bdd91" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=adc66a14"></script>
-        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=adc66a14"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -35,9 +33,6 @@
             
               <img src="../../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                2.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -126,29 +121,47 @@
 <span class="sd">``HTCondor``. The **.sub** file will be put in the working directory. The maximum runtime of one</span>
 <span class="sd">job can be specified, standard is 8h.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.htcondor</span> <span class="kn">import</span> <span class="p">(</span><span class="n">BASH_FILENAME</span><span class="p">,</span> <span class="n">CMD_SUBMIT</span><span class="p">,</span> <span class="n">HTCONDOR_JOBLIMIT</span><span class="p">,</span>
-                                                <span class="n">JOBFLAVOURS</span><span class="p">,</span> <span class="n">NOTIFICATIONS</span><span class="p">,</span> <span class="n">SHEBANG</span><span class="p">,</span> <span class="n">SUBFILE</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.job_submitter</span> <span class="kn">import</span> <span class="p">(</span><span class="n">COLUMN_DEST_DIRECTORY</span><span class="p">,</span> <span class="n">COLUMN_JOB_DIRECTORY</span><span class="p">,</span>
-                                                     <span class="n">COLUMN_JOB_FILE</span><span class="p">,</span> <span class="n">COLUMN_SHELL_SCRIPT</span><span class="p">,</span>
-                                                     <span class="n">EXECUTEABLEPATH</span><span class="p">,</span> <span class="n">NON_PARAMETER_COLUMNS</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.submitter</span> <span class="kn">import</span> <span class="n">iotools</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.submitter.mask</span> <span class="kn">import</span> <span class="n">is_mask_file</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.utils.environment</span> <span class="kn">import</span> <span class="n">on_windows</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.constants.htcondor</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BASH_FILENAME</span><span class="p">,</span>
+    <span class="n">CMD_SUBMIT</span><span class="p">,</span>
+    <span class="n">HTCONDOR_JOBLIMIT</span><span class="p">,</span>
+    <span class="n">JOBFLAVOURS</span><span class="p">,</span>
+    <span class="n">NOTIFICATIONS</span><span class="p">,</span>
+    <span class="n">SHEBANG</span><span class="p">,</span>
+    <span class="n">SUBFILE</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.constants.job_submitter</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">COLUMN_DEST_DIRECTORY</span><span class="p">,</span>
+    <span class="n">COLUMN_JOB_DIRECTORY</span><span class="p">,</span>
+    <span class="n">COLUMN_JOB_FILE</span><span class="p">,</span>
+    <span class="n">COLUMN_SHELL_SCRIPT</span><span class="p">,</span>
+    <span class="n">EXECUTEABLEPATH</span><span class="p">,</span>
+    <span class="n">NON_PARAMETER_COLUMNS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.submitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">iotools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.submitter.mask</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_mask_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.utils.environment</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_windows</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">htcondor</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">htcondor</span>  <span class="c1"># noqa: N801</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># will be handled by job_submitter</span>
-    <span class="k">class</span> <span class="nc">htcondor</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dummy HTCondor module. To satisfy the typing. &quot;&quot;&quot;</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">htcondor</span><span class="p">:</span>  <span class="c1"># noqa: N801</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dummy HTCondor module. To satisfy the typing.&quot;&quot;&quot;</span>
+
         <span class="n">Submit</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
 
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -158,10 +171,10 @@
 
 <div class="viewcode-block" id="create_subfile_from_job">
 <a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.htc_utils.create_subfile_from_job">[docs]</a>
-<span class="k">def</span> <span class="nf">create_subfile_from_job</span><span class="p">(</span><span class="n">cwd</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">submission</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">htcondor</span><span class="o">.</span><span class="n">Submit</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_subfile_from_job</span><span class="p">(</span><span class="n">cwd</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">submission</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">htcondor</span><span class="o">.</span><span class="n">Submit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write file to submit to ``HTCondor``.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        cwd (Path): working directory</span>
 <span class="sd">        submission (str, htcondor.Submit): HTCondor submission definition (i.e. content of the file)</span>
@@ -179,9 +192,9 @@
 
 <div class="viewcode-block" id="submit_jobfile">
 <a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.htc_utils.submit_jobfile">[docs]</a>
-<span class="k">def</span> <span class="nf">submit_jobfile</span><span class="p">(</span><span class="n">jobfile</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">submit_jobfile</span><span class="p">(</span><span class="n">jobfile</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Submit subfile to ``HTCondor`` via subprocess.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        jobfile (Path): path to sub-file</span>
 <span class="sd">        ssh (str): ssh target</span>
@@ -192,14 +205,13 @@
     <span class="n">status</span> <span class="o">=</span> <span class="n">_start_subprocess</span><span class="p">(</span><span class="n">proc_args</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">status</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Submit to HTCondor was not successful!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Jobs successfully submitted.&quot;</span><span class="p">)</span></div>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Jobs successfully submitted.&quot;</span><span class="p">)</span></div>
 
 
 
-<span class="k">def</span> <span class="nf">_start_subprocess</span><span class="p">(</span><span class="n">command</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Start subprocess and log output. </span>
-<span class="sd">    </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_start_subprocess</span><span class="p">(</span><span class="n">command</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Start subprocess and log output.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        command (List[str]): command to execute</span>
 
@@ -208,7 +220,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing command &#39;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
     <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
-        <span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span>
+        <span class="n">command</span><span class="p">,</span>
+        <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+        <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
         <span class="n">htc_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -222,9 +237,9 @@
 
 <div class="viewcode-block" id="create_multijob_for_bashfiles">
 <a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.htc_utils.create_multijob_for_bashfiles">[docs]</a>
-<span class="k">def</span> <span class="nf">create_multijob_for_bashfiles</span><span class="p">(</span><span class="n">job_df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_multijob_for_bashfiles</span><span class="p">(</span><span class="n">job_df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function to create an ``HTCondor`` submission content for all job-scripts, </span>
+<span class="sd">    Function to create an ``HTCondor`` submission content for all job-scripts,</span>
 <span class="sd">    i.e. bash-files, in the job_df.</span>
 
 <span class="sd">    Keyword Args:</span>
@@ -251,7 +266,7 @@
         <span class="s2">&quot;requirements&quot;</span><span class="p">:</span> <span class="s2">&quot;Machine =!= LastRemoteHost&quot;</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">submit_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">map_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">))</span>
-    
+
     <span class="c1"># Let the htcondor create the submit-file</span>
     <span class="n">submission</span> <span class="o">=</span> <span class="n">htcondor</span><span class="o">.</span><span class="n">Submit</span><span class="p">(</span><span class="n">submit_dict</span><span class="p">)</span>
 
@@ -261,11 +276,11 @@
         <span class="k">for</span> <span class="n">parts</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_JOB_DIRECTORY</span><span class="p">],</span> <span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_SHELL_SCRIPT</span><span class="p">])</span>
     <span class="p">]</span>
     <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="k">for</span> <span class="n">parts</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scripts</span><span class="p">,</span> <span class="n">job_df</span><span class="p">[</span><span class="n">COLUMN_JOB_DIRECTORY</span><span class="p">])]</span>
-    <span class="n">queueArgs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;queue executable, initialdir from (&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">]</span>
+    <span class="n">queue_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;queue executable, initialdir from (&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">]</span>
 
     <span class="c1"># ugly but submission.setQArgs doesn&#39;t take string containing &#39;\n&#39;:</span>
     <span class="c1"># submission.setQArgs(&quot;\n&quot;.join(queueArgs))  # doesn&#39;t work</span>
-    <span class="n">submission</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">submission</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">queueArgs</span><span class="p">)</span>
+    <span class="n">submission</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">submission</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">queue_args</span><span class="p">)</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created HTCondor subfile with content: </span><span class="se">\n</span><span class="si">{</span><span class="n">submission</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">submission</span></div>
 
@@ -276,7 +291,7 @@
 
 <div class="viewcode-block" id="make_subfile">
 <a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.htc_utils.make_subfile">[docs]</a>
-<span class="k">def</span> <span class="nf">make_subfile</span><span class="p">(</span><span class="n">cwd</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">job_df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_subfile</span><span class="p">(</span><span class="n">cwd</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">job_df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates submit-file for ``HTCondor``.</span>
 <span class="sd">    For kwargs, see ``create_multijob_for_bashfiles``.</span>
@@ -295,12 +310,12 @@
 
 <div class="viewcode-block" id="write_bash">
 <a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.htc_utils.write_bash">[docs]</a>
-<span class="k">def</span> <span class="nf">write_bash</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_bash</span><span class="p">(</span>
     <span class="n">job_df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">output_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">executable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;madx&quot;</span><span class="p">,</span>
     <span class="n">cmdline_arguments</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">mask</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mask</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write the bash-files to be called by ``HTCondor``, which in turn call the executable.</span>
@@ -320,8 +335,12 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">job_df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">HTCONDOR_JOBLIMIT</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Submitting too many jobs for HTCONDOR&quot;</span><span class="p">)</span>
 
-    <span class="n">exec_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">EXECUTEABLEPATH</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span><span class="w"> </span><span class="n">executable</span><span class="p">))</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="k">if</span> <span class="n">executable</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">cmds</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">param</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">cmdline_arguments</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">cmdline_arguments</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">exec_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">EXECUTEABLEPATH</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span><span class="w"> </span><span class="n">executable</span><span class="p">))</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="k">if</span> <span class="n">executable</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">cmds</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">param</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">cmdline_arguments</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">cmdline_arguments</span>
+        <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">)</span>
 
     <span class="n">shell_scripts</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">job_df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">jobid</span><span class="p">,</span> <span class="n">job</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">job_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()):</span>
@@ -330,11 +349,11 @@
         <span class="n">jobfile</span> <span class="o">=</span> <span class="n">job_dir</span> <span class="o">/</span> <span class="n">bash_file_name</span>
 
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing bash-file </span><span class="si">{</span><span class="n">idx</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> &#39;</span><span class="si">{</span><span class="n">jobfile</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">jobfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">Path</span><span class="p">(</span><span class="n">jobfile</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="c1"># Preparation ---</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">on_windows</span><span class="p">():</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">SHEBANG</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-   
+
             <span class="k">if</span> <span class="n">output_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mkdir </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -345,7 +364,9 @@
             <span class="k">if</span> <span class="n">is_mask_file</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">job_dir</span> <span class="o">/</span> <span class="n">job</span><span class="p">[</span><span class="n">COLUMN_JOB_FILE</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">replace_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">column</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">job</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">NON_PARAMETER_COLUMNS</span><span class="p">]</span>
+                <span class="n">replace_columns</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">column</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">job</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">NON_PARAMETER_COLUMNS</span>
+                <span class="p">]</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">mask</span> <span class="o">%</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">replace_columns</span><span class="p">,</span> <span class="n">job</span><span class="p">[</span><span class="n">replace_columns</span><span class="p">])))</span>
 
             <span class="c1"># Additional commands for the mask/string</span>
@@ -353,16 +374,16 @@
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># Manually copy output (if needed) ---</span>
-            <span class="n">dest_dir</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">COLUMN_DEST_DIRECTORY</span><span class="p">)</span> 
+            <span class="n">dest_dir</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">COLUMN_DEST_DIRECTORY</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">output_dir</span> <span class="ow">and</span> <span class="n">dest_dir</span> <span class="ow">and</span> <span class="n">output_dir</span> <span class="o">!=</span> <span class="n">dest_dir</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">iotools</span><span class="o">.</span><span class="n">is_eos_uri</span><span class="p">(</span><span class="n">dest_dir</span><span class="p">):</span>
                     <span class="c1"># Note: eos-cp needs `/` at the end of both, source and target, dirs...</span>
-                    <span class="n">cp_command</span> <span class="o">=</span>  <span class="sa">f</span><span class="s1">&#39;eos cp -r </span><span class="si">{</span><span class="n">_str_ending_with_slash</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">_str_ending_with_slash</span><span class="p">(</span><span class="n">dest_dir</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>  
+                    <span class="n">cp_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;eos cp -r </span><span class="si">{</span><span class="n">_str_ending_with_slash</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_str_ending_with_slash</span><span class="p">(</span><span class="n">dest_dir</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># ...but &#39;/&#39; at the end of source dir copies only the content on macOS.</span>
-                    <span class="n">cp_command</span> <span class="o">=</span>  <span class="sa">f</span><span class="s1">&#39;cp -r </span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">_str_ending_with_slash</span><span class="p">(</span><span class="n">dest_dir</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>  
-                    
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cp_command</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">cp_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;cp -r </span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_str_ending_with_slash</span><span class="p">(</span><span class="n">dest_dir</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cp_command</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">shell_scripts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">bash_file_name</span>
 
@@ -373,9 +394,9 @@
 
 <div class="viewcode-block" id="map_kwargs">
 <a class="viewcode-back" href="../../../modules/submitter.html#pylhc_submitter.submitter.htc_utils.map_kwargs">[docs]</a>
-<span class="k">def</span> <span class="nf">map_kwargs</span><span class="p">(</span><span class="n">add_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">map_kwargs</span><span class="p">(</span><span class="n">add_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Maps the kwargs for the job-file. </span>
+<span class="sd">    Maps the kwargs for the job-file.</span>
 <span class="sd">    Some arguments have pre-defined choices and defaults, the remaining ones are just passed on.</span>
 
 <span class="sd">    Args:</span>
@@ -386,8 +407,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">new</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="c1"># Predefined mappings </span>
-    <span class="n">htc_map</span> <span class="o">=</span> <span class="p">{</span> <span class="c1"># name: mapped_name, choices, default</span>
+    <span class="c1"># Predefined mappings</span>
+    <span class="n">htc_map</span> <span class="o">=</span> <span class="p">{</span>  <span class="c1"># name: mapped_name, choices, default</span>
         <span class="s2">&quot;jobflavour&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;+JobFlavour&quot;</span><span class="p">,</span> <span class="n">JOBFLAVOURS</span><span class="p">,</span> <span class="s2">&quot;workday&quot;</span><span class="p">),</span>
         <span class="s2">&quot;output_dir&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;transfer_output_files&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&quot;&quot;&#39;</span><span class="p">),</span>
         <span class="s2">&quot;accounting_group&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;+AccountingGroup&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
@@ -417,16 +438,17 @@
 
 <span class="c1"># Helper #######################################################################</span>
 
-<span class="k">def</span> <span class="nf">_maybe_put_in_quotes</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Put value in quoted strings if key starts with &#39;+&#39; &quot;&quot;&quot;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_maybe_put_in_quotes</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Put value in quoted strings if key starts with &#39;+&#39;&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
     <span class="k">return</span> <span class="n">value</span>
 
 
-<span class="k">def</span> <span class="nf">_str_ending_with_slash</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Add a slash at the end of a path if not present. &quot;&quot;&quot;</span>
-    <span class="n">s</span>  <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_str_ending_with_slash</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a slash at the end of a path if not present.&quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">s</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">/&quot;</span>
@@ -436,7 +458,7 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="vm">__file__</span><span class="si">}</span><span class="s2"> is not supposed to run as main.&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="vm">__file__</span><span class="si">}</span><span class="s2"> is not supposed to run as main.&quot;</span><span class="p">)</span>
 </pre></div>
 
            </div>

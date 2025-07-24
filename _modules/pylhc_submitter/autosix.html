@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pylhc_submitter.autosix &mdash; pylhc_submitter 2.0.4 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=449bdd91" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=adc66a14"></script>
-        <script src="../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=adc66a14"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -35,9 +33,6 @@
             
               <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                2.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -301,29 +296,40 @@
 <span class="sd">:author: jdilly</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">tfs</span>
-<span class="kn">from</span> <span class="nn">generic_parser</span> <span class="kn">import</span> <span class="n">EntryPointParameters</span><span class="p">,</span> <span class="n">entrypoint</span>
-<span class="kn">from</span> <span class="nn">generic_parser.entry_datatypes</span> <span class="kn">import</span> <span class="n">DictAsString</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.autosix</span> <span class="kn">import</span> <span class="p">(</span><span class="n">HEADER_BASEDIR</span><span class="p">,</span> <span class="n">SIXENV_OPTIONAL</span><span class="p">,</span> <span class="n">SIXENV_REQUIRED</span><span class="p">,</span>
-                                               <span class="n">AutoSixEnvironment</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.job_submitter</span> <span class="kn">import</span> <span class="n">COLUMN_JOBID</span><span class="p">,</span> <span class="n">JOBSUMMARY_FILE</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.submitter.mask</span> <span class="kn">import</span> <span class="n">generate_jobdf_index</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.sixdesk_tools.stages</span> <span class="kn">import</span> <span class="n">STAGE_ORDER</span><span class="p">,</span> <span class="n">Stage</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.sixdesk_tools.utils</span> <span class="kn">import</span> <span class="n">check_mask</span><span class="p">,</span> <span class="n">is_locked</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.utils.iotools</span> <span class="kn">import</span> <span class="p">(</span><span class="n">PathOrStr</span><span class="p">,</span> <span class="n">keys_to_path</span><span class="p">,</span> <span class="n">make_replace_entries_iterable</span><span class="p">,</span>
-                                           <span class="n">save_config</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.utils.logging_tools</span> <span class="kn">import</span> <span class="n">log_setup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tfs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">generic_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntryPointParameters</span><span class="p">,</span> <span class="n">entrypoint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">generic_parser.entry_datatypes</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictAsString</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.constants.autosix</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HEADER_BASEDIR</span><span class="p">,</span>
+    <span class="n">SIXENV_OPTIONAL</span><span class="p">,</span>
+    <span class="n">SIXENV_REQUIRED</span><span class="p">,</span>
+    <span class="n">AutoSixEnvironment</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.constants.job_submitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">COLUMN_JOBID</span><span class="p">,</span> <span class="n">JOBSUMMARY_FILE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.sixdesk_tools.stages</span><span class="w"> </span><span class="kn">import</span> <span class="n">STAGE_ORDER</span><span class="p">,</span> <span class="n">Stage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.sixdesk_tools.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_mask</span><span class="p">,</span> <span class="n">is_locked</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.submitter.mask</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_jobdf_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.utils.iotools</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PathOrStr</span><span class="p">,</span>
+    <span class="n">keys_to_path</span><span class="p">,</span>
+    <span class="n">make_replace_entries_iterable</span><span class="p">,</span>
+    <span class="n">save_config</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.utils.logging_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">log_setup</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">get_params</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_params</span><span class="p">():</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">EntryPointParameters</span><span class="p">()</span>
     <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span>
@@ -357,32 +363,34 @@
         <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="n">AutoSixEnvironment</span><span class="o">.</span><span class="n">sixdesk_directory</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the directory of SixDesk. Defaults to the PRO-version on AFS.&quot;</span>
-             <span class="s2">&quot; If you are using your own SixDesk Environment and it does not run, &quot;</span>
-             <span class="s2">&quot; check the AutoSix doc.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot; If you are using your own SixDesk Environment and it does not run, &quot;</span>
+        <span class="s2">&quot; check the AutoSix doc.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;executable&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="n">AutoSixEnvironment</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="n">PathOrStr</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to executable or &#39;madx&#39;, &#39;python2&#39;, &#39;python3&#39; &quot;</span>
-             <span class="s2">&quot;to use the OMC default paths on AFS.&quot;</span>
-             <span class="s2">&quot;Defaults to the latest MADX-Binary on AFS.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;to use the OMC default paths on AFS.&quot;</span>
+        <span class="s2">&quot;Defaults to the latest MADX-Binary on AFS.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;python2&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="n">AutoSixEnvironment</span><span class="o">.</span><span class="n">python2</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="n">PathOrStr</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Path to python to use with run_six.sh (python2 with requirements installed).&quot;</span>
-              <span class="s2">&quot; ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS NEEDED!&quot;</span>
-              <span class="s2">&quot; And it can&#39;t be an Anaconda Distribution.&quot;</span>
-              <span class="s2">&quot; If ``None`` the system&#39;s ``python`` is used (SixDesk internally).&quot;</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Path to python to use with run_six.sh (python2 with requirements installed).&quot;</span>
+            <span class="s2">&quot; ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS NEEDED!&quot;</span>
+            <span class="s2">&quot; And it can&#39;t be an Anaconda Distribution.&quot;</span>
+            <span class="s2">&quot; If ``None`` the system&#39;s ``python`` is used (SixDesk internally).&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
     <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;python3&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="n">AutoSixEnvironment</span><span class="o">.</span><span class="n">python3</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="n">PathOrStr</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to python to use with sixdb (python3 with requirements installed).&quot;</span>
-             <span class="s2">&quot;Defaults to the system&#39;s ``python3``.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Defaults to the system&#39;s ``python3``.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;jobid_mask&quot;</span><span class="p">,</span>
@@ -412,15 +420,14 @@
     <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;stop_workspace_init&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;Stops the workspace creation before initialization,&quot;</span>
-            <span class="s2">&quot; so one can make manual changes.&quot;</span>
+            <span class="s2">&quot;Stops the workspace creation before initialization, so one can make manual changes.&quot;</span>
         <span class="p">),</span>
         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;resubmit&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Resubmits to HTCondor if needed &quot;</span>
-             <span class="s2">&quot;(i.e. in case it finds errors with the previous run).&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;(i.e. in case it finds errors with the previous run).&quot;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">params</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
@@ -438,11 +445,11 @@
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;max_materialize&quot;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Maximum jobs to be materialized in scheduler (per SixDesk Workspace!). &quot;</span>
-             <span class="s2">&quot;Here: ``None`` leaves the settings as defined in the SixDesk &quot;</span>
-             <span class="s2">&quot;htcondor_run_six.sub template and ``0`` removes it from the &quot;</span>
-             <span class="s2">&quot;template. Warning: This setting modifies the template in the &quot;</span>
-             <span class="s2">&quot;``sixdesk_directory`` permanently. For more details see the &quot;</span>
-             <span class="s2">&quot;htcondor API.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Here: ``None`` leaves the settings as defined in the SixDesk &quot;</span>
+        <span class="s2">&quot;htcondor_run_six.sub template and ``0`` removes it from the &quot;</span>
+        <span class="s2">&quot;template. Warning: This setting modifies the template in the &quot;</span>
+        <span class="s2">&quot;``sixdesk_directory`` permanently. For more details see the &quot;</span>
+        <span class="s2">&quot;htcondor API.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">params</span>
 
@@ -450,16 +457,16 @@
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../../entrypoints/autosix.html#pylhc_submitter.autosix.main">[docs]</a>
 <span class="nd">@entrypoint</span><span class="p">(</span><span class="n">get_params</span><span class="p">(),</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Loop to create jobs from replace dict product matrix. &quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Loop to create jobs from replace dict product matrix.&quot;&quot;&quot;</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting autosix.&quot;</span><span class="p">)</span>
     <span class="n">opt</span> <span class="o">=</span> <span class="n">_check_opts</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
     <span class="n">save_config</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">working_directory</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="s2">&quot;autosix&quot;</span><span class="p">)</span>
 
     <span class="n">jobdf</span> <span class="o">=</span> <span class="n">_generate_jobs</span><span class="p">(</span>
         <span class="n">opt</span><span class="o">.</span><span class="n">working_directory</span><span class="p">,</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;jobid_mask&#39;</span><span class="p">),</span>  <span class="c1"># not needed anymore</span>
-        <span class="o">**</span><span class="n">opt</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;replace_dict&#39;</span><span class="p">)</span>  <span class="c1"># not needed anymore</span>
+        <span class="n">opt</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;jobid_mask&quot;</span><span class="p">),</span>  <span class="c1"># not needed anymore</span>
+        <span class="o">**</span><span class="n">opt</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;replace_dict&quot;</span><span class="p">),</span>  <span class="c1"># not needed anymore</span>
     <span class="p">)</span>
     <span class="n">env</span> <span class="o">=</span> <span class="n">AutoSixEnvironment</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">)</span>  <span class="c1"># basically checks that everything is there</span>
 
@@ -470,7 +477,7 @@
 
 <div class="viewcode-block" id="run_job">
 <a class="viewcode-back" href="../../entrypoints/autosix.html#pylhc_submitter.autosix.run_job">[docs]</a>
-<span class="k">def</span> <span class="nf">run_job</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">jobargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">AutoSixEnvironment</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_job</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">jobargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">AutoSixEnvironment</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Main submitting procedure for single job.</span>
 
 <span class="sd">    Args:</span>
@@ -488,7 +495,7 @@
 <span class="c1"># Helper  ----------------------------------------------------------------------</span>
 
 
-<span class="k">def</span> <span class="nf">_check_opts</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_opts</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
     <span class="n">opt</span> <span class="o">=</span> <span class="n">keys_to_path</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">,</span> <span class="s2">&quot;working_directory&quot;</span><span class="p">,</span> <span class="s2">&quot;executable&quot;</span><span class="p">)</span>
 
     <span class="n">opt</span><span class="o">.</span><span class="n">mask_text</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
@@ -501,14 +508,14 @@
     <span class="k">return</span> <span class="n">opt</span>
 
 
-<span class="k">def</span> <span class="nf">get_jobs_and_values</span><span class="p">(</span><span class="n">jobid_mask</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_jobs_and_values</span><span class="p">(</span><span class="n">jobid_mask</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">values_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
     <span class="n">job_names</span> <span class="o">=</span> <span class="n">generate_jobdf_index</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">jobid_mask</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">values_grid</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">job_names</span><span class="p">,</span> <span class="n">values_grid</span>
 
 
-<span class="k">def</span> <span class="nf">_generate_jobs</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">jobid_mask</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Generates product matrix for job-values and stores it as TfsDataFrame. &quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_jobs</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="n">jobid_mask</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates product matrix for job-values and stores it as TfsDataFrame.&quot;&quot;&quot;</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating Jobs&quot;</span><span class="p">)</span>
     <span class="n">job_names</span><span class="p">,</span> <span class="n">values_grid</span> <span class="o">=</span> <span class="n">get_jobs_and_values</span><span class="p">(</span><span class="n">jobid_mask</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">job_df</span> <span class="o">=</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">(</span>

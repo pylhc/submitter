@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pylhc_submitter.sixdesk_tools.utils &mdash; pylhc_submitter 2.0.4 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=449bdd91" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=adc66a14"></script>
-        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=adc66a14"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -35,9 +33,6 @@
             
               <img src="../../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                2.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -118,13 +113,16 @@
 
 <span class="sd">Helper Utilities for Autosix.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.autosix</span> <span class="kn">import</span> <span class="n">SIXDESKLOCKFILE</span><span class="p">,</span> <span class="n">get_workspace_path</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.constants.external_paths</span> <span class="kn">import</span> <span class="n">SIXDESK_UTILS</span>
-<span class="kn">from</span> <span class="nn">pylhc_submitter.submitter.mask</span> <span class="kn">import</span> <span class="n">find_named_variables_in_mask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.constants.autosix</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIXDESKLOCKFILE</span><span class="p">,</span> <span class="n">get_workspace_path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.constants.external_paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIXDESK_UTILS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylhc_submitter.submitter.mask</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_named_variables_in_mask</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -134,8 +132,8 @@
 
 <div class="viewcode-block" id="check_mask">
 <a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.check_mask">[docs]</a>
-<span class="k">def</span> <span class="nf">check_mask</span><span class="p">(</span><span class="n">mask_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">replace_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Checks validity/compatibility of the mask and replacement dict. &quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_mask</span><span class="p">(</span><span class="n">mask_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">replace_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks validity/compatibility of the mask and replacement dict.&quot;&quot;&quot;</span>
     <span class="n">dict_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">replace_args</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="n">mask_keys</span> <span class="o">=</span> <span class="n">find_named_variables_in_mask</span><span class="p">(</span><span class="n">mask_text</span><span class="p">)</span>
     <span class="n">not_in_dict</span> <span class="o">=</span> <span class="n">mask_keys</span> <span class="o">-</span> <span class="n">dict_keys</span>
@@ -153,8 +151,8 @@
 
 <div class="viewcode-block" id="is_locked">
 <a class="viewcode-back" href="../../../modules/sixdesk_tools.html#pylhc_submitter.sixdesk_tools.utils.is_locked">[docs]</a>
-<span class="k">def</span> <span class="nf">is_locked</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">unlock</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Checks for sixdesklock-files &quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_locked</span><span class="p">(</span><span class="n">jobname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">basedir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">unlock</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks for sixdesklock-files&quot;&quot;&quot;</span>
     <span class="n">workspace_path</span> <span class="o">=</span> <span class="n">get_workspace_path</span><span class="p">(</span><span class="n">jobname</span><span class="p">,</span> <span class="n">basedir</span><span class="p">)</span>
     <span class="n">locks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">workspace_path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;**/</span><span class="si">{</span><span class="n">SIXDESKLOCKFILE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>  <span class="c1"># list() for repeated usage</span>
 
@@ -163,8 +161,7 @@
         <span class="k">for</span> <span class="n">lock</span> <span class="ow">in</span> <span class="n">locks</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">lock</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">txt</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">lock</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
             <span class="n">txt</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">SIXDESK_UTILS</span><span class="p">),</span> <span class="s2">&quot;$SIXUTILS&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">txt</span><span class="p">:</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; -&gt; locked by: </span><span class="si">{</span><span class="n">txt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -182,7 +179,7 @@
 <span class="c1"># Commandline ------------------------------------------------------------------</span>
 
 
-<span class="k">def</span> <span class="nf">start_subprocess</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check_log</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">start_subprocess</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ssh</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check_log</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">command</span><span class="p">]</span>
 
@@ -196,7 +193,11 @@
             <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;cd &quot;</span><span class="si">{</span><span class="n">cwd</span><span class="si">}</span><span class="s1">&quot; &amp;&amp; </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing command &#39;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">&#39; on </span><span class="si">{</span><span class="n">ssh</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;ssh&quot;</span><span class="p">,</span> <span class="n">ssh</span><span class="p">,</span> <span class="n">command</span><span class="p">],</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">cwd</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;ssh&quot;</span><span class="p">,</span> <span class="n">ssh</span><span class="p">,</span> <span class="n">command</span><span class="p">],</span>
+            <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span>
+            <span class="n">cwd</span><span class="o">=</span><span class="n">cwd</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
