@@ -33,7 +33,7 @@ SIXDESKLOCKFILE: Path = "sixdesklock"
 
 # Constants and Requirements ---------------------------------------------------
 
-HEADER_BASEDIR = "BASEDIR"
+HEADER_BASEDIR: str = "BASEDIR"
 
 
 # AutoSix Environment (also defines defaults) ---
