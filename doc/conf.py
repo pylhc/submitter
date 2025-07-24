@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # pylhc_submitter documentation build configuration file, created by
 # sphinx-quickstart on Tue Feb  6 12:10:18 2018.
@@ -17,6 +16,7 @@
 import pathlib
 import sys
 import warnings
+
 warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
@@ -70,7 +70,7 @@ autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -88,7 +88,7 @@ author = ABOUT_PYLHC_SUBMITTER["__author__"]
 
 # Override link in 'Edit on Github'
 rst_prolog = f"""
-:github_url: {ABOUT_PYLHC_SUBMITTER['__url__']}
+:github_url: {ABOUT_PYLHC_SUBMITTER["__url__"]}
 """
 
 # The version info for the project you're documenting, acts as replacement for
@@ -105,7 +105,7 @@ release = ABOUT_PYLHC_SUBMITTER["__version__"]
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = 'en'
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -190,7 +190,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "pylhc.tex", u"pylhc_submitter Documentation", u"OMC-TEAM", "manual"),
+    (master_doc, "pylhc.tex", "pylhc_submitter Documentation", "OMC-TEAM", "manual"),
 ]
 
 
@@ -198,7 +198,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "pylhc_submitter", u"pylhc_submitter Documentation", [author], 1)]
+man_pages = [(master_doc, "pylhc_submitter", "pylhc_submitter Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -210,7 +210,7 @@ texinfo_documents = [
     (
         master_doc,
         "pylhc_submitter",
-        u"pylhc_submitter Documentation",
+        "pylhc_submitter Documentation",
         author,
         "OMC-TEAM",
         "One line description of project.",

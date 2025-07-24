@@ -12,29 +12,47 @@ A shell script is created in each job directory in the dataframe.
 ``HTCondor``. The **.sub** file will be put in the working directory. The maximum runtime of one
 job can be specified, standard is 8h.
 """
+
+from __future__ import annotations
+
 import logging
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import TYPE_CHECKING, Any
 
-from pandas import DataFrame
-
-from pylhc_submitter.constants.htcondor import (BASH_FILENAME, CMD_SUBMIT, HTCONDOR_JOBLIMIT,
-                                                JOBFLAVOURS, NOTIFICATIONS, SHEBANG, SUBFILE)
-from pylhc_submitter.constants.job_submitter import (COLUMN_DEST_DIRECTORY, COLUMN_JOB_DIRECTORY,
-                                                     COLUMN_JOB_FILE, COLUMN_SHELL_SCRIPT,
-                                                     EXECUTEABLEPATH, NON_PARAMETER_COLUMNS)
+from pylhc_submitter.constants.htcondor import (
+    BASH_FILENAME,
+    CMD_SUBMIT,
+    HTCONDOR_JOBLIMIT,
+    JOBFLAVOURS,
+    NOTIFICATIONS,
+    SHEBANG,
+    SUBFILE,
+)
+from pylhc_submitter.constants.job_submitter import (
+    COLUMN_DEST_DIRECTORY,
+    COLUMN_JOB_DIRECTORY,
+    COLUMN_JOB_FILE,
+    COLUMN_SHELL_SCRIPT,
+    EXECUTEABLEPATH,
+    NON_PARAMETER_COLUMNS,
+)
 from pylhc_submitter.submitter import iotools
 from pylhc_submitter.submitter.mask import is_mask_file
 from pylhc_submitter.utils.environment import on_windows
 
 try:
-    import htcondor
+    import htcondor  # noqa: N801
 except ImportError:  # will be handled by job_submitter
-    class htcondor:
-        """Dummy HTCondor module. To satisfy the typing. """
+
+    class htcondor:  # noqa: N801
+        """Dummy HTCondor module. To satisfy the typing."""
+
         Submit: Any = None
 
+
+if TYPE_CHECKING:
+    from pandas import DataFrame
 
 LOG = logging.getLogger(__name__)
 
@@ -42,10 +60,10 @@ LOG = logging.getLogger(__name__)
 # Subprocess Methods ###########################################################
 
 
-def create_subfile_from_job(cwd: Path, submission: Union[str, htcondor.Submit]) -> Path:
+def create_subfile_from_job(cwd: Path, submission: str | htcondor.Submit) -> Path:
     """
     Write file to submit to ``HTCondor``.
-    
+
     Args:
         cwd (Path): working directory
         submission (str, htcondor.Submit): HTCondor submission definition (i.e. content of the file)
@@ -62,7 +80,7 @@ def create_subfile_from_job(cwd: Path, submission: Union[str, htcondor.Submit]) 
 
 def submit_jobfile(jobfile: Path, ssh: str) -> None:
     """Submit subfile to ``HTCondor`` via subprocess.
-    
+
     Args:
         jobfile (Path): path to sub-file
         ssh (str): ssh target
@@ -73,13 +91,12 @@ def submit_jobfile(jobfile: Path, ssh: str) -> None:
     status = _start_subprocess(proc_args)
     if status:
         raise RuntimeError("Submit to HTCondor was not successful!")
-    else:
-        LOG.info("Jobs successfully submitted.")
+    LOG.info("Jobs successfully submitted.")
 
 
-def _start_subprocess(command: List[str]) -> int:
-    """ Start subprocess and log output. 
-    
+def _start_subprocess(command: list[str]) -> int:
+    """Start subprocess and log output.
+
     Args:
         command (List[str]): command to execute
 
@@ -88,7 +105,10 @@ def _start_subprocess(command: List[str]) -> int:
     """
     LOG.debug(f"Executing command '{command}'")
     process = subprocess.Popen(
-        command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        command,
+        shell=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
     )
     for line in process.stdout:
         htc_line = line.decode("utf-8").strip()
@@ -102,7 +122,7 @@ def _start_subprocess(command: List[str]) -> int:
 
 def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs) -> str:
     """
-    Function to create an ``HTCondor`` submission content for all job-scripts, 
+    Function to create an ``HTCondor`` submission content for all job-scripts,
     i.e. bash-files, in the job_df.
 
     Keyword Args:
@@ -129,7 +149,7 @@ def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs) -> str:
         "requirements": "Machine =!= LastRemoteHost",
     }
     submit_dict.update(map_kwargs(kwargs))
-    
+
     # Let the htcondor create the submit-file
     submission = htcondor.Submit(submit_dict)
 
@@ -139,11 +159,11 @@ def create_multijob_for_bashfiles(job_df: DataFrame, **kwargs) -> str:
         for parts in zip(job_df[COLUMN_JOB_DIRECTORY], job_df[COLUMN_SHELL_SCRIPT])
     ]
     args = [",".join(parts) for parts in zip(scripts, job_df[COLUMN_JOB_DIRECTORY])]
-    queueArgs = ["queue executable, initialdir from (", *args, ")"]
+    queue_args = ["queue executable, initialdir from (", *args, ")"]
 
     # ugly but submission.setQArgs doesn't take string containing '\n':
     # submission.setQArgs("\n".join(queueArgs))  # doesn't work
-    submission = str(submission) + "\n".join(queueArgs)
+    submission = str(submission) + "\n".join(queue_args)
     LOG.debug(f"Created HTCondor subfile with content: \n{submission}")
     return submission
 
@@ -172,7 +192,7 @@ def write_bash(
     output_dir: Path = None,
     executable: str = "madx",
     cmdline_arguments: dict = None,
-    mask: Union[str, Path] = None,
+    mask: str | Path = None,
 ) -> DataFrame:
     """
     Write the bash-files to be called by ``HTCondor``, which in turn call the executable.
@@ -192,8 +212,12 @@ def write_bash(
     if len(job_df.index) > HTCONDOR_JOBLIMIT:
         raise AttributeError("Submitting too many jobs for HTCONDOR")
 
-    exec_path = f"{str(EXECUTEABLEPATH.get(executable, executable))} " if executable else ''
-    cmds = f" {' '.join([f'{param} {val}' for param, val in cmdline_arguments.items()])}" if cmdline_arguments else ''
+    exec_path = f"{str(EXECUTEABLEPATH.get(executable, executable))} " if executable else ""
+    cmds = (
+        f" {' '.join([f'{param} {val}' for param, val in cmdline_arguments.items()])}"
+        if cmdline_arguments
+        else ""
+    )
 
     shell_scripts = [None] * len(job_df.index)
     for idx, (jobid, job) in enumerate(job_df.iterrows()):
@@ -202,11 +226,11 @@ def write_bash(
         jobfile = job_dir / bash_file_name
 
         LOG.debug(f"Writing bash-file {idx:d} '{jobfile}'.")
-        with open(jobfile, "w") as f:
+        with Path(jobfile).open("w") as f:
             # Preparation ---
             if not on_windows():
                 f.write(f"{SHEBANG}\n")
-   
+
             if output_dir is not None:
                 f.write(f"mkdir {str(output_dir)}\n")
 
@@ -217,7 +241,9 @@ def write_bash(
             if is_mask_file(mask):
                 f.write(str(job_dir / job[COLUMN_JOB_FILE]))
             else:
-                replace_columns = [column for column in job.index.tolist() if column not in NON_PARAMETER_COLUMNS]
+                replace_columns = [
+                    column for column in job.index.tolist() if column not in NON_PARAMETER_COLUMNS
+                ]
                 f.write(mask % dict(zip(replace_columns, job[replace_columns])))
 
             # Additional commands for the mask/string
@@ -225,16 +251,16 @@ def write_bash(
             f.write("\n")
 
             # Manually copy output (if needed) ---
-            dest_dir = job.get(COLUMN_DEST_DIRECTORY) 
+            dest_dir = job.get(COLUMN_DEST_DIRECTORY)
             if output_dir and dest_dir and output_dir != dest_dir:
                 if iotools.is_eos_uri(dest_dir):
                     # Note: eos-cp needs `/` at the end of both, source and target, dirs...
-                    cp_command =  f'eos cp -r {_str_ending_with_slash(output_dir)} {_str_ending_with_slash(dest_dir)}'  
+                    cp_command = f"eos cp -r {_str_ending_with_slash(output_dir)} {_str_ending_with_slash(dest_dir)}"
                 else:
                     # ...but '/' at the end of source dir copies only the content on macOS.
-                    cp_command =  f'cp -r {output_dir} {_str_ending_with_slash(dest_dir)}'  
-                    
-                f.write(f'{cp_command}\n')
+                    cp_command = f"cp -r {output_dir} {_str_ending_with_slash(dest_dir)}"
+
+                f.write(f"{cp_command}\n")
 
         shell_scripts[idx] = bash_file_name
 
@@ -242,9 +268,9 @@ def write_bash(
     return job_df
 
 
-def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
+def map_kwargs(add_dict: dict[str, Any]) -> dict[str, Any]:
     """
-    Maps the kwargs for the job-file. 
+    Maps the kwargs for the job-file.
     Some arguments have pre-defined choices and defaults, the remaining ones are just passed on.
 
     Args:
@@ -255,8 +281,8 @@ def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
     """
     new = {}
 
-    # Predefined mappings 
-    htc_map = { # name: mapped_name, choices, default
+    # Predefined mappings
+    htc_map = {  # name: mapped_name, choices, default
         "jobflavour": ("+JobFlavour", JOBFLAVOURS, "workday"),
         "output_dir": ("transfer_output_files", None, '""'),
         "accounting_group": ("+AccountingGroup", None, None),
@@ -285,16 +311,17 @@ def map_kwargs(add_dict: Dict[str, Any]) -> Dict[str, Any]:
 
 # Helper #######################################################################
 
+
 def _maybe_put_in_quotes(key: str, value: Any) -> Any:
-    """ Put value in quoted strings if key starts with '+' """
+    """Put value in quoted strings if key starts with '+'"""
     if key.startswith("+"):
         return f'"{value}"'
     return value
 
 
-def _str_ending_with_slash(s: Union[Path, str]) -> str:
-    """ Add a slash at the end of a path if not present. """
-    s  = str(s)
+def _str_ending_with_slash(s: Path | str) -> str:
+    """Add a slash at the end of a path if not present."""
+    s = str(s)
     if s.endswith("/"):
         return s
     return f"{s}/"
@@ -304,4 +331,4 @@ def _str_ending_with_slash(s: Union[Path, str]) -> str:
 
 
 if __name__ == "__main__":
-    raise EnvironmentError(f"{__file__} is not supposed to run as main.")
+    raise OSError(f"{__file__} is not supposed to run as main.")

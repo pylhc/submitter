@@ -187,6 +187,9 @@ Arguments:
 :author: jdilly
 
 """
+
+from __future__ import annotations
+
 import itertools
 import logging
 from pathlib import Path
@@ -196,14 +199,22 @@ import tfs
 from generic_parser import EntryPointParameters, entrypoint
 from generic_parser.entry_datatypes import DictAsString
 
-from pylhc_submitter.constants.autosix import (HEADER_BASEDIR, SIXENV_OPTIONAL, SIXENV_REQUIRED,
-                                               AutoSixEnvironment)
+from pylhc_submitter.constants.autosix import (
+    HEADER_BASEDIR,
+    SIXENV_OPTIONAL,
+    SIXENV_REQUIRED,
+    AutoSixEnvironment,
+)
 from pylhc_submitter.constants.job_submitter import COLUMN_JOBID, JOBSUMMARY_FILE
-from pylhc_submitter.submitter.mask import generate_jobdf_index
 from pylhc_submitter.sixdesk_tools.stages import STAGE_ORDER, Stage
 from pylhc_submitter.sixdesk_tools.utils import check_mask, is_locked
-from pylhc_submitter.utils.iotools import (PathOrStr, keys_to_path, make_replace_entries_iterable,
-                                           save_config)
+from pylhc_submitter.submitter.mask import generate_jobdf_index
+from pylhc_submitter.utils.iotools import (
+    PathOrStr,
+    keys_to_path,
+    make_replace_entries_iterable,
+    save_config,
+)
 from pylhc_submitter.utils.logging_tools import log_setup
 
 LOG = logging.getLogger(__name__)
@@ -243,32 +254,34 @@ def get_params():
         type=Path,
         default=AutoSixEnvironment.sixdesk_directory,
         help="Path to the directory of SixDesk. Defaults to the PRO-version on AFS."
-             " If you are using your own SixDesk Environment and it does not run, "
-             " check the AutoSix doc.",
+        " If you are using your own SixDesk Environment and it does not run, "
+        " check the AutoSix doc.",
     )
     params.add_parameter(
         name="executable",
         default=AutoSixEnvironment.executable,
         type=PathOrStr,
         help="Path to executable or 'madx', 'python2', 'python3' "
-             "to use the OMC default paths on AFS."
-             "Defaults to the latest MADX-Binary on AFS.",
+        "to use the OMC default paths on AFS."
+        "Defaults to the latest MADX-Binary on AFS.",
     )
     params.add_parameter(
         name="python2",
         default=AutoSixEnvironment.python2,
         type=PathOrStr,
-        help=("Path to python to use with run_six.sh (python2 with requirements installed)."
-              " ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS NEEDED!"
-              " And it can't be an Anaconda Distribution."
-              " If ``None`` the system's ``python`` is used (SixDesk internally)."),
+        help=(
+            "Path to python to use with run_six.sh (python2 with requirements installed)."
+            " ONLY THE PATH TO THE DIRECTORY OF THE python BINARY IS NEEDED!"
+            " And it can't be an Anaconda Distribution."
+            " If ``None`` the system's ``python`` is used (SixDesk internally)."
+        ),
     )
     params.add_parameter(
         name="python3",
         default=AutoSixEnvironment.python3,
         type=PathOrStr,
         help="Path to python to use with sixdb (python3 with requirements installed)."
-             "Defaults to the system's ``python3``.",
+        "Defaults to the system's ``python3``.",
     )
     params.add_parameter(
         name="jobid_mask",
@@ -298,15 +311,14 @@ def get_params():
     params.add_parameter(
         name="stop_workspace_init",
         help=(
-            "Stops the workspace creation before initialization,"
-            " so one can make manual changes."
+            "Stops the workspace creation before initialization, so one can make manual changes."
         ),
         action="store_true",
     )
     params.add_parameter(
         name="resubmit",
         help="Resubmits to HTCondor if needed "
-             "(i.e. in case it finds errors with the previous run).",
+        "(i.e. in case it finds errors with the previous run).",
         action="store_true",
     )
     params.add_parameter(
@@ -324,26 +336,26 @@ def get_params():
         name="max_materialize",
         type=int,
         help="Maximum jobs to be materialized in scheduler (per SixDesk Workspace!). "
-             "Here: ``None`` leaves the settings as defined in the SixDesk "
-             "htcondor_run_six.sub template and ``0`` removes it from the "
-             "template. Warning: This setting modifies the template in the "
-             "``sixdesk_directory`` permanently. For more details see the "
-             "htcondor API.",
+        "Here: ``None`` leaves the settings as defined in the SixDesk "
+        "htcondor_run_six.sub template and ``0`` removes it from the "
+        "template. Warning: This setting modifies the template in the "
+        "``sixdesk_directory`` permanently. For more details see the "
+        "htcondor API.",
     )
     return params
 
 
 @entrypoint(get_params(), strict=True)
 def main(opt):
-    """ Loop to create jobs from replace dict product matrix. """
+    """Loop to create jobs from replace dict product matrix."""
     LOG.info("Starting autosix.")
     opt = _check_opts(opt)
     save_config(opt.working_directory, opt, "autosix")
 
     jobdf = _generate_jobs(
         opt.working_directory,
-        opt.pop('jobid_mask'),  # not needed anymore
-        **opt.pop('replace_dict')  # not needed anymore
+        opt.pop("jobid_mask"),  # not needed anymore
+        **opt.pop("replace_dict"),  # not needed anymore
     )
     env = AutoSixEnvironment(**opt)  # basically checks that everything is there
 
@@ -388,7 +400,7 @@ def get_jobs_and_values(jobid_mask, **kwargs):
 
 
 def _generate_jobs(basedir, jobid_mask, **kwargs) -> tfs.TfsDataFrame:
-    """ Generates product matrix for job-values and stores it as TfsDataFrame. """
+    """Generates product matrix for job-values and stores it as TfsDataFrame."""
     LOG.debug("Creating Jobs")
     job_names, values_grid = get_jobs_and_values(jobid_mask, **kwargs)
     job_df = tfs.TfsDataFrame(

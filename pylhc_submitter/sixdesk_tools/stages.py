@@ -5,46 +5,65 @@ Stages
 In this module the stages are organized.
 
 """
+
+from __future__ import annotations
+
 import logging
 import re
-from abc import ABC, abstractmethod, ABCMeta
+from abc import ABC, ABCMeta, abstractmethod
+from pathlib import Path
 
 from generic_parser import DotDict
 
-from pylhc_submitter.constants.autosix import get_stagefile_path, StageSkip, StageStop, AutoSixEnvironment
+from pylhc_submitter.constants.autosix import (
+    AutoSixEnvironment,
+    StageSkipError,
+    StageStopError,
+    get_stagefile_path,
+)
 from pylhc_submitter.sixdesk_tools.create_workspace import (
-    create_job, init_workspace, fix_pythonfile_call,
-    remove_twiss_fail_check, set_max_materialize
+    create_job,
+    fix_pythonfile_call,
+    init_workspace,
+    remove_twiss_fail_check,
+    set_max_materialize,
 )
 from pylhc_submitter.sixdesk_tools.post_process_da import post_process_da
 from pylhc_submitter.sixdesk_tools.submit import (
-    submit_mask, check_sixtrack_input, submit_sixtrack,
-    check_sixtrack_output, sixdb_load, sixdb_cmd
+    check_sixtrack_input,
+    check_sixtrack_output,
+    sixdb_cmd,
+    sixdb_load,
+    submit_mask,
+    submit_sixtrack,
 )
 
 LOG = logging.getLogger(__name__)
 
 # Overwritten in StageMeta below and actual classes inserted
-STAGE_ORDER = DotDict({
-    "create_job": None,
-    "initialize_workspace": None,
-    "submit_mask": None,
-    "check_input": None,
-    "submit_sixtrack": None,
-    "check_sixtrack_output": None,
-    "sixdb_load": None,
-    "sixdb_cmd": None,
-    "post_process": None,
-    "final": None,
-})
+STAGE_ORDER = DotDict(
+    {
+        "create_job": None,
+        "initialize_workspace": None,
+        "submit_mask": None,
+        "check_input": None,
+        "submit_sixtrack": None,
+        "check_sixtrack_output": None,
+        "sixdb_load": None,
+        "sixdb_cmd": None,
+        "post_process": None,
+        "final": None,
+    }
+)
 
 
 class StageMeta(ABCMeta):
-    """ Dynamically generate name and value from STAGE_ORDER """
+    """Dynamically generate name and value from STAGE_ORDER"""
+
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # convert CamelCase to snake_case (https://stackoverflow.com/a/1176023/5609590)
-        cls.name = re.sub(r'(?<!^)(?=[A-Z])', '_', cls.__name__).lower()
+        cls.name = re.sub(r"(?<!^)(?=[A-Z])", "_", cls.__name__).lower()
 
         if cls.name == "stage":
             # Base Class
@@ -56,7 +75,7 @@ class StageMeta(ABCMeta):
 
         # set class as entry in STAGE_ORDER
         STAGE_ORDER[cls.name] = cls
-    
+
     def __str__(cls):
         return cls.name
 
@@ -72,7 +91,7 @@ class StageMeta(ABCMeta):
         if new_idx < 0:
             raise IndexError("Requested Stage order is negative. Stage not found.")
         return list(STAGE_ORDER.values())[new_idx]
-    
+
     def __gt__(cls, other):
         try:
             return int(cls) > int(other)
@@ -108,23 +127,26 @@ class StageMeta(ABCMeta):
 
 
 class Stage(ABC, metaclass=StageMeta):
-    """ Abstract Base Class for all Stages. Also provides the basic methods.
-    The stages themselves only need to implement the _run() method. """
+    """Abstract Base Class for all Stages. Also provides the basic methods.
+    The stages themselves only need to implement the _run() method."""
+
     @staticmethod
     def run_all_stages(jobname, jobargs, env):
-        """ Run all stages in order. """
+        """Run all stages in order."""
         LOG.info(f"vv---------------- Job {jobname} -------------------vv")
         for stage_name, stage_class in STAGE_ORDER.items():
             stage = stage_class(jobname, jobargs, env)
             try:
                 stage.run()
-            except StageSkip as e:
+            except StageSkipError as e:
                 if str(e):
                     LOG.error(e)
                 # break  # stop here or always run to the end and show all skipped stages
-            except StageStop:
-                LOG.info(f"Stopping after Stage '{stage!s}' as the submitted jobs will now run. "
-                         f"Check `condor_q` for their progress and restart autosix when they are done.")
+            except StageStopError:
+                LOG.info(
+                    f"Stopping after Stage '{stage!s}' as the submitted jobs will now run. "
+                    f"Check `condor_q` for their progress and restart autosix when they are done."
+                )
                 break
         LOG.info(f"^^---------------- Job {jobname} -------------------^^")
 
@@ -166,13 +188,12 @@ class Stage(ABC, metaclass=StageMeta):
         return int(self) == int(other)
 
     def should_run_stage(self):
-        """ Checks if the stage should be run. """
+        """Checks if the stage should be run."""
         if not self.stage_file.exists():
             if self == 0:
                 return True
-            else:
-                LOG.info(f"Stage '{self!s}' not run because previous stage(s) missing.")
-                return False
+            LOG.info(f"Stage '{self!s}' not run because previous stage(s) missing.")
+            return False
 
         stage_file_txt = self.stage_file.read_text().split("\n")
         run_stages = [line.strip() for line in stage_file_txt if line.strip()]
@@ -186,8 +207,10 @@ class Stage(ABC, metaclass=StageMeta):
 
         # check if user requested a stop at a certain stage
         if (self.max_stage is not None) and (self > self.max_stage):
-            LOG.info(f"Stage '{self!s}' would run after requested "
-                     f"maximum stage '{self.max_stage!s}'. Skipping.")
+            LOG.info(
+                f"Stage '{self!s}' would run after requested "
+                f"maximum stage '{self.max_stage!s}'. Skipping."
+            )
             return False
 
         # check if last run stage is also the stage before current stage in stage order
@@ -198,30 +221,30 @@ class Stage(ABC, metaclass=StageMeta):
         return False
 
     def stage_done(self):
-        """ Append current stage name to stagefile. """
-        with open(self.stage_file, "a+") as f:
+        """Append current stage name to stagefile."""
+        with Path(self.stage_file).open("a+") as f:
             f.write(f"{self!s}\n")
 
     def run(self):
-        """ Run the Stage. """
+        """Run the Stage."""
         if not self.should_run_stage():
             return
 
         try:
             self._run()
-        except StageStop as e:
+        except StageStopError as e:
             # Stage indicates that it ran successfully,
             # but that there should be a stop in the loop.
             self.stage_done()
             raise e
-        except StageSkip as e:
+        except StageSkipError as e:
             # logged/handled outside
             raise e
         except Exception as e:
-            # convert any exception to a StageSkip,
+            # convert any exception to a StageSkipError,
             # so the other jobs can continue running.
             LOG.exception(str(e))
-            raise StageSkip(f"Stage {self!s} failed!") from e
+            raise StageSkipError(f"Stage {self!s} failed!") from e
 
         self.stage_done()
 
@@ -237,6 +260,7 @@ class Stage(ABC, metaclass=StageMeta):
 # one would do this manually (which can be very helpful for fixing broken jobs).
 # - jdilly 2020-08-04
 
+
 class CreateJob(Stage):
     """
     create workspace
@@ -245,13 +269,17 @@ class CreateJob(Stage):
 
     write sixdeskenv, sysenv, filled mask (manual)
     """
+
     def _run(self):
-        create_job(self.jobname, self.basedir,
-                   executable=self.env.executable,
-                   mask_text=self.env.mask_text,
-                   sixdesk=self.env.sixdesk_directory,
-                   ssh=self.env.ssh,
-                   **self.jobargs)
+        create_job(
+            self.jobname,
+            self.basedir,
+            executable=self.env.executable,
+            mask_text=self.env.mask_text,
+            sixdesk=self.env.sixdesk_directory,
+            ssh=self.env.ssh,
+            **self.jobargs,
+        )
 
 
 class InitializeWorkspace(Stage):
@@ -263,6 +291,7 @@ class InitializeWorkspace(Stage):
     remove the twiss-fail check in sixtrack_input
     (manual)
     """
+
     def _run(self):
         if self.env.stop_workspace_init:
             LOG.info(
@@ -271,11 +300,11 @@ class InitializeWorkspace(Stage):
                 " and ``sysenv``. Remove 'stop_workspace_init' from input"
                 " parameters or set to 'False' to continue run."
             )
-            raise StageSkip()
+            raise StageSkipError()
 
-        init_workspace(self.jobname, self.basedir,
-                       sixdesk=self.env.sixdesk_directory,
-                       ssh=self.env.ssh)
+        init_workspace(
+            self.jobname, self.basedir, sixdesk=self.env.sixdesk_directory, ssh=self.env.ssh
+        )
         if self.env.apply_mad6t_hacks:
             fix_pythonfile_call(self.jobname, self.basedir)  # removes "<" in call
             remove_twiss_fail_check(self.jobname, self.basedir)  # removes 'grep twiss fail'
@@ -287,11 +316,12 @@ class SubmitMask(Stage):
     > cd $basedir/workspace-$jobname/sixjobs
     > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/mad6t.sh -s
     """
+
     def _run(self):
-        submit_mask(self.jobname, self.basedir,
-                    sixdesk=self.env.sixdesk_directory,
-                    ssh=self.env.ssh)
-        raise StageStop()
+        submit_mask(
+            self.jobname, self.basedir, sixdesk=self.env.sixdesk_directory, ssh=self.env.ssh
+        )
+        raise StageStopError()
 
 
 class CheckInput(Stage):
@@ -303,11 +333,15 @@ class CheckInput(Stage):
     If not, and resubmit is active
     > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/mad6t.sh -w
     """
+
     def _run(self):
-        check_sixtrack_input(self.jobname, self.basedir,
-                             sixdesk=self.env.sixdesk_directory,
-                             ssh=self.env.ssh,
-                             resubmit=self.env.resubmit)
+        check_sixtrack_input(
+            self.jobname,
+            self.basedir,
+            sixdesk=self.env.sixdesk_directory,
+            ssh=self.env.ssh,
+            resubmit=self.env.resubmit,
+        )
 
 
 class SubmitSixtrack(Stage):
@@ -316,18 +350,22 @@ class SubmitSixtrack(Stage):
     > cd $basedir/workspace-$jobname/sixjobs
     > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/run_six.sh -a
     """
+
     def _run(self):
         # adds max_materialize to tracking sub-file template
         # might run into a race condition, this is why it's done here.
         # Also I assume we use the same value for all jobs anyway.
         set_max_materialize(self.env.sixdesk_directory, self.env.max_materialize)
 
-        submit_sixtrack(self.jobname, self.basedir,
-                        sixdesk=self.env.sixdesk_directory,
-                        ssh=self.env.ssh,
-                        python=self.env.python2)
+        submit_sixtrack(
+            self.jobname,
+            self.basedir,
+            sixdesk=self.env.sixdesk_directory,
+            ssh=self.env.ssh,
+            python=self.env.python2,
+        )
 
-        raise StageStop()
+        raise StageStopError()
 
 
 class CheckSixtrackOutput(Stage):
@@ -342,12 +380,16 @@ class CheckSixtrackOutput(Stage):
     > cd $basedir/workspace-$jobname/sixjobs
     > /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/bash/run_six.sh -i
     """
+
     def _run(self):
-        check_sixtrack_output(self.jobname, self.basedir,
-                              sixdesk=self.env.sixdesk_directory,
-                              ssh=self.env.ssh,
-                              python=self.env.python2,
-                              resubmit=self.env.resubmit)
+        check_sixtrack_output(
+            self.jobname,
+            self.basedir,
+            sixdesk=self.env.sixdesk_directory,
+            ssh=self.env.ssh,
+            python=self.env.python2,
+            resubmit=self.env.resubmit,
+        )
 
 
 class SixdbLoad(Stage):
@@ -356,11 +398,15 @@ class SixdbLoad(Stage):
     > cd $basedir/workspace-$jobname/sixjobs
     > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb . load_dir
     """
+
     def _run(self):
-        sixdb_load(self.jobname, self.basedir,
-                   sixdesk=self.env.sixdesk_directory,
-                   ssh=self.env.ssh,
-                   python=self.env.python3)
+        sixdb_load(
+            self.jobname,
+            self.basedir,
+            sixdesk=self.env.sixdesk_directory,
+            ssh=self.env.ssh,
+            python=self.env.python3,
+        )
 
 
 class SixdbCmd(Stage):
@@ -373,12 +419,16 @@ class SixdbCmd(Stage):
     > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb $jobname da_vs_turns -turnstep 100 -outfile
     > python3 /afs/cern.ch/project/sixtrack/SixDesk_utilities/pro/utilities/externals/SixDeskDB/sixdb $jobname plot_da_vs_turns
     """
+
     def _run(self):
-        sixdb_cmd(self.jobname, self.basedir,
-                  sixdesk=self.env.sixdesk_directory,
-                  ssh=self.env.ssh,
-                  cmd=["da"],
-                  python=self.env.python3)
+        sixdb_cmd(
+            self.jobname,
+            self.basedir,
+            sixdesk=self.env.sixdesk_directory,
+            ssh=self.env.ssh,
+            cmd=["da"],
+            python=self.env.python3,
+        )
 
         # da_vs_turns is broken at the moment (jdilly, 19.10.2020)
         # sixdb_cmd(jobname, basedir, cmd=['da_vs_turns', '-turnstep', str(da_turnstep), '-outfile'],
@@ -397,16 +447,18 @@ class PostProcess(Stage):
     The statistics over the seeds are then plotted in a polar plot.
     All files are outputted to the ``sixjobs/autosix_output`` folder in the job directory.
     """
+
     def _run(self):
         post_process_da(self.jobname, self.basedir)
 
 
 class Final(Stage):
-    """ Just info about finishing this script and where to check the stagefile. """
+    """Just info about finishing this script and where to check the stagefile."""
+
     def _run(self):
         stage_file = get_stagefile_path(self.jobname, self.basedir)
         LOG.info(
             f"All stages run. Check stagefile {str(stage_file)} "
             "in case you want to rerun some stages."
         )
-        raise StageSkip()
+        raise StageSkipError()

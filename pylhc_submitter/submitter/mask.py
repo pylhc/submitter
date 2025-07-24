@@ -5,15 +5,21 @@ Mask Resolver
 This module provides functionality to resolve and write script masks for ``HTCondor`` jobs
 submission.
 """
+
+from __future__ import annotations
+
 import logging
 import re
 from pathlib import Path
-from typing import Iterable, List, Sequence, Set, Union
-
-import pandas as pd
-from numpy.typing import ArrayLike
+from typing import TYPE_CHECKING
 
 from pylhc_submitter.constants.job_submitter import COLUMN_JOB_DIRECTORY, COLUMN_JOB_FILE
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Sequence
+
+    import pandas as pd
+    from numpy.typing import ArrayLike
 
 LOG = logging.getLogger(__name__)
 
@@ -53,13 +59,13 @@ def create_job_scripts_from_mask(
     return job_df
 
 
-def find_named_variables_in_mask(mask: str) -> Set[str]:
-    """ Find all variable-names in the mask. """
+def find_named_variables_in_mask(mask: str) -> set[str]:
+    """Find all variable-names in the mask."""
     return set(re.findall(r"%\((\w+)\)", mask))
 
 
 def check_percentage_signs_in_mask(mask: str) -> None:
-    """ Checks for '%' in the mask, that are not replacement variables. """
+    """Checks for '%' in the mask, that are not replacement variables."""
     cleaned_mask = re.sub(r"%\((\w+)\)", "", mask)
     n_signs = cleaned_mask.count("%")
     if n_signs == 0:
@@ -73,16 +79,17 @@ def check_percentage_signs_in_mask(mask: str) -> None:
     raise KeyError(f"{n_signs} problematic '%' signs found in template. Please remove.")
 
 
-def generate_jobdf_index(old_df: pd.DataFrame, jobid_mask: str, keys: Sequence[str], values: ArrayLike
-    ) -> Union[List[str], Iterable[int]]:
-    """ Generates index for jobdf from mask for job_id naming. 
-    
+def generate_jobdf_index(
+    old_df: pd.DataFrame, jobid_mask: str, keys: Sequence[str], values: ArrayLike
+) -> list[str] | Iterable[int]:
+    """Generates index for jobdf from mask for job_id naming.
+
     Args:
         old_df (pd.DataFrame): Existing jobdf.
         jobid_mask (str): Mask for naming the jobs.
         keys (Sequence[str]): Keys to be replaced in the mask.
         values (np.array_like): Values-Grid to be replaced in the mask.
-    
+
     Returns:
         List[str]: Index for jobdf, either list of strings (the filled jobid_masks) or integer-range.
     """
@@ -90,7 +97,7 @@ def generate_jobdf_index(old_df: pd.DataFrame, jobid_mask: str, keys: Sequence[s
         # Use integer-range as index, if no mask is given
         # Start with last index if old_df is not None.
         nold = len(old_df.index) if old_df is not None else 0
-        start = nold-1 if nold > 0 else 0
+        start = nold - 1 if nold > 0 else 0
         return range(start, start + values.shape[0])
 
     # Fill job-id mask
@@ -98,7 +105,7 @@ def generate_jobdf_index(old_df: pd.DataFrame, jobid_mask: str, keys: Sequence[s
 
 
 def is_mask_file(mask: str) -> bool:
-    """ Check if given string points to a file. """
+    """Check if given string points to a file."""
     try:
         return Path(mask).is_file()
     except OSError:
@@ -106,9 +113,9 @@ def is_mask_file(mask: str) -> bool:
 
 
 def is_mask_string(mask: str) -> bool:
-    """ Checks that given string does not point to a file. """
+    """Checks that given string does not point to a file."""
     return not is_mask_file(mask)
 
 
 if __name__ == "__main__":
-    raise EnvironmentError(f"{__file__} is not supposed to run as main.")
+    raise OSError(f"{__file__} is not supposed to run as main.")

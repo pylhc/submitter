@@ -5,6 +5,9 @@ External Paths
 Specific constants relating to external paths to be used,
 to help with consistency.
 """
+
+from __future__ import annotations
+
 from pathlib import Path
 
 AFS_CERN: Path = Path("/", "afs", "cern.ch")

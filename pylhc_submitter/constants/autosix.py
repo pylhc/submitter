@@ -8,11 +8,13 @@ Collections of constants and paths used in autosix.
 :author: jdilly
 
 """
-from dataclasses import dataclass, fields, MISSING
-from pathlib import Path
-from typing import Union
+
+from __future__ import annotations
 
 import logging
+from dataclasses import MISSING, dataclass, fields
+from pathlib import Path
+
 from pylhc_submitter.constants.external_paths import MADX_BIN, SIXDESK_UTILS
 from pylhc_submitter.constants.general import PMASS
 
@@ -31,7 +33,7 @@ SIXDESKLOCKFILE: Path = "sixdesklock"
 
 # Constants and Requirements ---------------------------------------------------
 
-HEADER_BASEDIR = "BASEDIR"
+HEADER_BASEDIR: str = "BASEDIR"
 
 
 # AutoSix Environment (also defines defaults) ---
@@ -39,13 +41,13 @@ HEADER_BASEDIR = "BASEDIR"
 class AutoSixEnvironment:
     mask_text: str
     working_directory: Path
-    executable: Union[str, Path] = MADX_BIN
-    python2: Union[str, Path] = None
-    python3: Union[str, Path] = "python3"
+    executable: str | Path = MADX_BIN
+    python2: str | Path = None
+    python3: str | Path = "python3"
     da_turnstep: int = 100
     sixdesk_directory: Path = SIXDESK_UTILS
     unlock: bool = False
-    max_stage: 'Stage' = None
+    max_stage: Stage = None  # noqa: F821
     ssh: str = None
     stop_workspace_init: bool = False
     apply_mad6t_hacks: bool = False
@@ -56,8 +58,11 @@ class AutoSixEnvironment:
 # Sixenv ---
 class _SetDynamicallyType:
     pass
+
+
 SetDynamically = _SetDynamicallyType()
 """Sentinel value defining a parameter that is set later dynamically."""
+
 
 @dataclass
 class SixDeskEnvironment:
@@ -82,12 +87,14 @@ class SixDeskEnvironment:
     DIMENSIONS: int = 6  # Phase-Space dimensions
     WRITEBINS: int = 500
     ENERGY: float = None
-    GAMMA: float = SetDynamically  # calculated from ENERGY, needs to be here so asdict() converts it
+    GAMMA: float = (
+        SetDynamically  # calculated from ENERGY, needs to be here so asdict() converts it
+    )
 
     def __post_init__(self):
         # Check Runtype, Energy and Gamma ---
-        energy_map = {'inj': 450_000., 'col': 7000_000.}
-        if self.RUNTYPE not in energy_map.keys():
+        energy_map = {"inj": 450_000.0, "col": 7000_000.0}
+        if self.RUNTYPE not in energy_map:
             raise ValueError(f"RUNTYPE needs to be one of : {list(energy_map.keys())}")
 
         if self.ENERGY is None:
@@ -95,8 +102,10 @@ class SixDeskEnvironment:
             LOG.debug(f"Energy for '{self.RUNTYPE}' defaults to {energy}")
             self.ENERGY = energy
 
-        if self.ENERGY >= 6500_000 and self.RUNTYPE != list(energy_map.keys())[1]:
-            LOG.warning(f"Runtype is {self.RUNTYPE}, yet energy is set to {self.ENERGY}. Are you sure?")
+        if self.ENERGY >= 6500_000 and list(energy_map.keys())[1] != self.RUNTYPE:
+            LOG.warning(
+                f"Runtype is {self.RUNTYPE}, yet energy is set to {self.ENERGY}. Are you sure?"
+            )
 
         self.GAMMA = self.ENERGY / 1000 / PMASS
 
@@ -117,8 +126,14 @@ class SixDeskEnvironment:
             raise ValueError("The number of angles needs to be an uneven one.")
 
 
-SIXENV_REQUIRED = [f.name for f in fields(SixDeskEnvironment) if (f.default is MISSING)]  # required by user
-SIXENV_OPTIONAL = [f.name for f in fields(SixDeskEnvironment) if (f.default is not MISSING) and (f.default is not SetDynamically)]
+SIXENV_REQUIRED = [
+    f.name for f in fields(SixDeskEnvironment) if (f.default is MISSING)
+]  # required by user
+SIXENV_OPTIONAL = [
+    f.name
+    for f in fields(SixDeskEnvironment)
+    if (f.default is not MISSING) and (f.default is not SetDynamically)
+]
 SEED_KEYS = ["FIRSTSEED", "LASTSEED"]
 
 # SixDB and Postprocess ---
@@ -134,21 +149,24 @@ SEED, ANGLE, ALOST1, ALOST2, AMP = "SEED", "ANGLE", "ALOST1", "ALOST2", "A"
 # Errors ---
 
 
-class StageSkip(Exception):
-    """ Indicates that the stage was not completed or skipped entirely.
+class StageSkipError(Exception):
+    """Indicates that the stage was not completed or skipped entirely.
     This can be due to an error or on purpose (e.g. user interaction before
-    restart). """
+    restart)."""
+
     pass
 
 
-class StageStop(Exception):
-    """ A signal sent at the end of a Stage indicating, that it has succeeded
+class StageStopError(Exception):
+    """A signal sent at the end of a Stage indicating, that it has succeeded
     and that any iteration should be stopped after this Stage as the jobs have
-    been submitted and the user needs to wait for them to finish. """
+    been submitted and the user needs to wait for them to finish."""
+
     pass
 
 
 # Workspace Paths --------------------------------------------------------------
+
 
 # Input ---
 def get_workspace_path(jobname: str, basedir: Path) -> Path:
@@ -156,7 +174,7 @@ def get_workspace_path(jobname: str, basedir: Path) -> Path:
 
 
 def get_scratch_path(basedir: Path) -> Path:
-    return basedir / f"scratch-0"
+    return basedir / "scratch-0"
 
 
 def get_sixjobs_path(jobname: str, basedir: Path) -> Path:
@@ -216,4 +234,3 @@ def get_tfs_da_seed_stats_path(jobname: str, basedir: Path) -> Path:
 
 def get_tfs_da_angle_stats_path(jobname: str, basedir: Path) -> Path:
     return get_autosix_results_path(jobname, basedir) / f"{jobname}_da_per_angle.tfs"
-

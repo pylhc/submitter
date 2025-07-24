@@ -7,7 +7,7 @@ The ``job_submitter`` allows to execute a parametric study using a script mask a
 These parameters must be present in the given mask in the ``%(PARAMETER)s`` format (other types apart from string are also allowed).
 
 The type of script and executable is freely choosable, but defaults to ``madx``, for which this submitter was originally written.
-When submitting to ``HTCondor``, data to be transferred back to the working directory must be written in a sub-folder defined by ``job_output_directory`` which defaults to **Outputdata**.
+When submitting to ``HTCondor``, data to be transferred back to the working directory must be written in a sub-folder defined by ``job_output_dir`` which defaults to **Outputdata**.
 
 This script also allows to check if all ``HTCondor`` jobs finished successfully, for resubmissions with a different parameter grid, and for local execution.
 A **Jobs.tfs** file is created in the working directory containing the Job Id, parameter per job
@@ -150,6 +150,9 @@ For additional information and guides, see the `Job Submitter page
 
 
 """
+
+from __future__ import annotations
+
 import logging
 import sys
 from dataclasses import fields
@@ -162,11 +165,18 @@ from generic_parser.tools import print_dict_tree
 from pylhc_submitter.constants.htcondor import JOBFLAVOURS
 from pylhc_submitter.constants.job_submitter import EXECUTEABLEPATH, SCRIPT_EXTENSIONS
 from pylhc_submitter.submitter.iotools import CreationOpts, create_jobs, is_eos_uri, print_stats
-from pylhc_submitter.submitter.mask import (check_percentage_signs_in_mask,
-                                            find_named_variables_in_mask, is_mask_file)
+from pylhc_submitter.submitter.mask import (
+    check_percentage_signs_in_mask,
+    find_named_variables_in_mask,
+    is_mask_file,
+)
 from pylhc_submitter.submitter.runners import RunnerOpts, run_jobs
-from pylhc_submitter.utils.iotools import (PathOrStr, keys_to_path, make_replace_entries_iterable,
-                                           save_config)
+from pylhc_submitter.utils.iotools import (
+    PathOrStr,
+    keys_to_path,
+    make_replace_entries_iterable,
+    save_config,
+)
 from pylhc_submitter.utils.logging_tools import log_setup
 
 LOG = logging.getLogger(__name__)
@@ -201,9 +211,7 @@ def get_params():
         name="executable",
         default="madx",
         type=PathOrStr,
-        help=(
-            "Path to executable or job-type " f"(of {str(list(EXECUTEABLEPATH.keys()))}) to use."
-        ),
+        help=(f"Path to executable or job-type (of {str(list(EXECUTEABLEPATH.keys()))}) to use."),
     )
     params.add_parameter(
         name="jobflavour",
@@ -242,8 +250,7 @@ def get_params():
     params.add_parameter(
         name="replace_dict",
         help=(
-            "Dict containing the str to replace as keys and values a list of parameters to "
-            "replace"
+            "Dict containing the str to replace as keys and values a list of parameters to replace"
         ),
         type=DictAsString,
         required=True,
@@ -297,7 +304,7 @@ def get_params():
     params.add_parameter(
         name="output_destination",
         help="Directory to copy the output of the jobs to, sorted into folders per job. "
-             "Can be on EOS, preferrably via EOS-URI format ('root://eosuser.cern.ch//eos/...').",
+        "Can be on EOS, preferrably via EOS-URI format ('root://eosuser.cern.ch//eos/...').",
         type=PathOrStr,
     )
     params.add_parameter(
@@ -339,7 +346,7 @@ def main(opt):
 
 
 def check_opts(opt):
-    """ Checks options and sorts them into job-creation and running parameters. """
+    """Checks options and sorts them into job-creation and running parameters."""
     LOG.debug("Checking options.")
     if opt.resume_jobs and opt.append_jobs:
         raise ValueError("Select either Resume jobs or Append jobs")
@@ -347,7 +354,7 @@ def check_opts(opt):
     # Paths ---
     opt = keys_to_path(opt, "working_directory", "executable")
 
-    if str(opt.executable) in EXECUTEABLEPATH.keys():
+    if str(opt.executable) in EXECUTEABLEPATH:
         opt.executable = str(opt.executable)
 
     if is_mask_file(opt.mask):
@@ -355,12 +362,13 @@ def check_opts(opt):
         opt.mask = Path(opt.mask)
     else:
         mask_content = opt.mask
-    
-    if is_eos_uri(opt.output_destination) and not ("://" in opt.output_destination and "//eos/" in opt.output_destination):
+
+    if is_eos_uri(opt.output_destination) and not (
+        "://" in opt.output_destination and "//eos/" in opt.output_destination
+    ):
         raise ValueError(
             "The 'output_destination' is an EOS-URI but missing '://' or '//eos' (double slashes?). "
         )
-        
 
     # Replace dict ---
     dict_keys = set(opt.replace_dict.keys())
@@ -388,20 +396,22 @@ def check_opts(opt):
 
     print_dict_tree(opt, name="Input parameter", print_fun=LOG.debug)
     opt.replace_dict = make_replace_entries_iterable(opt.replace_dict)
-    
+
     # Create new classes
     opt.output_dir = opt.job_output_dir  # renaming
 
     creation = CreationOpts(**{f.name: opt[f.name] for f in fields(CreationOpts)})
     runner = RunnerOpts(**{f.name: opt[f.name] for f in fields(RunnerOpts)})
-    runner.output_dir = '""' if opt.output_destination else opt.output_dir  # empty string stops htc transfer of files
+    runner.output_dir = (
+        '""' if opt.output_destination else opt.output_dir
+    )  # empty string stops htc transfer of files
     return creation, runner
 
 
 def _check_htcondor_presence() -> None:
-    """ Raises an error if htcondor is not installed. """
+    """Raises an error if htcondor is not installed."""
     if htcondor is None:
-        raise EnvironmentError("htcondor bindings are necessary to run this module.")
+        raise OSError("htcondor bindings are necessary to run this module.")
 
 
 # Script Mode ------------------------------------------------------------------

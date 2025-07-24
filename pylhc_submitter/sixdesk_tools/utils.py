@@ -4,6 +4,9 @@ SixDesk Utilities
 
 Helper Utilities for Autosix.
 """
+
+from __future__ import annotations
+
 import logging
 import subprocess
 from pathlib import Path
@@ -19,7 +22,7 @@ LOG = logging.getLogger(__name__)
 
 
 def check_mask(mask_text: str, replace_args: dict):
-    """ Checks validity/compatibility of the mask and replacement dict. """
+    """Checks validity/compatibility of the mask and replacement dict."""
     dict_keys = set(replace_args.keys())
     mask_keys = find_named_variables_in_mask(mask_text)
     not_in_dict = mask_keys - dict_keys
@@ -35,7 +38,7 @@ def check_mask(mask_text: str, replace_args: dict):
 
 
 def is_locked(jobname: str, basedir: Path, unlock: bool = False):
-    """ Checks for sixdesklock-files """
+    """Checks for sixdesklock-files"""
     workspace_path = get_workspace_path(jobname, basedir)
     locks = list(workspace_path.glob(f"**/{SIXDESKLOCKFILE}"))  # list() for repeated usage
 
@@ -44,8 +47,7 @@ def is_locked(jobname: str, basedir: Path, unlock: bool = False):
         for lock in locks:
             LOG.info(f"{str(lock.parent)}")
 
-            with open(lock, "r") as f:
-                txt = f.read()
+            txt = Path(lock).read_text()
             txt = txt.replace(str(SIXDESK_UTILS), "$SIXUTILS").strip("\n")
             if txt:
                 LOG.debug(f" -> locked by: {txt}")
@@ -76,7 +78,11 @@ def start_subprocess(command, cwd=None, ssh: str = None, check_log: str = None):
             command = f'cd "{cwd}" && {command}'
         LOG.debug(f"Executing command '{command}' on {ssh}")
         process = subprocess.Popen(
-            ["ssh", ssh, command], shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=cwd,
+            ["ssh", ssh, command],
+            shell=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            cwd=cwd,
         )
 
     else:

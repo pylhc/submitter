@@ -1,54 +1,68 @@
-""" 
+"""
 Job Submitter IO-Tools
 ----------------------
 
 Tools for input and output for the job-submitter.
 """
+
+from __future__ import annotations
+
 import itertools
 import logging
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Tuple, Union
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
-import pandas as pd
 import tfs
 
 from pylhc_submitter.constants.htcondor import HTCONDOR_JOBLIMIT
-from pylhc_submitter.constants.job_submitter import (COLUMN_DEST_DIRECTORY, COLUMN_JOB_DIRECTORY,
-                                                     COLUMN_JOBID, JOBDIRECTORY_PREFIX,
-                                                     JOBSUMMARY_FILE, SCRIPT_EXTENSIONS)
+from pylhc_submitter.constants.job_submitter import (
+    COLUMN_DEST_DIRECTORY,
+    COLUMN_JOB_DIRECTORY,
+    COLUMN_JOBID,
+    JOBDIRECTORY_PREFIX,
+    JOBSUMMARY_FILE,
+    SCRIPT_EXTENSIONS,
+)
 from pylhc_submitter.submitter import htc_utils
-from pylhc_submitter.submitter.mask import (create_job_scripts_from_mask, generate_jobdf_index,
-                                            is_mask_file)
+from pylhc_submitter.submitter.mask import (
+    create_job_scripts_from_mask,
+    generate_jobdf_index,
+    is_mask_file,
+)
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 LOG = logging.getLogger(__name__)
 
 
-JobNamesType = Sequence[Union[str, int]]
+JobNamesType = Sequence[str | int]
 
 
 @dataclass
 class CreationOpts:
-    """ Options for creating jobs. """
-    working_directory: Path         # Path to working directory (afs)
-    mask: Union[Path, str]          # Path to mask file or mask-string
-    jobid_mask: str                 # Mask for jobid
-    replace_dict: Dict[str, Any]    # Replace-dict
-    output_dir: Path                # Path to local output directory
-    output_destination: Union[Path, str]  # Path or URI to remote output directory (e.g. eos)
-    append_jobs: bool               # Append jobs to existing jobs
-    resume_jobs: bool               # Resume jobs that have already run/failed/got interrupted
-    executable: str                 # Name of executable to call the script (from mask)
-    check_files: Sequence[str]      # List of output files to check for success
-    script_arguments: Dict[str, Any]  # Arguments to pass to script
-    script_extension: str           # Extension of the script to run
+    """Options for creating jobs."""
+
+    working_directory: Path  # Path to working directory (afs)
+    mask: Path | str  # Path to mask file or mask-string
+    jobid_mask: str  # Mask for jobid
+    replace_dict: dict[str, Any]  # Replace-dict
+    output_dir: Path  # Path to local output directory
+    output_destination: Path | str  # Path or URI to remote output directory (e.g. eos)
+    append_jobs: bool  # Append jobs to existing jobs
+    resume_jobs: bool  # Resume jobs that have already run/failed/got interrupted
+    executable: str  # Name of executable to call the script (from mask)
+    check_files: Sequence[str]  # List of output files to check for success
+    script_arguments: dict[str, Any]  # Arguments to pass to script
+    script_extension: str  # Extension of the script to run
 
     def should_drop_jobs(self) -> bool:
-        """ Check if jobs should be dropped after creating the whole parameter space, 
-        e.g. because they already exist. """
+        """Check if jobs should be dropped after creating the whole parameter space,
+        e.g. because they already exist."""
         return self.append_jobs or self.resume_jobs
-
 
 
 def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
@@ -57,13 +71,13 @@ def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
     checks for existing jobs (if so desired).
     A job-dataframe is created - and written out - containing all the information and
     its values are used to generate the job-scripts.
-    It also creates bash-scripts to call the executable for the job-scripts. 
+    It also creates bash-scripts to call the executable for the job-scripts.
 
     Args:
-        opt (CreationOpts): Options for creating jobs 
+        opt (CreationOpts): Options for creating jobs
 
     Returns:
-        tfs.TfsDataFrame: The job-dataframe containing information for all jobs. 
+        tfs.TfsDataFrame: The job-dataframe containing information for all jobs.
     """
     LOG.debug("Creating Jobs.")
 
@@ -77,7 +91,7 @@ def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
     # Check new jobs ---
     njobs = len(values_grid)
     if njobs == 0:
-        raise ValueError(f"No (new) jobs found!")
+        raise ValueError("No (new) jobs found!")
 
     if njobs > HTCONDOR_JOBLIMIT:
         LOG.warning(
@@ -93,7 +107,7 @@ def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
         columns=parameters,
         data=values_grid,
     )
-    job_df = tfs.concat([prev_job_df, job_df], sort=False, how_headers='left')
+    job_df = tfs.concat([prev_job_df, job_df], sort=False, how_headers="left")
 
     # Setup folders ---
     job_df = create_folders(job_df, opt.working_directory, opt.output_destination)
@@ -102,9 +116,7 @@ def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
     if is_mask_file(opt.mask):
         LOG.debug("Creating all jobs from mask.")
         script_extension = _get_script_extension(opt.script_extension, opt.executable, opt.mask)
-        job_df = create_job_scripts_from_mask(
-            job_df, opt.mask, parameters, script_extension
-        )
+        job_df = create_job_scripts_from_mask(job_df, opt.mask, parameters, script_extension)
 
     LOG.debug("Creating shell scripts.")
     job_df = htc_utils.write_bash(
@@ -121,19 +133,20 @@ def create_jobs(opt: CreationOpts) -> tfs.TfsDataFrame:
         job_df[COLUMN_DEST_DIRECTORY] = job_df[COLUMN_DEST_DIRECTORY].apply(str)
 
     tfs.write(str(opt.working_directory / JOBSUMMARY_FILE), job_df, save_index=COLUMN_JOBID)
-    
+
     # Drop already run jobs ---
     dropped_jobs = []
     if opt.should_drop_jobs():
-        job_df, dropped_jobs = _drop_already_run_jobs(
-            job_df, opt.output_dir, opt.check_files
-        )
+        job_df, dropped_jobs = _drop_already_run_jobs(job_df, opt.output_dir, opt.check_files)
     return job_df, dropped_jobs
 
 
-def create_folders(job_df: tfs.TfsDataFrame, working_directory: Path, 
-                   destination_directory: Union[Path, str] = None) -> tfs.TfsDataFrame:
-    """Create the folder-structure in the given working directory and the 
+def create_folders(
+    job_df: tfs.TfsDataFrame,
+    working_directory: Path,
+    destination_directory: Path | str = None,
+) -> tfs.TfsDataFrame:
+    """Create the folder-structure in the given working directory and the
     destination directory if given.
     This creates a folder per job in which then the job-scripts and bash-scripts
     can be stored later.
@@ -141,14 +154,14 @@ def create_folders(job_df: tfs.TfsDataFrame, working_directory: Path,
     Args:
         job_df (tfs.TfsDataFrame): DataFrame containing all the job-information
         working_directory (Path): Path to the working directory
-        destination_directory (Path, optional): Path to the destination directory, 
+        destination_directory (Path, optional): Path to the destination directory,
         i.e. the directory to copy the outputs to manually. Defaults to None.
 
     Returns:
         tfs.TfsDataFrame: The job-dataframe again, but with the added paths to the job-dirs.
     """
     LOG.debug("Setting up folders: ")
-    
+
     jobname = f"{JOBDIRECTORY_PREFIX}.{{0}}"
     job_df[COLUMN_JOB_DIRECTORY] = [working_directory / jobname.format(id_) for id_ in job_df.index]
 
@@ -161,16 +174,18 @@ def create_folders(job_df: tfs.TfsDataFrame, working_directory: Path,
         dest_path.mkdir(parents=True, exist_ok=True)
 
         server = get_server_from_uri(destination_directory)
-        job_df[COLUMN_DEST_DIRECTORY] = [f"{server}{dest_path / jobname.format(id_)}" for id_ in job_df.index]
+        job_df[COLUMN_DEST_DIRECTORY] = [
+            f"{server}{dest_path / jobname.format(id_)}" for id_ in job_df.index
+        ]
 
         # Make some symlinks for easy navigation---
         # Output directory -> Working Directory
-        sym_submission = dest_path / Path('SUBMISSION_DIR')
+        sym_submission = dest_path / Path("SUBMISSION_DIR")
         sym_submission.unlink(missing_ok=True)
         sym_submission.symlink_to(working_directory.resolve(), target_is_directory=True)
 
         # Working Directory -> Output Directory
-        sym_destination = working_directory / Path('OUTPUT_DIR')
+        sym_destination = working_directory / Path("OUTPUT_DIR")
         sym_destination.unlink(missing_ok=True)
         sym_destination.symlink_to(dest_path.resolve(), target_is_directory=True)
 
@@ -182,50 +197,48 @@ def create_folders(job_df: tfs.TfsDataFrame, working_directory: Path,
     return job_df
 
 
-def is_eos_uri(path: Union[Path, str, None]) -> bool:
-    """ Check if the given path is an EOS-URI as `eos cp` only works with those.
+def is_eos_uri(path: Path | str | None) -> bool:
+    """Check if the given path is an EOS-URI as `eos cp` only works with those.
     E.g.: root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt
-    
+
     This function does not check the double slashes,
-    to avoid having the user pass a malformed path by accident and then 
-    assuming it is just a path. This is tested for in 
+    to avoid having the user pass a malformed path by accident and then
+    assuming it is just a path. This is tested for in
     :func:`pylhc_submitter.job_submitter.check_opts`.
     """
     if path is None:
         return False
 
-    parts = Path(path).parts 
+    parts = Path(path).parts
     return (
         len(parts) >= 3  # at least root:, server, path
-        and
-        parts[0].endswith(':')
-        and
-        parts[2] == 'eos'
+        and parts[0].endswith(":")
+        and parts[2] == "eos"
     )
 
 
-def uri_to_path(path: Union[Path, str]) -> Path:
-    """ Strip EOS path information from a path.
+def uri_to_path(path: Path | str) -> Path:
+    """Strip EOS path information from a path.
     EOS paths for HTCondor can be given as URI. Strip for direct writing.
     E.g.: root://eosuser.cern.ch//eos/user/a/anabramo/banana.txt
     """
     path = Path(path)
     parts = path.parts
-    if parts[0].endswith(':'):
+    if parts[0].endswith(":"):
         # the first two parts are host info, e.g `file: //host/path`
-        return Path('/', *parts[2:])
-    return path 
+        return Path("/", *parts[2:])
+    return path
 
 
-def get_server_from_uri(path: Union[Path, str]) -> str:
-    """ Get server information from a path.
+def get_server_from_uri(path: Path | str) -> str:
+    """Get server information from a path.
     E.g.: root://eosuser.cern.ch//eos/user/a/ -> root://eosuser.cern.ch/
     """
     path_part = uri_to_path(path)
     if path_part == Path(path):
         return ""
-    
-    server_part = str(path).replace(str(path_part), '')
+
+    server_part = str(path).replace(str(path_part), "")
     if server_part.endswith("//"):
         server_part = server_part[:-1]
     return server_part
@@ -238,7 +251,7 @@ def print_stats(new_jobs: JobNamesType, finished_jobs: JobNamesType):
         f"Jobs total:{len(new_jobs) + len(finished_jobs):d}",
         f"Jobs to run: {len(new_jobs):d}",
         f"Jobs already finished: {len(finished_jobs):d}",
-        "---------- JOBS TO RUN: NAMES -------------"
+        "---------- JOBS TO RUN: NAMES -------------",
     ]
     text += [str(job_name) for job_name in new_jobs]
     text += ["--------- JOBS FINISHED: NAMES ------------"]
@@ -247,9 +260,9 @@ def print_stats(new_jobs: JobNamesType, finished_jobs: JobNamesType):
 
 
 def _generate_parameter_space(
-        replace_dict: Dict[str, Any], append_jobs: bool, cwd: Path
-    ) -> Tuple[List[str], np.ndarray, tfs.TfsDataFrame]:
-    """ Generate parameter space from replace-dict, check for existing jobs. """
+    replace_dict: dict[str, Any], append_jobs: bool, cwd: Path
+) -> tuple[list[str], np.ndarray, tfs.TfsDataFrame]:
+    """Generate parameter space from replace-dict, check for existing jobs."""
     LOG.debug("Generating parameter space from replace-dict.")
     parameters = list(replace_dict.keys())
     values_grid = _generate_values_grid(replace_dict)
@@ -261,7 +274,7 @@ def _generate_parameter_space(
         prev_job_df = tfs.read(str(jobfile_path.absolute()), index=COLUMN_JOBID)
     except FileNotFoundError as filerror:
         raise FileNotFoundError(
-            "Cannot append jobs, as no previous jobfile was found at " f"'{jobfile_path}'"
+            f"Cannot append jobs, as no previous jobfile was found at '{jobfile_path}'"
         ) from filerror
     new_jobs_mask = [elem not in prev_job_df[parameters].values for elem in values_grid]
     values_grid = values_grid[new_jobs_mask]
@@ -269,20 +282,18 @@ def _generate_parameter_space(
     return parameters, values_grid, prev_job_df
 
 
-def _generate_values_grid(replace_dict: Dict[str, Any]) -> np.ndarray:
-    """ Creates an array of the inner-product of the replace-dict. """
+def _generate_values_grid(replace_dict: dict[str, Any]) -> np.ndarray:
+    """Creates an array of the inner-product of the replace-dict."""
     return np.array(list(itertools.product(*replace_dict.values())), dtype=object)
 
 
 def _drop_already_run_jobs(
-        job_df: tfs.TfsDataFrame, output_dir: str, check_files: str
-    ) -> Tuple[tfs.TfsDataFrame, List[str]]:
-    """ Check for jobs that have already been run and drop them from current job_df. """
+    job_df: tfs.TfsDataFrame, output_dir: str, check_files: str
+) -> tuple[tfs.TfsDataFrame, list[str]]:
+    """Check for jobs that have already been run and drop them from current job_df."""
     LOG.debug("Dropping already finished jobs.")
     finished_jobs = [
-        idx
-        for idx, row in job_df.iterrows()
-        if _job_was_successful(row, output_dir, check_files)
+        idx for idx, row in job_df.iterrows() if _job_was_successful(row, output_dir, check_files)
     ]
 
     LOG.info(
@@ -295,8 +306,8 @@ def _drop_already_run_jobs(
 
 
 def _job_was_successful(job_row: pd.Series, output_dir: str, files: Sequence[str]) -> bool:
-    """ Determines if the job was successful. 
-    
+    """Determines if the job was successful.
+
     Args:
         job_row (pd.Series): row from the job_df
         output_dir (str): Name of the (local) output directory
@@ -312,8 +323,8 @@ def _job_was_successful(job_row: pd.Series, output_dir: str, files: Sequence[str
 
 
 def _get_script_extension(script_extension: str, executable: Path, mask: Path) -> str:
-    """ Returns the extension of the script to run based on 
-    either the given value, its executable or the mask. """
+    """Returns the extension of the script to run based on
+    either the given value, its executable or the mask."""
     if script_extension is not None:
         return script_extension
     return SCRIPT_EXTENSIONS.get(executable, mask.suffix)

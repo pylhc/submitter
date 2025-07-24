@@ -4,9 +4,12 @@ IO-Tools
 
 Tools for input and output.
 """
+
+from __future__ import annotations
+
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable
 
 from generic_parser.entry_datatypes import get_instance_faker_meta
 from generic_parser.entrypoint_parser import save_options_to_config
@@ -29,10 +32,12 @@ def save_config(output_dir: Path, opt: dict, script: str):
     output_dir.mkdir(parents=True, exist_ok=True)
     opt = convert_paths_in_dict_to_strings(opt)
     opt = escape_percentage_signs(opt)
+
+    # TODO: datetime.utcnow() is deprecated in 3.12 and the recommended replacement
+    # was introduced in 3.11. When the time comes, replace the following line with:
+    # time = datetime.now(UTC).strftime(TIME)
     time = datetime.utcnow().strftime(TIME)
-    save_options_to_config(output_dir / f"{script:s}_{time:s}.ini",
-                           dict(sorted(opt.items()))
-                           )
+    save_options_to_config(output_dir / f"{script:s}_{time:s}.ini", dict(sorted(opt.items())))
 
 
 def escape_percentage_signs(dict_: dict) -> dict:
@@ -73,17 +78,19 @@ def convert_paths_in_dict_to_strings(dict_: dict) -> dict:
 
 class PathOrStr(metaclass=get_instance_faker_meta(Path, str)):
     """A class that behaves like a Path when possible, otherwise like a string."""
+
     def __new__(cls, value):
         if value is None:
             return None
 
         if isinstance(value, str):
-            value = value.strip("\'\"")  # behavior like dict-parser, IMPORTANT FOR EVERY STRING-FAKER
+            # Behave like dict parser, IMPORTANT FOR EVERY STRING-FAKER
+            value = value.strip("'\"")
         return Path(value)
 
 
 def make_replace_entries_iterable(replace_dict: dict) -> dict:
-    """ Makes all entries in replace-dict iterable. """
+    """Makes all entries in replace-dict iterable."""
     for key, value in replace_dict.items():
         if isinstance(value, str) or not isinstance(value, Iterable):
             replace_dict[key] = [value]
@@ -91,7 +98,7 @@ def make_replace_entries_iterable(replace_dict: dict) -> dict:
 
 
 def keys_to_path(dict_, *keys):
-    """ Convert all keys to Path, if they are not None. """
+    """Convert all keys to Path, if they are not None."""
     for key in keys:
         value = dict_[key]
         dict_[key] = None if value is None else Path(value)
