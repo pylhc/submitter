@@ -84,9 +84,8 @@ class PathOrStr(metaclass=get_instance_faker_meta(Path, str)):
             return None
 
         if isinstance(value, str):
-            value = value.strip(
-                "'\""
-            )  # behavior like dict-parser, IMPORTANT FOR EVERY STRING-FAKER
+            # Behave like dict parser, IMPORTANT FOR EVERY STRING-FAKER
+            value = value.strip("'\"")
         return Path(value)
 
 
