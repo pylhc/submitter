@@ -247,7 +247,7 @@ def get_server_from_uri(path: Path | str) -> str:
 def print_stats(new_jobs: JobNamesType, finished_jobs: JobNamesType):
     """Print some quick statistics."""
     text = [
-        "\n------------- QUICK STATS ----------------"
+        "\n------------- QUICK STATS ----------------\n"
         f"Jobs total:{len(new_jobs) + len(finished_jobs):d}",
         f"Jobs to run: {len(new_jobs):d}",
         f"Jobs already finished: {len(finished_jobs):d}",
