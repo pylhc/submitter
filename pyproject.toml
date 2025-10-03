@@ -47,7 +47,7 @@ dependencies = [
     "pandas >= 2.1",
     "tfs-pandas >= 3.8",
     "matplotlib >= 3.8",
-    "htcondor >= 8.9.2 ; sys_platform=='linux'",  # no bindings for macOS or windows on PyPI
+    "htcondor >= 8.9.2, <25.0 ; sys_platform=='linux'",  # no bindings for macOS or windows on PyPI
     "generic-parser >= 1.1",
 ]
 
