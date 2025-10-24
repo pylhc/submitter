@@ -52,7 +52,7 @@ except ImportError:
     try:
         # Fallback to previous LTS HTCondor API
         import htcondor  # noqa: N801
-    except ImportError:  # will be handled by job_submitted
+    except ImportError:  # will be handled by job_submitter
         # Neither API is available – define dummy stubs for typing
 
         class htcondor:  # noqa: N801
