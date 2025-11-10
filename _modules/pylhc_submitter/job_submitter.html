@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylhc_submitter.job_submitter &mdash; pylhc_submitter 2.0.4 documentation</title>
+  <title>pylhc_submitter.job_submitter &mdash; pylhc_submitter 2.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=449bdd91" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=adc66a14"></script>
+      <script src="../../_static/documentation_options.js?v=09beee0d"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -290,16 +290,29 @@
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+<span class="c1"># ------------------------------------------------------------------ #</span>
+<span class="c1"># Importing htcondor is tricky because they broke the API in v25 LTS #</span>
+<span class="c1"># ------------------------------------------------------------------ #</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">htcondor</span>
+    <span class="c1"># First, try HTCondor 25.x API</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">htcondor2</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">htcondor</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using htcondor2 bindings (HTCondor 25.x+).&quot;</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">platform</span> <span class="o">=</span> <span class="s2">&quot;macOS&quot;</span> <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span> <span class="k">else</span> <span class="s2">&quot;windows&quot;</span>
-    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;htcondor python bindings are linux-only. You can still use job_submitter on </span><span class="si">{</span><span class="n">platform</span><span class="si">}</span><span class="s2">, &quot;</span>
-        <span class="s2">&quot;but only for local runs.&quot;</span>
-    <span class="p">)</span>
-    <span class="n">htcondor</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Fallback to previous LTS HTCondor API</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">htcondor</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using htcondor bindings (HTCondor &lt;25).&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="c1"># Neither available: must be macOS or Windows</span>
+        <span class="n">platform</span> <span class="o">=</span> <span class="s2">&quot;macOS&quot;</span> <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span> <span class="k">else</span> <span class="s2">&quot;windows&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;htcondor python bindings are linux-only. You can still use job_submitter on </span><span class="si">{</span><span class="n">platform</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="s2">&quot;but only for local runs.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">htcondor</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">get_params</span><span class="p">():</span>

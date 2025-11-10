@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylhc_submitter.submitter.iotools &mdash; pylhc_submitter 2.0.4 documentation</title>
+  <title>pylhc_submitter.submitter.iotools &mdash; pylhc_submitter 2.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=449bdd91" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=adc66a14"></script>
+      <script src="../../../_static/documentation_options.js?v=09beee0d"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -379,7 +379,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">print_stats</span><span class="p">(</span><span class="n">new_jobs</span><span class="p">:</span> <span class="n">JobNamesType</span><span class="p">,</span> <span class="n">finished_jobs</span><span class="p">:</span> <span class="n">JobNamesType</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Print some quick statistics.&quot;&quot;&quot;</span>
     <span class="n">text</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">------------- QUICK STATS ----------------&quot;</span>
+        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">------------- QUICK STATS ----------------&quot;</span><span class="p">,</span>
         <span class="sa">f</span><span class="s2">&quot;Jobs total:</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_jobs</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">finished_jobs</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="sa">f</span><span class="s2">&quot;Jobs to run: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_jobs</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="sa">f</span><span class="s2">&quot;Jobs already finished: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">finished_jobs</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
