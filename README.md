@@ -1,8 +1,7 @@
 # <img src="https://raw.githubusercontent.com/pylhc/pylhc.github.io/master/docs/assets/logos/OMC_logo.svg" height="28"> PyLHC Submitter
 
 [![Cron Testing](https://github.com/pylhc/submitter/workflows/Cron%20Testing/badge.svg)](https://github.com/pylhc/submitter/actions?query=workflow%3A%22Cron+Testing%22)
-[![Code Climate coverage](https://img.shields.io/codeclimate/coverage/pylhc/submitter.svg?style=popout)](https://codeclimate.com/github/pylhc/submitter)
-[![Code Climate maintainability (percentage)](https://img.shields.io/codeclimate/maintainability-percentage/pylhc/submitter.svg?style=popout)](https://codeclimate.com/github/pylhc/submitter)
+[![Coverage](https://raw.githubusercontent.com/pylhc/submitter/python-coverage-comment-action-data/badge.svg)](https://github.com/pylhc/submitter/tree/python-coverage-comment-action-data)
 <!-- [![GitHub last commit](https://img.shields.io/github/last-commit/pylhc/submitter.svg?style=popout)](https://github.com/pylhc/submitter/) -->
 [![PyPI Version](https://img.shields.io/pypi/v/pylhc_submitter?label=PyPI&logo=pypi)](https://pypi.org/project/pylhc_submitter/)
 [![GitHub release](https://img.shields.io/github/v/release/pylhc/submitter?logo=github)](https://github.com/pylhc/submitter/)
@@ -15,16 +14,19 @@ See the [API documentation](https://pylhc.github.io/submitter/) for details.
 
 ## Installing
 
-**Note**: This package is available 
+**Note**: This package is available
+
 - through `PyPI` on `Linux`, `Windows` and `macOS`
 - through `conda-forge` on `Linux` and `macOS`
 
 Installation is easily done via `pip`:
+
 ```bash
 python -m pip install pylhc-submitter
 ```
 
 One can also install in a `conda` environment via the `conda-forge` channel with:
+
 ```bash
 conda install -c conda-forge pylhc_submitter
 ```
