@@ -15,15 +15,18 @@ See the [API documentation](https://pylhc.github.io/submitter/) for details.
 ## Installing
 
 **Note**: This package is available
+
 - through `PyPI` on `Linux`, `Windows` and `macOS`
 - through `conda-forge` on `Linux` and `macOS`
 
 Installation is easily done via `pip`:
+
 ```bash
 python -m pip install pylhc-submitter
 ```
 
 One can also install in a `conda` environment via the `conda-forge` channel with:
+
 ```bash
 conda install -c conda-forge pylhc_submitter
 ```
