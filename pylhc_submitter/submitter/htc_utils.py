@@ -41,14 +41,24 @@ from pylhc_submitter.submitter import iotools
 from pylhc_submitter.submitter.mask import is_mask_file
 from pylhc_submitter.utils.environment import on_windows
 
+# ------------------------------------------------------------------ #
+# Importing htcondor is tricky because they broke the API in v25 LTS #
+# ------------------------------------------------------------------ #
+
 try:
-    import htcondor  # noqa: N801
-except ImportError:  # will be handled by job_submitter
+    # First, try HTCondor 25.x API
+    import htcondor2 as htcondor  # noqa: N801
+except ImportError:
+    try:
+        # Fallback to previous LTS HTCondor API
+        import htcondor  # noqa: N801
+    except ImportError:  # will be handled by job_submitter
+        # Neither API is available – define dummy stubs for typing
 
-    class htcondor:  # noqa: N801
-        """Dummy HTCondor module. To satisfy the typing."""
+        class htcondor:  # noqa: N801
+            """Dummy HTCondor module to satisfy typing."""
 
-        Submit: Any = None
+            Submit: Any = None
 
 
 if TYPE_CHECKING:

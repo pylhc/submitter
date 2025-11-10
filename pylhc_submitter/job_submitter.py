@@ -181,16 +181,29 @@ from pylhc_submitter.utils.logging_tools import log_setup
 
 LOG = logging.getLogger(__name__)
 
+# ------------------------------------------------------------------ #
+# Importing htcondor is tricky because they broke the API in v25 LTS #
+# ------------------------------------------------------------------ #
 
 try:
-    import htcondor
+    # First, try HTCondor 25.x API
+    import htcondor2 as htcondor
+
+    LOG.debug("Using htcondor2 bindings (HTCondor 25.x+).")
 except ImportError:
-    platform = "macOS" if sys.platform == "darwin" else "windows"
-    LOG.warning(
-        f"htcondor python bindings are linux-only. You can still use job_submitter on {platform}, "
-        "but only for local runs."
-    )
-    htcondor = None
+    try:
+        # Fallback to previous LTS HTCondor API
+        import htcondor
+
+        LOG.debug("Using htcondor bindings (HTCondor <25).")
+    except ImportError:
+        # Neither available: must be macOS or Windows
+        platform = "macOS" if sys.platform == "darwin" else "windows"
+        LOG.warning(
+            f"htcondor python bindings are linux-only. You can still use job_submitter on {platform}, "
+            "but only for local runs."
+        )
+        htcondor = None
 
 
 def get_params():
