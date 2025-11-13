@@ -1,5 +1,9 @@
 # `pylhc-submitter` Changelog
 
+## Version 2.0.6
+
+- Dropped support for `Python 3.9`.
+
 ## Version 2.0.5
 
 - Implemented compatibility with the recently released `htcondor 25.0` which brought breaking changes.
